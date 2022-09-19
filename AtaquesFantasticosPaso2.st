@@ -9,7 +9,7 @@ DenotativeObject subclass: #CombatienteHumanoArthas
 
 !classDefinition: 'CombatienteHumanoArthas class' category: 'AtaquesFantasticosPaso2'!
 CombatienteHumanoArthas class
-	instanceVariableNames: 'enemigos puntosDeVida dañoAInfligir dañoAAbsorber estrategia bonificacionPorAgilidad fueraDeCombate'!
+	instanceVariableNames: 'enemigos puntosDeVida dañoAInfligir dañoAAbsorber estrategia bonificacionPorAgilidad fueraDeCombate estaDistraido'!
 
 !CombatienteHumanoArthas class methodsFor: 'combate' stamp: 'lvg 9/17/2022 17:28:03'!
 atacar
@@ -19,10 +19,16 @@ atacar
 	enemigoElegido := estrategia value: enemigos.
 	self atacarA: enemigoElegido.! !
 
-!CombatienteHumanoArthas class methodsFor: 'combate' stamp: 'lvg 9/17/2022 11:51:53'!
+!CombatienteHumanoArthas class methodsFor: 'combate' stamp: 'lvg 9/19/2022 07:18:38'!
 atacarA: unCombatiente 
 	(self puntosDeVida > (0*pv)) ifTrue:[
-	unCombatiente recibirDaño: dañoAInfligir].! !
+	unCombatiente recibirDaño: dañoAInfligir.
+	(unCombatiente  noEstaHerido) ifTrue: [estaDistraido := True].
+	].
+		"(unCombatiente  noEstaHerido ) ifTrue: [unCombatiente estaDistraido = True].
+	
+	(unCombatiente estaDistraido and  noEstaHerido ) ifTrue:[dañoAInfligir := (0*pv)].
+	(unCombatiente estaDistraido) ifTrue:[unCombatiente recibirDaño: dañoAInfligir - (2*pv)]."! !
 
 !CombatienteHumanoArthas class methodsFor: 'combate' stamp: 'pal 8/23/2022 12:59:21'!
 enemigos: unConjuntoDeEnemigos
@@ -97,7 +103,7 @@ tienePuntosDeVida: pv
 	^(pv = puntosDeVida ).! !
 
 
-!CombatienteHumanoArthas class methodsFor: '--** private fileout/in **--' stamp: 'lvg 9/19/2022 05:28:59'!
+!CombatienteHumanoArthas class methodsFor: '--** private fileout/in **--' stamp: 'lvg 9/19/2022 07:19:24'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -108,7 +114,8 @@ initializeCollaboratorsFromFile
 	estrategia := ((SerializableBlockClosure basicNew instVarAt: 1 put: CombatienteHumanoArthas; instVarAt: 2 put: '[ :argm4_1 |
 	argm4_1 anyOne. ]'; instVarAt: 3 put: #(); yourself) asEvaluable).
 	bonificacionPorAgilidad := (SimpleMeasure basicNew instVarAt: 1 put: 1; instVarAt: 2 put: (BaseUnit basicNew instVarAt: 1 put: 'puntosDeVida'; instVarAt: 2 put: 'puntosDeVidas'; instVarAt: 3 put: 'pv'; yourself); yourself).
-	fueraDeCombate := False.! !
+	fueraDeCombate := False.
+	estaDistraido := True.! !
 
 
 !classDefinition: #CombatienteOrcoMankrik category: 'AtaquesFantasticosPaso2'!
@@ -209,7 +216,7 @@ tienePuntosDeVida: pv
 	^(pv = puntosDeVida ).! !
 
 
-!CombatienteOrcoMankrik class methodsFor: '--** private fileout/in **--' stamp: 'lvg 9/19/2022 05:28:59'!
+!CombatienteOrcoMankrik class methodsFor: '--** private fileout/in **--' stamp: 'lvg 9/19/2022 07:19:24'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -234,7 +241,7 @@ DenotativeObject subclass: #CombatienteOrcoOlgra
 
 !classDefinition: 'CombatienteOrcoOlgra class' category: 'AtaquesFantasticosPaso2'!
 CombatienteOrcoOlgra class
-	instanceVariableNames: 'estrategia dañoAAbsorber dañoAInfligir puntosDeVida enemigos estaDistraido bonificacionPorFuerza fueraDeCombate'!
+	instanceVariableNames: 'estrategia dañoAAbsorber dañoAInfligir puntosDeVida enemigos bonificacionPorFuerza fueraDeCombate distraido'!
 
 !CombatienteOrcoOlgra class methodsFor: 'combate' stamp: 'lvg 9/17/2022 17:15:06'!
 atacar
@@ -261,7 +268,7 @@ focalizarEnElMasHerido
 focalizarEnElMasSano
 	estrategia := [:posiblesEnemigosAAtacar | posiblesEnemigosAAtacar detectMax: [:enemigo | enemigo puntosDeVida]].! !
 
-!CombatienteOrcoOlgra class methodsFor: 'combate' stamp: 'lvg 9/17/2022 12:09:38'!
+!CombatienteOrcoOlgra class methodsFor: 'combate' stamp: 'lvg 9/19/2022 07:16:15'!
 prepararseParaElCombate
 	puntosDeVida := 20*pv.
 	dañoAInfligir := 2*pv.
@@ -270,16 +277,19 @@ prepararseParaElCombate
 	estrategia := [:posiblesEnemigosAAtacar | posiblesEnemigosAAtacar anyOne ].
 	bonificacionPorFuerza := 1*pv.
 	fueraDeCombate := False.
+	distraido := False.
 	! !
 
 !CombatienteOrcoOlgra class methodsFor: 'combate' stamp: 'pal 8/23/2022 23:50:14'!
 puntosDeVida
 	^puntosDeVida! !
 
-!CombatienteOrcoOlgra class methodsFor: 'combate' stamp: 'lvg 9/17/2022 11:20:56'!
+!CombatienteOrcoOlgra class methodsFor: 'combate' stamp: 'lvg 9/19/2022 07:19:07'!
 recibirDaño:  unaCantidadDeDaño
 	| dañoADescontar |
 	dañoADescontar := (unaCantidadDeDaño - dañoAAbsorber) max: 0*pv.
+	"[self estaDistraido and  noEstaHerido] ifTrue:[dañoADescontar := (0*pv)]
+	(self estaDistraido) ifTrue:[dañoADescontar := (unaCantidadDeDaño - dañoAAbsorber - (2*pv) ) max: 0*pv]."
 	puntosDeVida := puntosDeVida - dañoADescontar.! !
 
 
@@ -300,6 +310,10 @@ usarHacha
 	dañoAInfligir := 10*pv.! !
 
 
+!CombatienteOrcoOlgra class methodsFor: 'as yet unclassified' stamp: 'lvg 9/19/2022 07:15:50'!
+estaDistraido
+	^distraido .! !
+
 !CombatienteOrcoOlgra class methodsFor: 'as yet unclassified' stamp: 'lvg 9/16/2022 18:43:12'!
 estaHerido
 	^(puntosDeVida < (20*pv)) .! !
@@ -319,7 +333,7 @@ tienePuntosDeVida: pv
 	^(pv = puntosDeVida ).! !
 
 
-!CombatienteOrcoOlgra class methodsFor: '--** private fileout/in **--' stamp: 'lvg 9/19/2022 05:28:59'!
+!CombatienteOrcoOlgra class methodsFor: '--** private fileout/in **--' stamp: 'lvg 9/19/2022 07:19:24'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -329,9 +343,9 @@ initializeCollaboratorsFromFile
 	dañoAInfligir := (SimpleMeasure basicNew instVarAt: 1 put: 2; instVarAt: 2 put: (BaseUnit basicNew instVarAt: 1 put: 'puntosDeVida'; instVarAt: 2 put: 'puntosDeVidas'; instVarAt: 3 put: 'pv'; yourself); yourself).
 	puntosDeVida := (SimpleMeasure basicNew instVarAt: 1 put: 8; instVarAt: 2 put: (BaseUnit basicNew instVarAt: 1 put: 'puntosDeVida'; instVarAt: 2 put: 'puntosDeVidas'; instVarAt: 3 put: 'pv'; yourself); yourself).
 	enemigos := #().
-	estaDistraido := false.
 	bonificacionPorFuerza := (SimpleMeasure basicNew instVarAt: 1 put: 1; instVarAt: 2 put: (BaseUnit basicNew instVarAt: 1 put: 'puntosDeVida'; instVarAt: 2 put: 'puntosDeVidas'; instVarAt: 3 put: 'pv'; yourself); yourself).
-	fueraDeCombate := False.! !
+	fueraDeCombate := False.
+	distraido := False.! !
 
 
 !classDefinition: #CombatientesTest category: 'AtaquesFantasticosPaso2'!
