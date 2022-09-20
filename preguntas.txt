@@ -6,15 +6,16 @@
 
 2. ¿Qué opinan de que para algunas funcionalidades tenemos 3 tests para el mismo comportamiento pero aplicando a cada uno de los combatientes (Arthas, Mankrik y Olgra)
 
-Básicamente es código repetido, podríamos crear un combatiente y que sus hijos sean (Mankrik, Olgra y Arthas), pero  creemos que está diseñado de esta forma porque nos ayuda a visualizar mejor el problema para poder resolverlo y entender mejor los conceptos dados en clases, y asi poder manipular los objetos en base a los tests nos presentan.
+Básicamente es código repetido, podríamos crear un combatiente y que sus hijos sean Mankrik, Olgra y Arthas, para de esta manera tener un código más generalizado y poder reutilizarlo. Sin embargo, creemos que está diseñado de esta forma porque nos ayuda a visualizar mejor el problema para poder resolverlo y entender mejor los conceptos dados en clases, y asi poder manipular los objetos en base a los tests nos presentan.
  
 
 3. ¿Cómo modelaron el resultado de haber desarrollado un combate? ¿Qué opciones consideraron y por qué se quedaron con la que entregaron y por qué descartaron a las otras?
 
-Con respecto al modelo del objeto Resultado: A medida que íbamos avanzando con los tests de rondas, íbamos verificando si quedaban combatientes con vida, y en base a eso cuando alguno de los dos bandos se quedaban sin combatientes, se determinaba que el bando opuesto era el ganador. Si por alguna razón ninguno perdía, el resultado era indeterminado.
+Con respecto al modelo del objeto Resultado:
+A medida que íbamos avanzando con los tests de rondas, íbamos verificando si quedaban combatientes con vida, y en base a eso cuando alguno de los dos bandos se quedaba sin combatientes, se determinaba que el bando opuesto era el ganador. Si por alguna razón ninguno perdía, el resultado era indeterminado, con lo cual no quedaba registrado ningún ganador hasta el momento.
 
-Opciones, descartes y decisión final: Inicialmente entendimos al leer los OrquestadorCombatesTest que había que usar el objeto resultado para asignar el resultado del propinado por el orquestador, básicamente lo vimos como un informador o un traductor del desarrollo del combate. al que le consultamos los resultados.
+Opciones, descartes y decisión final:
+Inicialmente al leer los OrquestadorCombatesTest entendimos que había que usar el objeto resultado para asignar el resultado del combate proporcionado por el orquestador. Básicamente lo vimos como un informador o un traductor del desarrollo del combate al que le consultamos los resultados.
 
-Se nos dificulto poner en práctica esta idea, y pudimos correr los OrquestadorCombatesTest sin necesidad de crear el objeto Resultado, pero sentíamos que se perdía la esencia del Assert, y de los que no se pedía. Pero en el medio de eso también nos dimos cuenta que solo devolvemos a los tests únicamente el bando ganador sin las rondas que fueron necesarias para generar dicho ganador, una vez solventado esto, se nos ocurrió crear un objeto hijo de OrquestadorCombatesTest el cual sería Resultado y así poder aplicar nuestra idea general, y tratar de no romper con el formato del test, Resultado hereda los mensajes de su padre y así también funciona como contenedor de la información necesaria para generarlos asserts, todo esto concentrando las características dentro del objeto resultado.
-
-
+Se nos dificulto poner en práctica esta idea, y pudimos correr los OrquestadorCombatesTest sin necesidad de crear el nuevo objeto resultadoDelCombate, pero sentíamos que se perdía la esencia del Assert, y de los que nos pedía. Ademas, en medio de eso también nos percatamos de que solo devolviamos únicamente el bando ganador, sin tener en cuenta las rondas que fueron necesarias para generar dicho ganador.
+De esta manera fue que para solventar esto, se nos ocurrió crear un objeto hijo de OrquestadorCombatesTest el cual sería resultadoDelCombate y así poder aplicar nuestra idea general, y tratar de no romper con el formato del test. Este último hereda los mensajes y principalmente los colaboradores internos de su padre, funcionando como contenedor de la información necesaria para generar los asserts, todo esto concentrando las características dentro del objeto resultado (los bandos, el ganador y las rondas necesarias hasta que el combate presenta un vencedor).
