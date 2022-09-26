@@ -36,21 +36,21 @@ test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'lvg 9/25/2022 18:19:04'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AGH 9/26/2022 09:32:44'!
 test03CanNotAddACustomerWithEmptyName 
 
-	self assertFailure: [self customerBook addCustomerNamed: '']
+	self assertFailureOf: [self customerBook addCustomerNamed: '']
 		withError: Error
 		andVerify: [ :anError | 
 			self assert: anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.
 			self assert: self customerBook isEmpty].! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'lvg 9/25/2022 18:19:16'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AGH 9/26/2022 09:32:51'!
 test04CanNotRemoveAnInvalidCustomer
 			
 	self customerBook addCustomerNamed: 'John Lennon'.
 
-	self assertFailure: [self customerBook removeCustomerNamed: 'Paul McCartney']
+	self assertFailureOf: [self customerBook removeCustomerNamed: 'Paul McCartney']
 		withError: NotFound
 		andVerify: [self assertOneConsumer: 'John Lennon']. 
 ! !
@@ -80,29 +80,29 @@ test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'lvg 9/25/2022 18:20:02'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AGH 9/26/2022 09:32:56'!
 test07CanNotSuspendAnInvalidCustomer
 
 	self customerBook addCustomerNamed: 'John Lennon'.
 
-	self assertFailure: [self customerBook suspendCustomerNamed: 'Ringo Starr']
+	self assertFailureOf: [self customerBook suspendCustomerNamed: 'Ringo Starr']
 		withError: CantSuspend
 		andVerify: [self assertOneConsumer: 'John Lennon']! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'lvg 9/25/2022 18:20:14'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AGH 9/26/2022 09:33:00'!
 test08CanNotSuspendAnAlreadySuspendedCustomer
 
 	self customerBook addCustomerNamed: 'John Lennon'.
 	self customerBook suspendCustomerNamed: 'John Lennon'.
 	
-	self assertFailure: [self customerBook suspendCustomerNamed: 'John Lennon']
+	self assertFailureOf: [self customerBook suspendCustomerNamed: 'John Lennon']
 		withError: CantSuspend
 		andVerify: [self assertOneConsumer: 'John Lennon'].
 ! !
 
 
-!CustomerBookTest methodsFor: 'assertions' stamp: 'AGH 9/25/2022 18:04:30'!
-assertFailure: aBlock withError: anError andVerify: anotherBlock
+!CustomerBookTest methodsFor: 'assertions' stamp: 'AGH 9/26/2022 09:32:30'!
+assertFailureOf: aBlock withError: anError andVerify: anotherBlock
 
 	[aBlock. [self fail]] on: anError do: anotherBlock.
 	! !
@@ -232,10 +232,6 @@ signalCustomerNameCannotBeEmpty
 !CustomerBook methodsFor: 'customerCollections' stamp: 'lvg 9/25/2022 18:33:18'!
 active
 	^active.! !
-
-!CustomerBook methodsFor: 'customerCollections' stamp: 'lvg 9/25/2022 18:33:07'!
-supended
-	^suspended.! !
 
 !CustomerBook methodsFor: 'customerCollections' stamp: 'lvg 9/25/2022 18:34:13'!
 suspended
