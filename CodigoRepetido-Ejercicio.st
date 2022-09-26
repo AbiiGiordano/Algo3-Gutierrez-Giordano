@@ -55,22 +55,20 @@ test04CanNotRemoveAnInvalidCustomer
 		andVerify: [self assertOneConsumer: 'John Lennon']. 
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'lvg 9/25/2022 18:19:32'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AGH 9/26/2022 10:23:23'!
 test05SuspendingACustomerShouldNotRemoveItFromCustomerBook
 
-	self customerBook addCustomerNamed: 'Paul McCartney'.
-	self customerBook suspendCustomerNamed: 'Paul McCartney'.
+	self customerBook addAndSuspendCustomerNamed: 'Paul McCartney'.
 	
 	self assertNumberActive: 0 andNumberSuspended: 1.
 	self assert: (self customerBook includesCustomerNamed: 'Paul McCartney').
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'lvg 9/25/2022 18:19:51'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AGH 9/26/2022 10:26:32'!
 test06RemovingASuspendedCustomerShouldRemoveItFromCustomerBook
 
-	self customerBook addCustomerNamed: 'Paul McCartney'.
-	self customerBook suspendCustomerNamed: 'Paul McCartney'.
+	self customerBook addAndSuspendCustomerNamed: 'Paul McCartney'.
 	self customerBook removeCustomerNamed: 'Paul McCartney'.
 	
 	self assertNumberActive: 0 andNumberSuspended: 0.
@@ -89,11 +87,10 @@ test07CanNotSuspendAnInvalidCustomer
 		withError: CantSuspend
 		andVerify: [self assertOneConsumer: 'John Lennon']! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'AGH 9/26/2022 09:33:00'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AGH 9/26/2022 10:24:35'!
 test08CanNotSuspendAnAlreadySuspendedCustomer
 
-	self customerBook addCustomerNamed: 'John Lennon'.
-	self customerBook suspendCustomerNamed: 'John Lennon'.
+	self customerBook addAndSuspendCustomerNamed: 'John Lennon'.
 	
 	self assertFailureOf: [self customerBook suspendCustomerNamed: 'John Lennon']
 		withError: CantSuspend
@@ -101,30 +98,30 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 ! !
 
 
-!CustomerBookTest methodsFor: 'assertions' stamp: 'AGH 9/26/2022 09:32:30'!
+!CustomerBookTest methodsFor: 'assertions - private' stamp: 'AGH 9/26/2022 09:32:30'!
 assertFailureOf: aBlock withError: anError andVerify: anotherBlock
 
 	[aBlock. [self fail]] on: anError do: anotherBlock.
 	! !
 
-!CustomerBookTest methodsFor: 'assertions' stamp: 'lvg 9/25/2022 18:22:37'!
+!CustomerBookTest methodsFor: 'assertions - private' stamp: 'lvg 9/25/2022 18:22:37'!
 assertNumberActive: numActive andNumberSuspended: numSuspended
 
     self assert: (self customerBook numberOfActiveCustomers = numActive).
     self assert: (self customerBook numberOfSuspendedCustomers = numSuspended).
     self assert: (self customerBook numberOfCustomers = (numActive + numSuspended)).! !
 
-!CustomerBookTest methodsFor: 'assertions' stamp: 'lvg 9/25/2022 18:22:26'!
+!CustomerBookTest methodsFor: 'assertions - private' stamp: 'lvg 9/25/2022 18:22:26'!
 assertOneConsumer: aName
 
 	self assert: (self customerBook numberOfCustomers = 1 and: [self customerBook includesCustomerNamed: aName]).! !
 
 
-!CustomerBookTest methodsFor: 'validTime' stamp: 'AGH 9/25/2022 16:02:57'!
+!CustomerBookTest methodsFor: 'validTime - private' stamp: 'AGH 9/25/2022 16:02:57'!
 addingTime
 	^(50 milliSeconds).! !
 
-!CustomerBookTest methodsFor: 'validTime' stamp: 'AGH 9/25/2022 16:03:07'!
+!CustomerBookTest methodsFor: 'validTime - private' stamp: 'AGH 9/25/2022 16:03:07'!
 removingTime
 	^(100 milliSeconds).! !
 
@@ -133,8 +130,9 @@ removingTime
 customerBook
 	^ customerBook.! !
 
-!CustomerBookTest methodsFor: 'customerBookSetUp' stamp: 'lvg 9/25/2022 18:25:22'!
+!CustomerBookTest methodsFor: 'customerBookSetUp' stamp: 'AGH 9/26/2022 10:15:17'!
 setUp
+
 	customerBook := CustomerBook new.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -151,14 +149,14 @@ Object subclass: #CustomerBook
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!CustomerBook methodsFor: 'testing' stamp: 'lvg 9/25/2022 18:34:27'!
+!CustomerBook methodsFor: 'testing' stamp: 'AGH 9/26/2022 10:14:32'!
 includesCustomerNamed: aName
 
 	^ (self active, self suspended) includes: aName.! !
 
-!CustomerBook methodsFor: 'testing' stamp: 'lvg 9/25/2022 18:34:37'!
+!CustomerBook methodsFor: 'testing' stamp: 'AGH 9/26/2022 10:14:38'!
 isEmpty
-	
+
 	^(self active, self suspended) isEmpty.! !
 
 
@@ -169,6 +167,12 @@ initialize
 	active := OrderedCollection new.
 	suspended := OrderedCollection new.! !
 
+
+!CustomerBook methodsFor: 'customer management' stamp: 'AGH 9/26/2022 10:27:39'!
+addAndSuspendCustomerNamed: aName
+
+	self addCustomerNamed: aName.
+	self suspendCustomerNamed: aName.! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'lvg 9/25/2022 18:33:32'!
 addCustomerNamed: aName
@@ -229,7 +233,7 @@ signalCustomerNameCannotBeEmpty
 	self error: self class customerCanNotBeEmptyErrorMessage ! !
 
 
-!CustomerBook methodsFor: 'customerCollections' stamp: 'lvg 9/25/2022 18:33:18'!
+!CustomerBook methodsFor: 'customerCollections' stamp: 'AGH 9/26/2022 10:14:17'!
 active
 	^active.! !
 
