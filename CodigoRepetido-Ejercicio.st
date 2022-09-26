@@ -45,7 +45,7 @@ test03CanNotAddACustomerWithEmptyName
 			self assert: anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.
 			self assert: self customerBook isEmpty].! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'AGH 9/26/2022 12:12:19'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'AGH 9/26/2022 13:15:46'!
 test04CanNotRemoveAnInvalidCustomer
 			
 	self customerBook addCustomerNamed: 'John Lennon'.
@@ -53,13 +53,6 @@ test04CanNotRemoveAnInvalidCustomer
 	self assertExceptionOf: [self customerBook removeCustomerNamed: 'Paul McCartney']
 		raise: NotFound
 		andVerify: [self assertOneConsumer: 'John Lennon']. 
-		
-		"[ customerBook removeCustomerNamed: 'Paul McCartney'.
-	self fail ]
-		on: NotFound 
-		do: [ :anError | 
-			self assert: customerBook numberOfCustomers = 1.
-			self assert: (customerBook includesCustomerNamed: 'John Lennon') ]"
 ! !
 
 !CustomerBookTest methodsFor: 'testing' stamp: 'AGH 9/26/2022 10:23:23'!
