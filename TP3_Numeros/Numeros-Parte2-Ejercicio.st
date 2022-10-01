@@ -364,17 +364,17 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 21:58:25'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AGH 10/1/2022 10:25:47'!
 * aMultiplier 
 
-	^aMultiplier multiplicarEntero: self.
+	^aMultiplier multiplicarAlEntero: self.
 
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 21:58:30'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AGH 10/1/2022 10:24:32'!
 + anAdder 
 
-	^anAdder sumarEntero: self.
+	^anAdder sumarAlEntero: self.
 	
 
 	
@@ -385,16 +385,16 @@ Numero subclass: #Entero
 	  
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 21:58:35'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AGH 10/1/2022 10:25:15'!
 - aSubtrahend 
 	
-	^aSubtrahend restarEntero: self.
+	^aSubtrahend restarAlEntero: self.
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 21:58:43'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AGH 10/1/2022 10:26:31'!
 / aDivisor 
 
-	^aDivisor dividirEntero: self.
+	^aDivisor dividirAlEntero: self.
 ! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
@@ -470,61 +470,48 @@ greatestCommonDivisorWith: anEntero
 	^self class with: (value gcd: anEntero integerValue)! !
 
 
-!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 20:48:37'!
-dividirEntero: aDivisor
-
-	^ Fraccion with: aDivisor over: self .! !
-
-!Entero methodsFor: 'operations' stamp: 'AGH 10/1/2022 10:21:01'!
-dividirFraccion: aDivisor
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:26:18'!
+dividirALaFraccion: aDivisor
 
 	^ aDivisor numerator / (aDivisor denominator * self).! !
 
-!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 18:11:16'!
-multiplicarEntero: aMultiplier
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:26:30'!
+dividirAlEntero: aDivisor
 
-	^self class with:  value * aMultiplier integerValue.! !
+	^ Fraccion with: aDivisor over: self .! !
 
-!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:51:00'!
-multiplicarFraccion: aMultiplier
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:31:49'!
+multiplicarALaFraccion: aMultiplier
 
-	^(aMultiplier numerator * self) / aMultiplier denominator.
+	^ aMultiplier numerator * self / aMultiplier denominator.
 ! !
 
-!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 17:59:01'!
-restarEntero: aSubtrahend
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:34:32'!
+multiplicarAlEntero: aMultiplier
 
-	^ self class with:  aSubtrahend integerValue - value.! !
+	^ self class with: self integerValue * aMultiplier integerValue.! !
 
-!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:43:59'!
-restarFraccion: aSubtrahend
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:33:43'!
+restarALaFraccion: aSubtrahend
 
-	^Fraccion  with: (aSubtrahend numerator value - ((aSubtrahend denominator value) * self)) over: aSubtrahend denominator value . 
+	^ aSubtrahend numerator - (aSubtrahend denominator * self) / aSubtrahend denominator. 
+
 ! !
 
-!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 17:48:56'!
-sumarEntero: anAdder
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:34:11'!
+restarAlEntero: aSubtrahend
 
-	^self class with: value + anAdder integerValue.! !
+	^ self class with: aSubtrahend integerValue - self integerValue.! !
 
-!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:22:32'!
-sumarFraccion: anAdder
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:36:09'!
+sumarALaFraccion: anAdder
 
+	^ (self * anAdder denominator) + anAdder numerator / anAdder denominator. ! !
 
-	^Fraccion with: ( (self * (anAdder denominator value) ) + anAdder numerator value) over: anAdder denominator. 
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:36:21'!
+sumarAlEntero: anAdder
 
-		
-"
-	^Fraccion with: ( (self * (anAdder denominator ) ) + anAdder numerator ) over: anAdder denominator. 
-	xq pasa como la linea anterior sin los value
-
-	|newNumerator newDenominator|
-
-	newNumerator :=( (self * (anAdder denominator value) ) + anAdder numerator value).
-	newDenominator := anAdder denominator. 
-		
-	^self class with: newNumerator over: newDenominator.
-	"! !
+	^ self class with: self integerValue + anAdder integerValue.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -552,29 +539,29 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 22:51:30'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AGH 10/1/2022 10:25:28'!
 * aMultiplier 
 
-	^aMultiplier multiplicarFraccion: self.
+	^aMultiplier multiplicarALaFraccion: self.
 
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 22:45:39'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AGH 10/1/2022 10:24:50'!
 + anAdder 
 
-	^anAdder sumarFraccion: self.
+	^anAdder sumarALaFraccion: self.
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 22:45:27'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AGH 10/1/2022 10:25:04'!
 - aSubtrahend 
 
-	^aSubtrahend  restarFraccion: self.
+	^aSubtrahend  restarALaFraccion: self.
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'AGH 10/1/2022 10:09:08'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AGH 10/1/2022 10:26:18'!
 / aDivisor 
 	
-	^aDivisor dividirFraccion: self.! !
+	^aDivisor dividirALaFraccion: self.! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -635,59 +622,57 @@ printOn: aStream
 		print: denominator ! !
 
 
-!Fraccion methodsFor: 'operations' stamp: 'AGH 10/1/2022 10:19:16'!
-dividirEntero: aDivisor
+!Fraccion methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:43:39'!
+dividirALaFraccion: aDivisor
 
-	^ (aDivisor  * self denominator) /  (self numerator).! !
+	^ self denominator * aDivisor numerator / (self numerator * aDivisor denominator).! !
 
-!Fraccion methodsFor: 'operations' stamp: 'AGH 10/1/2022 10:11:13'!
-dividirFraccion: aDivisor
+!Fraccion methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:29:43'!
+dividirAlEntero: aDivisor
 
-	^ (denominator * aDivisor numerator) / (numerator * aDivisor denominator).
-	
-	"	^self class with: (numerator * aDivisor denominator) over: (denominator * aDivisor numerator)."! !
+	^ aDivisor * self denominator / self numerator.! !
 
-!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 19:10:19'!
-multiplicarEntero: aMultiplier
+!Fraccion methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:44:05'!
+multiplicarALaFraccion: aMultiplier
 
-	^aMultiplier  * (self numerator) /  self denominator.! !
+	^ self numerator * aMultiplier numerator / (self denominator * aMultiplier denominator).! !
 
-!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:48:16'!
-multiplicarFraccion: aMultiplier
+!Fraccion methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:42:24'!
+multiplicarAlEntero: aMultiplier
 
-	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator).! !
+	^ aMultiplier * self numerator / self denominator.! !
 
-!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 20:22:55'!
-restarEntero: aSubtrahend
-
-	^self class with: ((aSubtrahend value *self denominator) - (self numerator)  ) over: self denominator.! !
-
-!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:30:45'!
-restarFraccion: aSubtrahend
+!Fraccion methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:42:12'!
+restarALaFraccion: aSubtrahend
 
 	| newNumerator newDenominator |
 
-	newNumerator := (denominator * aSubtrahend numerator) - (numerator * aSubtrahend denominator) .
-	newDenominator := denominator * aSubtrahend denominator.
+	newNumerator := self denominator * aSubtrahend numerator - (self numerator * aSubtrahend denominator) .
+	newDenominator := self denominator * aSubtrahend denominator.
 	
-	^self class with: newNumerator over: newDenominator.
+	^ newNumerator / newDenominator.
 ! !
 
-!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 17:54:41'!
-sumarEntero: anAdder
+!Fraccion methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:39:54'!
+restarAlEntero: aSubtrahend
 
-	^self class with: ((self denominator * anAdder value   ) + (self numerator )) over:  self denominator .! !
+	^ aSubtrahend * self denominator - self numerator / self denominator.! !
 
-!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:03:31'!
-sumarFraccion: anAdder
+!Fraccion methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:41:46'!
+sumarALaFraccion: anAdder
 
 	|newNumerator newDenominator|
 	
-	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-	newDenominator := denominator * anAdder denominator.
+	newNumerator := self numerator * anAdder denominator + (self denominator * anAdder numerator).
+	newDenominator := self denominator * anAdder denominator.
 	
-	^self class with: newNumerator over: newDenominator.
+	^ newNumerator / newDenominator.
 ! !
+
+!Fraccion methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:40:17'!
+sumarAlEntero: anAdder
+
+	^ self denominator * anAdder + self numerator / self denominator .! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
