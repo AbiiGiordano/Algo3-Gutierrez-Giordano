@@ -448,31 +448,31 @@ printOn: aStream
 	aStream print: value ! !
 
 
-!Entero methodsFor: 'testing' stamp: 'NR 9/23/2018 22:17:55'!
+!Entero methodsFor: 'testing' stamp: 'AGH 10/1/2022 13:17:37'!
 isNegative
 	
-	^value < 0! !
+	^self integerValue < 0! !
 
-!Entero methodsFor: 'testing' stamp: 'HernanWilkinson 5/7/2016 20:14'!
+!Entero methodsFor: 'testing' stamp: 'AGH 10/1/2022 13:17:28'!
 isOne
 	
-	^value = 1! !
+	^self integerValue = 1! !
 
-!Entero methodsFor: 'testing' stamp: 'HernanWilkinson 5/7/2016 20:12'!
+!Entero methodsFor: 'testing' stamp: 'AGH 10/1/2022 13:17:22'!
 isZero
 	
-	^value = 0! !
+	^self integerValue = 0! !
 
 
-!Entero methodsFor: 'arithmetic operations - private' stamp: 'lvg 9/30/2022 18:37:54'!
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'AGH 10/1/2022 13:14:01'!
 // aDivisor 
 	
-	^self class with: value // aDivisor integerValue.! !
+	^self class with: self integerValue // aDivisor integerValue.! !
 
-!Entero methodsFor: 'arithmetic operations - private' stamp: 'HernanWilkinson 5/7/2016 21:00'!
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'AGH 10/1/2022 13:14:19'!
 greatestCommonDivisorWith: anEntero 
 	
-	^self class with: (value gcd: anEntero integerValue)! !
+	^self class with: (self integerValue gcd: anEntero integerValue)! !
 
 
 !Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:26:18'!
@@ -480,21 +480,11 @@ dividirALaFraccion: aDivisor
 
 	^ aDivisor numerator / (aDivisor denominator * self).! !
 
-!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 12:03:55'!
-dividirAlEntero: aDivisor
-
-	^ Fraccion with: aDivisor over: self.! !
-
 !Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:31:49'!
 multiplicarALaFraccion: aMultiplier
 
 	^ aMultiplier numerator * self / aMultiplier denominator.
 ! !
-
-!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:34:32'!
-multiplicarAlEntero: aMultiplier
-
-	^ self class with: self integerValue * aMultiplier integerValue.! !
 
 !Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:33:43'!
 restarALaFraccion: aSubtrahend
@@ -503,30 +493,48 @@ restarALaFraccion: aSubtrahend
 
 ! !
 
-!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:34:11'!
-restarAlEntero: aSubtrahend
-
-	^ self class with: aSubtrahend integerValue - self integerValue.! !
-
 !Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:36:09'!
 sumarALaFraccion: anAdder
 
 	^ (self * anAdder denominator) + anAdder numerator / anAdder denominator. ! !
 
-!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:36:21'!
-sumarAlEntero: anAdder
 
-	^ self class with: self integerValue + anAdder integerValue.! !
-
-
-!Entero methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:01:28'!
+!Entero methodsFor: 'subclass responsability' stamp: 'AGH 10/1/2022 13:18:05'!
 calcularFibonacci
-	|primero segundo|
+
+	"|primero segundo|
 	
 	primero := (self - (Entero with: 1)).
 	segundo := (self - (Entero with: 2)).
 	
-	^ primero fibonacci + segundo fibonacci.! !
+	^ primero fibonacci + segundo fibonacci."
+	
+	self subclassResponsibility.! !
+
+!Entero methodsFor: 'subclass responsability' stamp: 'AGH 10/1/2022 13:10:22'!
+dividirAlEntero: aDivisor
+
+	self subclassResponsibility.
+	"^ Fraccion with: aDivisor over: self."! !
+
+!Entero methodsFor: 'subclass responsability' stamp: 'AGH 10/1/2022 13:10:00'!
+multiplicarAlEntero: aMultiplier
+
+	self subclassResponsibility.
+	"^ self class with: self integerValue * aMultiplier integerValue."! !
+
+!Entero methodsFor: 'subclass responsability' stamp: 'AGH 10/1/2022 13:09:57'!
+restarAlEntero: aSubtrahend
+
+	self subclassResponsibility.
+	"^ self class with: aSubtrahend integerValue - self integerValue."! !
+
+!Entero methodsFor: 'subclass responsability' stamp: 'AGH 10/1/2022 13:09:52'!
+sumarAlEntero: anAdder
+
+	self subclassResponsibility.
+	
+	"^ self class with: self integerValue + anAdder integerValue."! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -538,17 +546,30 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'AGH 10/1/2022 11:32:01'!
+!Entero class methodsFor: 'instance creation' stamp: 'AGH 10/1/2022 13:04:34'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
-	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
+	aValue isInteger ifFalse: [ self error: 'aValue debe ser anInteger' ].
 	
+	Entero subclasses do: [:EnteroSubclasses |
+					(EnteroSubclasses asignarValorAlEntero: aValue)
+					ifTrue: [^ EnteroSubclasses new initializeWith: aValue]
+					].
+	
+	"
 	(aValue = 0) ifTrue: [^ EnteroCero new initializeWith: aValue].
 	(aValue = 1) ifTrue: [^ EnteroUno new initializeWith: aValue].
 	(aValue < 0) ifTrue: [^ EnteroNegativo new initializeWith: aValue].
 	
-	^self new initializeWith: aValue.! !
+	^self new initializeWith: aValue.
+	"! !
+
+
+!Entero class methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 13:02:20'!
+asignarValorAlEntero: valor
+	
+	self subclassResponsibility.! !
 
 
 !classDefinition: #EnteroCero category: 'Numeros-Parte2-Ejercicio'!
@@ -558,26 +579,41 @@ Entero subclass: #EnteroCero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!EnteroCero methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:07:45'!
+!EnteroCero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 12:07:45'!
 calcularFibonacci
 
 	^ EnteroUno with: 1.! !
 
-!EnteroCero methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:09:51'!
+!EnteroCero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 13:21:52'!
 dividirAlEntero: aDivisor
 
-	^ Fraccion with: aDivisor over: self.
-! !
+	^ Fraccion with: aDivisor over: self.! !
 
-!EnteroCero methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 11:51:32'!
+!EnteroCero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 13:07:39'!
+multiplicarAlEntero: aMultiplier
+
+	^ self class with: self integerValue * aMultiplier integerValue.! !
+
+!EnteroCero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 11:51:32'!
 restarAlEntero: aSubstrahend
 
 	^ Entero with: (aSubstrahend integerValue - self integerValue).! !
 
-!EnteroCero methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 11:51:38'!
+!EnteroCero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 11:51:38'!
 sumarAlEntero: anAdder
 
 	^ Entero with: (anAdder integerValue + self integerValue).! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'EnteroCero class' category: 'Numeros-Parte2-Ejercicio'!
+EnteroCero class
+	instanceVariableNames: ''!
+
+!EnteroCero class methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:44:06'!
+asignarValorAlEntero: valorAsignado
+
+	^ valorAsignado = 0.! !
 
 
 !classDefinition: #EnteroNegativo category: 'Numeros-Parte2-Ejercicio'!
@@ -587,35 +623,102 @@ Entero subclass: #EnteroNegativo
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:23:35'!
+!EnteroNegativo methodsFor: 'divison ?' stamp: 'AGH 10/1/2022 13:22:27'!
 / aDivisor
 
-	|uno dos|
-	uno := Entero with: (self negated integerValue).
-	dos := Entero with: (aDivisor negated integerValue).
+	|newNumerator newDenominator|
 	
-	^ uno / dos.! !
+	newNumerator := Entero with: (self negated integerValue).
+	newDenominator := Entero with: (aDivisor integerValue).
+	
+	^ newNumerator / newDenominator.! !
 
-!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:01:59'!
+
+!EnteroNegativo methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 12:01:59'!
 calcularFibonacci
 
 	^ self error: Entero negativeFibonacciErrorDescription.! !
 
-!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:21:32'!
+!EnteroNegativo methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 12:21:32'!
 dividirAlEntero: aDivisor
 
 	^ Fraccion with: aDivisor negated over: self.
 	! !
 
-!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:10:08'!
+!EnteroNegativo methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 13:07:16'!
+multiplicarAlEntero: aMultiplier
+
+	^ self class with: self integerValue * aMultiplier integerValue.
+	"No se usa"! !
+
+!EnteroNegativo methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 12:10:08'!
 restarAlEntero: aSubstrahend
 
 	^ Entero with: (aSubstrahend integerValue - self integerValue).! !
 
-!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:10:18'!
+!EnteroNegativo methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 12:10:18'!
 sumarAlEntero: anAdder
 
 	^ Entero with: (anAdder integerValue + self integerValue).! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'EnteroNegativo class' category: 'Numeros-Parte2-Ejercicio'!
+EnteroNegativo class
+	instanceVariableNames: ''!
+
+!EnteroNegativo class methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:47:38'!
+asignarValorAlEntero: valorAsignado
+
+	^ valorAsignado < 0.! !
+
+
+!classDefinition: #EnteroPositivo category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #EnteroPositivo
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!EnteroPositivo methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 13:01:12'!
+calcularFibonacci
+	|primero segundo|
+	
+	primero := (self - (Entero with: 1)).
+	segundo := (self - (Entero with: 2)).
+	
+	^ primero fibonacci + segundo fibonacci.! !
+
+!EnteroPositivo methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 13:02:45'!
+dividirAlEntero: aDivisor
+
+	^ Fraccion with: aDivisor over: self.! !
+
+!EnteroPositivo methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 13:07:05'!
+multiplicarAlEntero: aMultiplier
+
+	^ self class with: self integerValue * aMultiplier integerValue.! !
+
+!EnteroPositivo methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 13:02:55'!
+restarAlEntero: aSubstrahend
+
+	^ Entero with: (aSubstrahend integerValue - self integerValue).! !
+
+!EnteroPositivo methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 13:03:10'!
+sumarAlEntero: anAdder
+
+	^ Entero with: (anAdder integerValue + self integerValue).! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'EnteroPositivo class' category: 'Numeros-Parte2-Ejercicio'!
+EnteroPositivo class
+	instanceVariableNames: ''!
+
+!EnteroPositivo class methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 13:02:24'!
+asignarValorAlEntero: valor
+	
+	^ valor > 1.! !
 
 
 !classDefinition: #EnteroUno category: 'Numeros-Parte2-Ejercicio'!
@@ -625,24 +728,41 @@ Entero subclass: #EnteroUno
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!EnteroUno methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 11:34:01'!
+!EnteroUno methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 11:34:01'!
 calcularFibonacci
 	^ EnteroUno with: 1! !
 
-!EnteroUno methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:18:40'!
+!EnteroUno methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 12:18:40'!
 dividirAlEntero: aDivisor
 
 	^ Fraccion with: aDivisor over: self.! !
 
-!EnteroUno methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 11:51:19'!
+!EnteroUno methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 13:07:29'!
+multiplicarAlEntero: aMultiplier
+
+	^ self class with: self integerValue * aMultiplier integerValue.
+	"No se usa"! !
+
+!EnteroUno methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 11:51:19'!
 restarAlEntero: aSubstrahend
 
 	^ Entero with: (aSubstrahend integerValue - self integerValue).! !
 
-!EnteroUno methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 11:51:23'!
+!EnteroUno methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 11:51:23'!
 sumarAlEntero: anAdder
 
 	^ Entero with: (anAdder integerValue + self integerValue).! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'EnteroUno class' category: 'Numeros-Parte2-Ejercicio'!
+EnteroUno class
+	instanceVariableNames: ''!
+
+!EnteroUno class methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:47:56'!
+asignarValorAlEntero: valorAsignado
+
+	^ valorAsignado = 1.! !
 
 
 !classDefinition: #Fraccion category: 'Numeros-Parte2-Ejercicio'!
@@ -793,7 +913,7 @@ sumarAlEntero: anAdder
 Fraccion class
 	instanceVariableNames: ''!
 
-!Fraccion class methodsFor: 'intance creation' stamp: 'NR 9/23/2018 23:45:19'!
+!Fraccion class methodsFor: 'intance creation' stamp: 'AGH 10/1/2022 13:24:48'!
 with: aDividend over: aDivisor
 
 	| greatestCommonDivisor numerator denominator |
@@ -801,7 +921,7 @@ with: aDividend over: aDivisor
 	aDivisor isZero ifTrue: [ self error: self canNotDivideByZeroErrorDescription ].
 	aDividend isZero ifTrue: [ ^aDividend ].
 	
-	aDivisor isNegative ifTrue:[ ^aDividend negated / aDivisor negated].
+	aDivisor isNegative ifTrue: [ ^aDividend negated / aDivisor negated].
 	
 	greatestCommonDivisor := aDividend greatestCommonDivisorWith: aDivisor. 
 	numerator := aDividend // greatestCommonDivisor.
