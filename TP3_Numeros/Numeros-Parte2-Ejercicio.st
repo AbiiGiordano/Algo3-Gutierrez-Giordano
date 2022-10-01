@@ -260,10 +260,10 @@ test41SignIsCorrectlyAssignedToFractionWithTwoNegatives
 
 	self assert: oneHalf equals: (negativeOne / negativeTwo)! !
 
-!NumeroTest methodsFor: 'tests' stamp: 'NR 9/23/2018 23:50:17'!
+!NumeroTest methodsFor: 'tests' stamp: 'AGH 10/1/2022 12:26:52'!
 test42SignIsCorrectlyAssignedToFractionWithNegativeDivisor
 
-	self assert: oneHalf negated equals: (one / negativeTwo)! !
+	self assert: oneHalf negated equals: (one / negativeTwo).! !
 
 
 !NumeroTest methodsFor: 'setup' stamp: 'NR 9/23/2018 23:46:28'!
@@ -397,19 +397,24 @@ Numero subclass: #Entero
 	^aDivisor dividirAlEntero: self.
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'AGH 10/1/2022 11:37:16'!
 fibonacci
 
-	| one two |
+	"| one two |
 	
 	one := Entero with: 1.
 	two := Entero with: 2.
+	"
 	
-	self isNegative ifTrue: [self error: Entero negativeFibonacciErrorDescription ].	
-	(self isZero or: [self isOne]) ifTrue: [^one].
+	^ self calcularFibonacci.
+	
+	"
+	(self isNegative) ifTrue: [self error: Entero negativeFibonacciErrorDescription].	
+	(self isZero) ifTrue: [^one].
+	(self isOne) ifTrue: [^one].
 	
 	^ (self - one) fibonacci + (self - two) fibonacci
-		! !
+	"	! !
 
 
 !Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 21:01'!
@@ -475,10 +480,10 @@ dividirALaFraccion: aDivisor
 
 	^ aDivisor numerator / (aDivisor denominator * self).! !
 
-!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:26:30'!
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 12:03:55'!
 dividirAlEntero: aDivisor
 
-	^ Fraccion with: aDivisor over: self .! !
+	^ Fraccion with: aDivisor over: self.! !
 
 !Entero methodsFor: 'double dispatch' stamp: 'AGH 10/1/2022 10:31:49'!
 multiplicarALaFraccion: aMultiplier
@@ -513,6 +518,16 @@ sumarAlEntero: anAdder
 
 	^ self class with: self integerValue + anAdder integerValue.! !
 
+
+!Entero methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:01:28'!
+calcularFibonacci
+	|primero segundo|
+	
+	primero := (self - (Entero with: 1)).
+	segundo := (self - (Entero with: 2)).
+	
+	^ primero fibonacci + segundo fibonacci.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Entero class' category: 'Numeros-Parte2-Ejercicio'!
@@ -523,18 +538,116 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'JS 5/5/2022 03:55:37'!
+!Entero class methodsFor: 'instance creation' stamp: 'AGH 10/1/2022 11:32:01'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
 	
-	^self new initializeWith: aValue! !
+	(aValue = 0) ifTrue: [^ EnteroCero new initializeWith: aValue].
+	(aValue = 1) ifTrue: [^ EnteroUno new initializeWith: aValue].
+	(aValue < 0) ifTrue: [^ EnteroNegativo new initializeWith: aValue].
+	
+	^self new initializeWith: aValue.! !
+
+
+!classDefinition: #EnteroCero category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #EnteroCero
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!EnteroCero methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:07:45'!
+calcularFibonacci
+
+	^ EnteroUno with: 1.! !
+
+!EnteroCero methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:09:51'!
+dividirAlEntero: aDivisor
+
+	^ Fraccion with: aDivisor over: self.
+! !
+
+!EnteroCero methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 11:51:32'!
+restarAlEntero: aSubstrahend
+
+	^ Entero with: (aSubstrahend integerValue - self integerValue).! !
+
+!EnteroCero methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 11:51:38'!
+sumarAlEntero: anAdder
+
+	^ Entero with: (anAdder integerValue + self integerValue).! !
+
+
+!classDefinition: #EnteroNegativo category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #EnteroNegativo
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:23:35'!
+/ aDivisor
+
+	|uno dos|
+	uno := Entero with: (self negated integerValue).
+	dos := Entero with: (aDivisor negated integerValue).
+	
+	^ uno / dos.! !
+
+!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:01:59'!
+calcularFibonacci
+
+	^ self error: Entero negativeFibonacciErrorDescription.! !
+
+!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:21:32'!
+dividirAlEntero: aDivisor
+
+	^ Fraccion with: aDivisor negated over: self.
+	! !
+
+!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:10:08'!
+restarAlEntero: aSubstrahend
+
+	^ Entero with: (aSubstrahend integerValue - self integerValue).! !
+
+!EnteroNegativo methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:10:18'!
+sumarAlEntero: anAdder
+
+	^ Entero with: (anAdder integerValue + self integerValue).! !
+
+
+!classDefinition: #EnteroUno category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #EnteroUno
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!EnteroUno methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 11:34:01'!
+calcularFibonacci
+	^ EnteroUno with: 1! !
+
+!EnteroUno methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 12:18:40'!
+dividirAlEntero: aDivisor
+
+	^ Fraccion with: aDivisor over: self.! !
+
+!EnteroUno methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 11:51:19'!
+restarAlEntero: aSubstrahend
+
+	^ Entero with: (aSubstrahend integerValue - self integerValue).! !
+
+!EnteroUno methodsFor: 'as yet unclassified' stamp: 'AGH 10/1/2022 11:51:23'!
+sumarAlEntero: anAdder
+
+	^ Entero with: (anAdder integerValue + self integerValue).! !
 
 
 !classDefinition: #Fraccion category: 'Numeros-Parte2-Ejercicio'!
 Numero subclass: #Fraccion
-	instanceVariableNames: 'numerator denominator value'
+	instanceVariableNames: 'numerator denominator'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
