@@ -475,10 +475,10 @@ dividirEntero: aDivisor
 
 	^ Fraccion with: aDivisor over: self .! !
 
-!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 23:16:55'!
+!Entero methodsFor: 'operations' stamp: 'AGH 10/1/2022 10:21:01'!
 dividirFraccion: aDivisor
 
-	^ aDivisor numerator integerValue / (aDivisor denominator integerValue * self).! !
+	^ aDivisor numerator / (aDivisor denominator * self).! !
 
 !Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 18:11:16'!
 multiplicarEntero: aMultiplier
@@ -571,10 +571,10 @@ Numero subclass: #Fraccion
 	^aSubtrahend  restarFraccion: self.
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 23:01:25'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'AGH 10/1/2022 10:09:08'!
 / aDivisor 
 	
-	^aDivisor dividirEntero: self.! !
+	^aDivisor dividirFraccion: self.! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -635,15 +635,15 @@ printOn: aStream
 		print: denominator ! !
 
 
-!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 19:03:37'!
+!Fraccion methodsFor: 'operations' stamp: 'AGH 10/1/2022 10:19:16'!
 dividirEntero: aDivisor
 
-	^ (aDivisor  * self denominator) /  self numerator .! !
+	^ (aDivisor  * self denominator) /  (self numerator).! !
 
-!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 23:04:22'!
+!Fraccion methodsFor: 'operations' stamp: 'AGH 10/1/2022 10:11:13'!
 dividirFraccion: aDivisor
 
-	^ (numerator * aDivisor denominator) / (denominator * aDivisor numerator).
+	^ (denominator * aDivisor numerator) / (numerator * aDivisor denominator).
 	
 	"	^self class with: (numerator * aDivisor denominator) over: (denominator * aDivisor numerator)."! !
 
