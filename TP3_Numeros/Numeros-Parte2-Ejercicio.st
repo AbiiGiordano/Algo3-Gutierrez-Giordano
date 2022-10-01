@@ -364,20 +364,27 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/29/2022 13:03:04'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 18:09:15'!
 * aMultiplier 
+
+	^aMultiplier multiplicarEntero: self.
+	"
 	(aMultiplier class = Fraccion ) ifTrue: [^Fraccion with:  self value * (aMultiplier numerator) over:  aMultiplier denominator].
 
 	^self class with: value * aMultiplier integerValue.
+	"
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/29/2022 13:05:45'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 17:51:49'!
 + anAdder 
+
+	^anAdder sumarEntero: self.
 	
+	"
 	(anAdder class = Fraccion) ifTrue: [^Fraccion with:  ((self * anAdder denominator  ) + (anAdder numerator )) over: anAdder denominator .].
 	
-	(anAdder class = Entero) ifTrue: [^self class with: value + anAdder integerValue].
-	
+	.
+	"
 
 	
 	
@@ -387,18 +394,24 @@ Numero subclass: #Entero
 	  
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/29/2022 13:17:27'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 18:02:56'!
 - aSubtrahend 
 	
-	(aSubtrahend class = Fraccion) ifTrue: [^Fraccion with: ((self * aSubtrahend denominator) - (aSubtrahend numerator)) over: aSubtrahend denominator.].
-
-	(aSubtrahend class = Entero) ifTrue: [^ self class with: value - aSubtrahend integerValue.]! !
-
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/29/2022 13:11:41'!
-/ aDivisor 
+	^aSubtrahend restarEntero: self.
 	
+	"(aSubtrahend class = Fraccion) ifTrue: [^Fraccion with: ((self * aSubtrahend denominator) - (aSubtrahend numerator)) over: aSubtrahend denominator.].
+
+	(aSubtrahend class = Entero) ifTrue: [^ self class with: value - aSubtrahend integerValue.]"! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 20:37:40'!
+/ aDivisor 
+
+	^aDivisor dividirEntero: self.
+"
 	(aDivisor class = Fraccion ) ifTrue:[^Fraccion with: self * (aDivisor denominator) over: aDivisor numerator].
-	(aDivisor class = Entero ) ifTrue:[^Fraccion with: self over: aDivisor].! !
+	(aDivisor class = Entero ) ifTrue:[^Fraccion with: self over: aDivisor].
+	
+	"! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -462,15 +475,36 @@ isZero
 	^value = 0! !
 
 
-!Entero methodsFor: 'arithmetic operations - private' stamp: 'lvg 9/29/2022 12:53:24'!
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'lvg 9/30/2022 18:37:54'!
 // aDivisor 
 	
-	^self class with: value // aDivisor integerValue! !
+	^self class with: value // aDivisor integerValue.! !
 
 !Entero methodsFor: 'arithmetic operations - private' stamp: 'HernanWilkinson 5/7/2016 21:00'!
 greatestCommonDivisorWith: anEntero 
 	
 	^self class with: (value gcd: anEntero integerValue)! !
+
+
+!Entero methodsFor: 'ari' stamp: 'lvg 9/30/2022 20:48:37'!
+dividirEntero: aDivisor
+
+	^ Fraccion with: aDivisor over: self .! !
+
+!Entero methodsFor: 'ari' stamp: 'lvg 9/30/2022 18:11:16'!
+multiplicarEntero: aMultiplier
+
+	^self class with:  value * aMultiplier integerValue.! !
+
+!Entero methodsFor: 'ari' stamp: 'lvg 9/30/2022 17:59:01'!
+restarEntero: aSubtrahend
+
+	^ self class with:  aSubtrahend integerValue - value.! !
+
+!Entero methodsFor: 'ari' stamp: 'lvg 9/30/2022 17:48:56'!
+sumarEntero: anAdder
+
+	^self class with: value + anAdder integerValue.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -598,6 +632,27 @@ printOn: aStream
 		print: numerator;
 		nextPut: $/;
 		print: denominator ! !
+
+
+!Fraccion methodsFor: 'ari' stamp: 'lvg 9/30/2022 19:03:37'!
+dividirEntero: aDivisor
+
+	^ (aDivisor  * self denominator) /  self numerator .! !
+
+!Fraccion methodsFor: 'ari' stamp: 'lvg 9/30/2022 19:10:19'!
+multiplicarEntero: aMultiplier
+
+	^aMultiplier  * (self numerator) /  self denominator.! !
+
+!Fraccion methodsFor: 'ari' stamp: 'lvg 9/30/2022 20:22:55'!
+restarEntero: aSubtrahend
+
+	^self class with: ((aSubtrahend value *self denominator) - (self numerator)  ) over: self denominator.! !
+
+!Fraccion methodsFor: 'ari' stamp: 'lvg 9/30/2022 17:54:41'!
+sumarEntero: anAdder
+
+	^self class with: ((self denominator * anAdder value   ) + (self numerator )) over:  self denominator .! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
