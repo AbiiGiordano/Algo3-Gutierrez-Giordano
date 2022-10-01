@@ -364,27 +364,18 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 18:09:15'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 21:58:25'!
 * aMultiplier 
 
 	^aMultiplier multiplicarEntero: self.
-	"
-	(aMultiplier class = Fraccion ) ifTrue: [^Fraccion with:  self value * (aMultiplier numerator) over:  aMultiplier denominator].
 
-	^self class with: value * aMultiplier integerValue.
-	"
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 17:51:49'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 21:58:30'!
 + anAdder 
 
 	^anAdder sumarEntero: self.
 	
-	"
-	(anAdder class = Fraccion) ifTrue: [^Fraccion with:  ((self * anAdder denominator  ) + (anAdder numerator )) over: anAdder denominator .].
-	
-	.
-	"
 
 	
 	
@@ -394,24 +385,17 @@ Numero subclass: #Entero
 	  
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 18:02:56'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 21:58:35'!
 - aSubtrahend 
 	
 	^aSubtrahend restarEntero: self.
-	
-	"(aSubtrahend class = Fraccion) ifTrue: [^Fraccion with: ((self * aSubtrahend denominator) - (aSubtrahend numerator)) over: aSubtrahend denominator.].
+! !
 
-	(aSubtrahend class = Entero) ifTrue: [^ self class with: value - aSubtrahend integerValue.]"! !
-
-!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 20:37:40'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 21:58:43'!
 / aDivisor 
 
 	^aDivisor dividirEntero: self.
-"
-	(aDivisor class = Fraccion ) ifTrue:[^Fraccion with: self * (aDivisor denominator) over: aDivisor numerator].
-	(aDivisor class = Entero ) ifTrue:[^Fraccion with: self over: aDivisor].
-	
-	"! !
+! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -486,25 +470,61 @@ greatestCommonDivisorWith: anEntero
 	^self class with: (value gcd: anEntero integerValue)! !
 
 
-!Entero methodsFor: 'ari' stamp: 'lvg 9/30/2022 20:48:37'!
+!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 20:48:37'!
 dividirEntero: aDivisor
 
 	^ Fraccion with: aDivisor over: self .! !
 
-!Entero methodsFor: 'ari' stamp: 'lvg 9/30/2022 18:11:16'!
+!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 23:16:55'!
+dividirFraccion: aDivisor
+
+	^ aDivisor numerator integerValue / (aDivisor denominator integerValue * self).! !
+
+!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 18:11:16'!
 multiplicarEntero: aMultiplier
 
 	^self class with:  value * aMultiplier integerValue.! !
 
-!Entero methodsFor: 'ari' stamp: 'lvg 9/30/2022 17:59:01'!
+!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:51:00'!
+multiplicarFraccion: aMultiplier
+
+	^(aMultiplier numerator * self) / aMultiplier denominator.
+! !
+
+!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 17:59:01'!
 restarEntero: aSubtrahend
 
 	^ self class with:  aSubtrahend integerValue - value.! !
 
-!Entero methodsFor: 'ari' stamp: 'lvg 9/30/2022 17:48:56'!
+!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:43:59'!
+restarFraccion: aSubtrahend
+
+	^Fraccion  with: (aSubtrahend numerator value - ((aSubtrahend denominator value) * self)) over: aSubtrahend denominator value . 
+! !
+
+!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 17:48:56'!
 sumarEntero: anAdder
 
 	^self class with: value + anAdder integerValue.! !
+
+!Entero methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:22:32'!
+sumarFraccion: anAdder
+
+
+	^Fraccion with: ( (self * (anAdder denominator value) ) + anAdder numerator value) over: anAdder denominator. 
+
+		
+"
+	^Fraccion with: ( (self * (anAdder denominator ) ) + anAdder numerator ) over: anAdder denominator. 
+	xq pasa como la linea anterior sin los value
+
+	|newNumerator newDenominator|
+
+	newNumerator :=( (self * (anAdder denominator value) ) + anAdder numerator value).
+	newDenominator := anAdder denominator. 
+		
+	^self class with: newNumerator over: newDenominator.
+	"! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -532,48 +552,29 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/29/2022 13:10:22'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 22:51:30'!
 * aMultiplier 
-	(aMultiplier class = Entero ) ifTrue: [^(numerator * aMultiplier value) / denominator].
-	(aMultiplier class = Fraccion ) ifTrue: [^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)].
+
+	^aMultiplier multiplicarFraccion: self.
+
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/29/2022 13:09:33'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 22:45:39'!
 + anAdder 
-	| newNumerator newDenominator |
 
-	(anAdder class = Entero) ifTrue:[
-		newNumerator := (denominator * anAdder value) + numerator.
-		newDenominator := denominator. ].
-	
-	(anAdder class = Fraccion) ifTrue:[newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-							newDenominator := denominator * anAdder denominator.].
-	
-	^Fraccion with: newNumerator over: newDenominator. ! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/29/2022 13:21:00'!
-- aSubtrahend 
-	
-	| newNumerator newDenominator |
-	
-	(aSubtrahend class = Entero) ifTrue:[
-	newNumerator := numerator - (denominator * aSubtrahend value).
-	newDenominator := denominator.
-	].
-
-	(aSubtrahend class = Fraccion) ifTrue:[
-	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
-	newDenominator := denominator * aSubtrahend denominator.].
-	
-	^Fraccion  with: newNumerator over: newDenominator. 
+	^anAdder sumarFraccion: self.
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/29/2022 13:15:33'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 22:45:27'!
+- aSubtrahend 
+
+	^aSubtrahend  restarFraccion: self.
+! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'lvg 9/30/2022 23:01:25'!
 / aDivisor 
 	
-	(aDivisor class = Entero ) ifTrue:[^Fraccion with: numerator over: (denominator* aDivisor value) ].
-
-	(aDivisor class = Fraccion ) ifTrue:[^Fraccion with: (numerator * aDivisor denominator) over: (denominator * aDivisor numerator)]! !
+	^aDivisor dividirEntero: self.! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -634,25 +635,59 @@ printOn: aStream
 		print: denominator ! !
 
 
-!Fraccion methodsFor: 'ari' stamp: 'lvg 9/30/2022 19:03:37'!
+!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 19:03:37'!
 dividirEntero: aDivisor
 
 	^ (aDivisor  * self denominator) /  self numerator .! !
 
-!Fraccion methodsFor: 'ari' stamp: 'lvg 9/30/2022 19:10:19'!
+!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 23:04:22'!
+dividirFraccion: aDivisor
+
+	^ (numerator * aDivisor denominator) / (denominator * aDivisor numerator).
+	
+	"	^self class with: (numerator * aDivisor denominator) over: (denominator * aDivisor numerator)."! !
+
+!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 19:10:19'!
 multiplicarEntero: aMultiplier
 
 	^aMultiplier  * (self numerator) /  self denominator.! !
 
-!Fraccion methodsFor: 'ari' stamp: 'lvg 9/30/2022 20:22:55'!
+!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:48:16'!
+multiplicarFraccion: aMultiplier
+
+	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator).! !
+
+!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 20:22:55'!
 restarEntero: aSubtrahend
 
 	^self class with: ((aSubtrahend value *self denominator) - (self numerator)  ) over: self denominator.! !
 
-!Fraccion methodsFor: 'ari' stamp: 'lvg 9/30/2022 17:54:41'!
+!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:30:45'!
+restarFraccion: aSubtrahend
+
+	| newNumerator newDenominator |
+
+	newNumerator := (denominator * aSubtrahend numerator) - (numerator * aSubtrahend denominator) .
+	newDenominator := denominator * aSubtrahend denominator.
+	
+	^self class with: newNumerator over: newDenominator.
+! !
+
+!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 17:54:41'!
 sumarEntero: anAdder
 
 	^self class with: ((self denominator * anAdder value   ) + (self numerator )) over:  self denominator .! !
+
+!Fraccion methodsFor: 'operations' stamp: 'lvg 9/30/2022 22:03:31'!
+sumarFraccion: anAdder
+
+	|newNumerator newDenominator|
+	
+	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
+	newDenominator := denominator * anAdder denominator.
+	
+	^self class with: newNumerator over: newDenominator.
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
