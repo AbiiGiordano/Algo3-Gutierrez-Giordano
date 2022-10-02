@@ -364,17 +364,17 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AGH 10/2/2022 18:41:43'!
-* aMultiplier 
+!Entero methodsFor: 'arithmetic operations' stamp: 'AGH 10/2/2022 18:54:38'!
+* multiplicand  
 
-	^ aMultiplier multiplyToTheInteger: self.
+	^ multiplicand  multiplyToTheInteger: self.
 
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'AGH 10/2/2022 18:43:30'!
-+ anAdder 
+!Entero methodsFor: 'arithmetic operations' stamp: 'AGH 10/2/2022 18:54:51'!
++ addend  
 
-	^ anAdder addToTheInteger: self.
+	^ addend addToTheInteger: self.
 	
 
 	
@@ -461,25 +461,25 @@ greatestCommonDivisorWith: anEntero
 	^self class with: (self integerValue gcd: anEntero integerValue)! !
 
 
-!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:43:16'!
-addToTheFraction: anAdder
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:54:06'!
+addToTheFraction: anAugend
 
-	^ (self * anAdder denominator) + anAdder numerator / anAdder denominator. ! !
+	^ (self * anAugend denominator) + anAugend numerator / anAugend denominator. ! !
 
-!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:43:30'!
-addToTheInteger: anAdder
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:54:12'!
+addToTheInteger: anAugend
 	
-	^ self class with: self integerValue + anAdder integerValue.! !
+	^ self class with: self integerValue + anAugend integerValue.! !
 
-!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:45:24'!
-divideFromTheFraction: aDivisor
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:55:27'!
+divideFromTheFraction: aDividend
 
-	^ aDivisor numerator / (aDivisor denominator * self).! !
+	^ aDividend numerator / (aDividend denominator * self).! !
 
-!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:45:38'!
-divideFromTheInteger: aDivisor
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:55:39'!
+divideFromTheInteger: aDividend
 
-	^ Fraccion with: aDivisor over: self.! !
+	^ Fraccion with: aDividend over: self.! !
 
 !Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:41:28'!
 multiplyToTheFraction: aMultiplier
@@ -492,20 +492,20 @@ multiplyToTheInteger: aMultiplier
 
 	^ self class with: self integerValue * aMultiplier integerValue.! !
 
-!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:42:46'!
-substractFromTheFraction: aSubtrahend
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:56:09'!
+substractFromTheFraction: aMinuend  
 
-	^ aSubtrahend numerator - (aSubtrahend denominator * self) / aSubtrahend denominator. 
+	^ aMinuend numerator - (aMinuend denominator * self) / aMinuend denominator. 
 
 ! !
 
-!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:42:30'!
-substractFromTheInteger: aSubtrahend
+!Entero methodsFor: 'double dispatch' stamp: 'AGH 10/2/2022 18:56:14'!
+substractFromTheInteger: aMinuend
 
-	^ self class with: aSubtrahend integerValue - self integerValue.! !
+	^ self class with: aMinuend integerValue - self integerValue.! !
 
 
-!Entero methodsFor: 'otros' stamp: 'AGH 10/2/2022 18:45:59'!
+!Entero methodsFor: 'other operations' stamp: 'AGH 10/2/2022 18:45:59'!
 calculateFibonacci
 	
 	self subclassResponsibility.! !
