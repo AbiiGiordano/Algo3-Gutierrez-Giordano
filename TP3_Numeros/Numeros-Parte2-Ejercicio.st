@@ -509,7 +509,6 @@ substractFromTheInteger: aMinuend
 
 	^ self class with: aMinuend integerValue - self integerValue.! !
 
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Entero class' category: 'Numeros-Parte2-Ejercicio'!
@@ -550,32 +549,32 @@ calculateFibonacci
 	^ EnteroUno with: 1.! !
 
 
-!EnteroCero methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:32:31'!
-denominatorIsAnIntegerOneWith: numerador and: denominador.
+!EnteroCero methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:05:48'!
+denominatorIsAnIntegerOneWith: numerator and: denominator.
 		
-	^ Fraccion new initializeWith: numerador over: denominador! !
+	^ Fraccion new initializeWith: numerator over: denominator! !
 
-!EnteroCero methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:34:50'!
-denominatorIsAnIntegerZeroWith: numerador and: denominador
+!EnteroCero methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:06:03'!
+denominatorIsAnIntegerZeroWith: numerator and: denominator
 
 	^ Fraccion error: Fraccion canNotDivideByZeroErrorDescription
 	! !
 
-!EnteroCero methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:36:23'!
-divisorIsANegativeIntegerWith: numerador and: denominador
+!EnteroCero methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:07:20'!
+divisorIsANegativeIntegerWith: aNumerator and: aDenominator
 
 	| denominator greatestCommonDivisor numerator |
 	
-	greatestCommonDivisor := numerador greatestCommonDivisorWith: denominador. 
-	numerator := numerador // greatestCommonDivisor.
-	denominator := denominador // greatestCommonDivisor.
+	greatestCommonDivisor := aNumerator greatestCommonDivisorWith: aDenominator. 
+	numerator := aNumerator // greatestCommonDivisor.
+	denominator := aDenominator // greatestCommonDivisor.
 	
 	^ denominator denominatorIsAnIntegerOneWith: numerator and: denominator.! !
 
-!EnteroCero methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:30:22'!
-numeratorIsAnIntegerZeroWith: numerador and: denominador
+!EnteroCero methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:07:35'!
+numeratorIsAnIntegerZeroWith: numerator and: denominator
 	
-	^ numerador.! !
+	^ numerator.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -602,25 +601,25 @@ calculateFibonacci
 	^ self error: Entero negativeFibonacciErrorDescription.! !
 
 
-!EnteroNegativo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:32:31'!
-denominatorIsAnIntegerOneWith: numerador and: denominador.
+!EnteroNegativo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:07:58'!
+denominatorIsAnIntegerOneWith: numerator and: denominator.
 
-	^ Fraccion new initializeWith: numerador over: denominador! !
+	^ Fraccion new initializeWith: numerator over: denominator! !
 
-!EnteroNegativo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:34:50'!
-denominatorIsAnIntegerZeroWith: numerador and: denominador
+!EnteroNegativo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:08:15'!
+denominatorIsAnIntegerZeroWith: numerator and: denominator
 
-	^ numerador numeratorIsAnIntegerZeroWith: numerador and: denominador.! !
+	^ numerator numeratorIsAnIntegerZeroWith: numerator and: denominator.! !
 
 !EnteroNegativo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:36:23'!
 divisorIsANegativeIntegerWith: numerador and: denominador
 	
 	^ numerador negated / denominador negated! !
 
-!EnteroNegativo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:36:23'!
-numeratorIsAnIntegerZeroWith: numerador and: denominador
+!EnteroNegativo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:08:30'!
+numeratorIsAnIntegerZeroWith: numerator and: denominator
 
-	^ denominador divisorIsANegativeIntegerWith: numerador and: denominador ! !
+	^ denominator divisorIsANegativeIntegerWith: numerator and: denominator ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -652,31 +651,31 @@ calculateFibonacci
 	^ primero fibonacci + segundo fibonacci.! !
 
 
-!EnteroPositivo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:32:31'!
-denominatorIsAnIntegerOneWith: numerador and: denominador.
+!EnteroPositivo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:08:55'!
+denominatorIsAnIntegerOneWith: numerator and: denominator.
 	
-	^ Fraccion new initializeWith: numerador over: denominador! !
+	^ Fraccion new initializeWith: numerator over: denominator! !
 
-!EnteroPositivo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:34:50'!
-denominatorIsAnIntegerZeroWith: numerador and: denominador
+!EnteroPositivo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:09:13'!
+denominatorIsAnIntegerZeroWith: numerator and: denominator
 
-	^ numerador numeratorIsAnIntegerZeroWith: numerador and: denominador.! !
+	^ numerator numeratorIsAnIntegerZeroWith: numerator and: denominator.! !
 
-!EnteroPositivo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:36:23'!
-divisorIsANegativeIntegerWith: numerador and: denominador
+!EnteroPositivo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:09:44'!
+divisorIsANegativeIntegerWith: aNumerator and: aDenominator
 
 	| denominator greatestCommonDivisor numerator |
 	
-	greatestCommonDivisor := numerador greatestCommonDivisorWith: denominador. 
-	numerator := numerador // greatestCommonDivisor.
-	denominator := denominador // greatestCommonDivisor.
+	greatestCommonDivisor := aNumerator greatestCommonDivisorWith: aDenominator. 
+	numerator := aNumerator // greatestCommonDivisor.
+	denominator := aDenominator // greatestCommonDivisor.
 	
 	^ denominator denominatorIsAnIntegerOneWith: numerator and: denominator.! !
 
-!EnteroPositivo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:36:23'!
-numeratorIsAnIntegerZeroWith: numerador and: denominador
+!EnteroPositivo methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:10:03'!
+numeratorIsAnIntegerZeroWith: numerator and: denominator
 
-	^ denominador divisorIsANegativeIntegerWith: numerador and: denominador ! !
+	^ denominator divisorIsANegativeIntegerWith: numerator and: denominator ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -702,31 +701,31 @@ calculateFibonacci
 	^ EnteroUno with: 1! !
 
 
-!EnteroUno methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:32:31'!
-denominatorIsAnIntegerOneWith: numerador and: denominador.
+!EnteroUno methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:10:12'!
+denominatorIsAnIntegerOneWith: numerator and: denominator.
 
-	^ numerador.! !
+	^ numerator.! !
 
-!EnteroUno methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:34:50'!
-denominatorIsAnIntegerZeroWith: numerador and: denominador
+!EnteroUno methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:10:27'!
+denominatorIsAnIntegerZeroWith: numerator and: denominator
 
-	^ numerador numeratorIsAnIntegerZeroWith: numerador and: denominador.! !
+	^ numerator numeratorIsAnIntegerZeroWith: numerator and: denominator.! !
 
-!EnteroUno methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:36:23'!
-divisorIsANegativeIntegerWith: numerador and: denominador
+!EnteroUno methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:11:02'!
+divisorIsANegativeIntegerWith: aNumerator and: aDenominator
 
 	| denominator greatestCommonDivisor numerator |
 	
-	greatestCommonDivisor := numerador greatestCommonDivisorWith: denominador. 
-	numerator := numerador // greatestCommonDivisor.
-	denominator := denominador // greatestCommonDivisor.
+	greatestCommonDivisor := aNumerator greatestCommonDivisorWith: aDenominator. 
+	numerator := aNumerator // greatestCommonDivisor.
+	denominator := aDenominator // greatestCommonDivisor.
 	
 	^ denominator denominatorIsAnIntegerOneWith: numerator and: denominator.! !
 
-!EnteroUno methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/2/2022 22:36:23'!
-numeratorIsAnIntegerZeroWith: numerador and: denominador
+!EnteroUno methodsFor: 'verifyValidNumerator&Denominator' stamp: 'lvg 10/4/2022 15:11:20'!
+numeratorIsAnIntegerZeroWith: numerator and: denominator
 	
-	^ denominador divisorIsANegativeIntegerWith: numerador and: denominador ! !
+	^ denominator divisorIsANegativeIntegerWith: numerator and: denominator ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -888,28 +887,8 @@ substractFromTheInteger: aSubtrahend
 Fraccion class
 	instanceVariableNames: ''!
 
-!Fraccion class methodsFor: 'intance creation' stamp: 'lvg 10/2/2022 22:34:50'!
+!Fraccion class methodsFor: 'intance creation' stamp: 'lvg 10/4/2022 14:07:23'!
 with: aDividend over: aDivisor
 
-	"| greatestCommonDivisor numerator denominator |
-
-	aDivisor isZero ifTrue: [ self error: self canNotDivideByZeroErrorDescription ]
-	ifFalse: [
-		aDividend isZero ifTrue: [ ^aDividend ]
-		ifFalse: [
-			
-			aDivisor isNegative ifTrue: [ ^aDividend negated / aDivisor negated]
-			ifFalse: [
-				greatestCommonDivisor := aDividend greatestCommonDivisorWith: aDivisor. 
-				numerator := aDividend // greatestCommonDivisor.
-				denominator := aDivisor // greatestCommonDivisor.
-	
-				denominator isOne ifTrue: [ ^numerator ]
-				ifFalse: [^self new initializeWith: numerator over: denominator]
-				
-				]
-			]
-		]
-	"
 	^ aDivisor denominatorIsAnIntegerZeroWith: aDividend and: aDivisor
 	! !
