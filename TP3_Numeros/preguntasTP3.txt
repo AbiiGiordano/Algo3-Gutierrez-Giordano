@@ -1,0 +1,48 @@
+*****************************************************************************************************************************************
+Preguntas teóricas
+Aporte de los mensajes de DD
+En un double dispatch (DD), ¿qué información aporta cada uno de los dos llamados?
+*****************************************************************************************************************************************
+Es la manera en la que relacionamos las subclases, y en la que se comunican dos objetos. Con cada llamado vemos como el objeto en cuestion se comunica con el otro.
+
+
+
+*****************************************************************************************************************************************
+Lógica de instanciado
+Con lo que vieron y saben hasta ahora, ¿donde les parece mejor tener la lógica de cómo instanciar un objeto? ¿por qué? ¿Y si se crea ese objeto desde diferentes lugares y de diferentes formas? ¿cómo lo resuelven?
+*****************************************************************************************************************************************
+Nos parece que la manera adecuada de instaciar un objeto es mediante un mensaje de clase, ya que es lo mas intuitivo dado que en ese
+punto nos encontramos instanciando self (haciendo self new), se ve prolijo, y ademas nos permite hacer validaciones antes de la instansiacion (como nos pasaba por ejemplo en Fraccion). Por otro lado, si se llama desde diferentes lugares, lo resolvemos haciendo en 
+este caso un "nombreDeClase new" y creando el objeto en un mensaje por fuera de la clase.
+
+
+
+*****************************************************************************************************************************************
+Nombres de las categorías de métodos
+Con lo que vieron y trabajaron hasta ahora, ¿qué criterio están usando para categorizar métodos?
+*****************************************************************************************************************************************
+Estamos categorizando con respecto a lo que hace cada mensaje, tomando tambien en cuenta lo que retorna cada uno.
+
+
+
+*****************************************************************************************************************************************
+Subclass Responsibility
+Si todas las subclases saben responder un mismo mensaje, ¿por qué ponemos ese mensaje sólo con un “self subclassResponsibility” en la superclase? ¿para qué sirve?
+*****************************************************************************************************************************************
+Su principal funcionalidad es el polimorfismo mismo, que basicamente es la habilidad que tiene la superclase, la cual es abstracta, para moldear/redefinir su comportamiento entre sus subclases. De esta manera leyendo el protocolo de la superclase, podemos entender los mensajes a los que responden la jerarquia. Ademas, nos beneficia al momento de la implementacion, dado que nos recuerda que es necesario redefinir
+el mensaje en cada una de las subclases.
+
+
+
+*****************************************************************************************************************************************
+No rompas
+¿Por qué está mal/qué problemas trae romper encapsulamiento?
+*****************************************************************************************************************************************
+Romper el encapsulamiento trae muchisimas complicaciones debido a que aumenta el acoplamiento, es decir, el grado de conocimiento
+que tienen los objetos entre si. Si se mantiene el encapsulamiento, la modificacion de cierto aspeco interno de un objeto no repercutira
+en la implementacion mas general del programa, con lo cual, se obtiene a su vez un mejor disenio.
+
+
+
+
+
