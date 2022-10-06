@@ -14,33 +14,33 @@ test01StackShouldBeEmptyWhenCreated
 	
 	self assert: stack isEmpty! !
 
-!StackTest methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 12:41:59'!
-test02AddAnItemIntoTheStack
+!StackTest methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 15:46:48'!
+test02AddsAnElementIntoTheStack
 
-	| stack anItem |
+	| stack anElement |
 	
 	stack := Stack new.
-	anItem := 'Boca'.
+	anElement := 'Boca'.
 	
-	stack push: anItem.
+	stack push: anElement.
 	
 	self assert:  stack stackSize = 1.! !
 
-!StackTest methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 12:50:56'!
-test03RemoveAnItemFromTheStackAndVerifyItemRemoved
+!StackTest methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 15:53:02'!
+test03RemoveAnElementFromTheStackAndVerifyIfElementIsRemoved
 
-	| stack anItem itemRemoved |
+	| stack anElement  elementRemoved |
 	
 	stack := Stack new.
-	anItem := 'Boca'.
+	anElement := 'Boca'.
 	
-	stack push: anItem.
-	itemRemoved := stack pop.
+	stack push: anElement.
+	elementRemoved := stack pop.
 	
-	self assert:  [stack stackSize = 0 and: [itemRemoved = anItem]].! !
+	self assert:  [stack stackSize = 0 and: [elementRemoved = anElement]].! !
 
-!StackTest methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 13:05:36'!
-test04RemoveAnItemFromAnEmptyStack
+!StackTest methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 15:48:11'!
+test04CanNotRemoveAnElementFromAnEmptyStack
 
 	| stack |
 	
@@ -49,33 +49,33 @@ test04RemoveAnItemFromAnEmptyStack
 
 	[ stack pop. self fail] on: Error do: [self assert: stack isEmpty].! !
 
-!StackTest methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 13:06:09'!
-test05StackVerifiedLIFO
+!StackTest methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 15:51:57'!
+test05StackIsALIFO
 
-	| stack anItem anotherItem itemRemoved |
+	| stack anElement anotherElement itemRemoved |
 	
 	stack := Stack new.
-	anItem := 'Boca'.
-	anotherItem := 'River'.
+	anElement := 'Boca'.
+	anotherElement := 'River'.
 	
-	stack push: anItem.
-	stack push: anotherItem .
+	stack push: anElement.
+	stack push: anotherElement.
 	itemRemoved := stack pop.
 	
-	self assert:  itemRemoved = anotherItem.! !
+	self assert:  itemRemoved = anotherElement.! !
 
-!StackTest methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 13:17:33'!
-test06GetFirstItemWithoutRemove
+!StackTest methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 15:49:18'!
+test06GetFirstItemWithoutRemovingIt
 
-	| stack anItem anotherItem  |
+	| stack anElement anotherElement  |
 	
 	stack := Stack new.
-	anItem := 'Boca'.
-	anotherItem := 'River'.
+	anElement := 'Boca'.
+	anotherElement := 'River'.
 	
-	stack push: anItem.
-	stack push: anotherItem .
-	self assert:  [stack stackSize = 2 and: [anotherItem = stack top]].! !
+	stack push: anElement.
+	stack push: anotherElement .
+	self assert:  [stack stackSize = 2 and: [anotherElement = stack top]].! !
 
 
 !classDefinition: #Stack category: 'StackPrimeraParte'!
@@ -85,26 +85,26 @@ Object subclass: #Stack
 	poolDictionaries: ''
 	category: 'StackPrimeraParte'!
 
-!Stack methodsFor: 'basics' stamp: 'lv 10/6/2022 12:36:49'!
+!Stack methodsFor: 'basicsStackOperations' stamp: 'lv 10/6/2022 12:36:49'!
 isEmpty
 
 	^ stackSize =  0.! !
 
-!Stack methodsFor: 'basics' stamp: 'lv 10/6/2022 13:03:40'!
+!Stack methodsFor: 'basicsStackOperations' stamp: 'lv 10/6/2022 15:50:36'!
 pop 
-	| item |
+	| element |
 	 
 	stack isEmpty ifTrue: [^self signalStackIsEmpty].
-	item := stack removeFirst.
+	element := stack removeFirst.
 	self decreaseSizeOfStack.
 	
-	^item.
+	^element.
 	! !
 
-!Stack methodsFor: 'basics' stamp: 'lv 10/6/2022 12:38:33'!
-push: item 
+!Stack methodsFor: 'basicsStackOperations' stamp: 'lv 10/6/2022 15:49:49'!
+push: element 
 	 self increaseSizeOfStack.
-        ^stack addFirst: item.
+        ^stack addFirst: element.
         ! !
 
 
@@ -121,10 +121,10 @@ increaseSizeOfStack
 ! !
 
 
-!Stack methodsFor: 'error' stamp: 'lv 10/6/2022 13:02:49'!
+!Stack methodsFor: 'error' stamp: 'lv 10/6/2022 15:51:23'!
 signalStackIsEmpty
 
-	self error: self class itemCannotBeRemoveFromAnEmptyStack.! !
+	self error: self class elementCannotBeRemoveFromAnEmptyStack.! !
 
 
 !Stack methodsFor: 'inizialization' stamp: 'lv 10/6/2022 12:36:33'!
@@ -151,12 +151,7 @@ top
 Stack class
 	instanceVariableNames: ''!
 
-!Stack class methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 13:02:17'!
-itemCannotBeRemoveFromAnEmptyStack
+!Stack class methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 15:51:23'!
+elementCannotBeRemoveFromAnEmptyStack
 
 	^'No se puede eliminar un item de un stack vacio'.! !
-
-!Stack class methodsFor: 'as yet unclassified' stamp: 'lv 10/6/2022 12:09:50'!
-with: aCollection
-	"este no creo q lo usemos. solo es un opcional
-	^ Stack new initializeWith: aCollection."! !
