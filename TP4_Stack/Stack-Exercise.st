@@ -145,7 +145,7 @@ TestCase subclass: #SentenceFinderByPrefixTest
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'stack size element'
+	instanceVariableNames: 'stack size'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
@@ -171,9 +171,10 @@ isEmpty
 
 	^size = 0.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:09:24'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 14:43:59'!
 pop
 
+	"
 	self subclassResponsibility.
 	"
 	| anElement |
@@ -181,18 +182,18 @@ pop
 	stack isEmpty ifTrue: [^self signalStackIsEmpty].
 	anElement := stack removeFirst.
 	self decreaseSizeOfStack.
-	
+			
 	^anElement .
-	"! !
+	
+! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:09:49'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 12:58:46'!
 push: anElement
 
-	self subclassResponsibility.
-"
 	self increaseSizeOfStack .
 	^stack addFirst: anElement.
-	"! !
+	
+! !
 
 !OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 11:50:31'!
 signalStackIsEmpty
@@ -204,11 +205,14 @@ size
 
 	^size.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 11:55:54'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 14:44:14'!
 top
-
+	"
+	self subclassResponsibility .
+	"
 	stack isEmpty ifTrue: [^self signalStackIsEmpty].
-	^stack at: 1.! !
+	^stack at: 1.
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -230,29 +234,31 @@ OOStack subclass: #OOStackIsEmpty
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackIsEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:19:30'!
+!OOStackIsEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 12:59:49'!
 pop
 
 	stack isEmpty ifTrue: [^self signalStackIsEmpty].
 ! !
 
-!OOStackIsEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:27:22'!
-push: anElement
+!OOStackIsEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 13:00:29'!
+top
 
-	^ OOStackIsNotEmpty new initializeWith: anElement.
+	stack isEmpty ifTrue: [^self signalStackIsEmpty].
 ! !
 
 
 !classDefinition: #OOStackIsNotEmpty category: 'Stack-Exercise'!
 OOStack subclass: #OOStackIsNotEmpty
-	instanceVariableNames: ''
+	instanceVariableNames: 'element'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:24:47'!
+!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 13:27:33'!
 initializeWith: anElement
-	
+
+	anElement isEmpty ifTrue: [ self error: 'nop' ].
+
 	element := anElement.! !
 
 !OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:10:31'!
@@ -266,12 +272,10 @@ pop
 	^anElement .
 ! !
 
-!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:11:12'!
-push: anElement
+!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 13:00:43'!
+top
 
-	self increaseSizeOfStack .
-	^stack addFirst: anElement.
-	! !
+	^stack at: 1.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -279,11 +283,11 @@ push: anElement
 OOStackIsNotEmpty class
 	instanceVariableNames: ''!
 
-!OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:21:26'!
+!OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 10:57:37'!
 with: anElement
 
-	OOStackIsNotEmpty new initializeWith: anElement.
-	"^ anElement."! !
+	"OOStackIsNotEmpty new initializeWith: anElement.
+	^ anElement. "! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
