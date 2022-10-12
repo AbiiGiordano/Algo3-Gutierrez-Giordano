@@ -23,7 +23,7 @@ test02PushAddElementsToTheStack
 	
 	self deny: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'JMB 10/8/2022 17:59:50'!
+!OOStackTest methodsFor: 'test' stamp: 'lvg 10/11/2022 21:18:27'!
 test03PopRemovesElementsFromTheStack
 
 	| stack |
@@ -34,7 +34,7 @@ test03PopRemovesElementsFromTheStack
 	
 	self assert: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'JMB 10/8/2022 17:59:43'!
+!OOStackTest methodsFor: 'test' stamp: 'lvg 10/11/2022 21:18:44'!
 test04PopReturnsLastPushedObject
 
 	| stack pushedObject |
@@ -45,7 +45,7 @@ test04PopReturnsLastPushedObject
 	
 	self assert: pushedObject equals: stack pop! !
 
-!OOStackTest methodsFor: 'test' stamp: 'JMB 10/8/2022 17:56:59'!
+!OOStackTest methodsFor: 'test' stamp: 'lvg 10/11/2022 21:18:51'!
 test05StackBehavesLIFO
 
 	| stack firstPushedObject secondPushedObject |
@@ -62,7 +62,7 @@ test05StackBehavesLIFO
 	self assert: stack isEmpty 
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'JMB 10/8/2022 18:00:26'!
+!OOStackTest methodsFor: 'test' stamp: 'lvg 10/11/2022 21:19:05'!
 test06TopReturnsLastPushedObject
 
 	| stack pushedObject |
@@ -74,7 +74,7 @@ test06TopReturnsLastPushedObject
 	self assert: pushedObject equals: stack top.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'lvg 10/9/2022 12:03:26'!
+!OOStackTest methodsFor: 'test' stamp: 'lvg 10/11/2022 21:19:10'!
 test07TopDoesNotRemoveObjectFromStack
 
 	| stack pushedObject |
@@ -89,21 +89,21 @@ test07TopDoesNotRemoveObjectFromStack
 	self assert: 1 equals: stack size.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'JMB 10/8/2022 17:58:44'!
+!OOStackTest methodsFor: 'test' stamp: 'lvg 10/11/2022 21:19:18'!
 test08CanNotPopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
 	
 	stack := OOStack new.
 	self
-		should: [ stack pop ]
+		should: [ stack pop]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
 			self assert: OOStack stackEmptyErrorDescription equals: anError messageText ]
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'JMB 10/8/2022 17:58:56'!
+!OOStackTest methodsFor: 'test' stamp: 'lvg 10/11/2022 21:19:27'!
 test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 
 	| stack  |
@@ -120,7 +120,7 @@ test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'JMB 10/8/2022 17:59:07'!
+!OOStackTest methodsFor: 'test' stamp: 'lvg 10/11/2022 21:19:32'!
 test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
@@ -145,52 +145,34 @@ TestCase subclass: #SentenceFinderByPrefixTest
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'stack size'
+	instanceVariableNames: 'stack stackStatus'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:05:17'!
-decreaseSizeOfStack
-
-	^size := size - 1.! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:05:25'!
-increaseSizeOfStack
-
-	^size := size + 1.! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:05:31'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:33:26'!
 initialize
-	
-	stack := OrderedCollection new.
-	size := 0.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:05:37'!
+	stack := OrderedCollection new.
+	stackStatus := OOStackStatus newWith: self.
+
+! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 20:51:51'!
 isEmpty
 
-	^size = 0.! !
+	^stack isEmpty.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 14:43:59'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:36:03'!
 pop
-
-	"
-	self subclassResponsibility.
-	"
-	| anElement |
-	
-	stack isEmpty ifTrue: [^self signalStackIsEmpty].
-	anElement := stack removeFirst.
-	self decreaseSizeOfStack.
-			
-	^anElement .
+	stackStatus popWhileStatusFrom: self.
 	
 ! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 12:58:46'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 20:55:41'!
 push: anElement
 
-	self increaseSizeOfStack .
+	stackStatus := OOStackIsNotEmpty.
 	^stack addFirst: anElement.
 	
 ! !
@@ -200,18 +182,14 @@ signalStackIsEmpty
 
 	self error: self class stackEmptyErrorDescription .! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:05:02'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 20:52:21'!
 size
 
-	^size.! !
+	^stack size.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 14:44:14'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:17:57'!
 top
-	"
-	self subclassResponsibility .
-	"
-	stack isEmpty ifTrue: [^self signalStackIsEmpty].
-	^stack at: 1.
+	stackStatus topWhileStatusFrom: self.
 ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -225,63 +203,93 @@ stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
 
-
 
-!classDefinition: #OOStackIsEmpty category: 'Stack-Exercise'!
-OOStack subclass: #OOStackIsEmpty
+!classDefinition: #OOStackStatus category: 'Stack-Exercise'!
+Object subclass: #OOStackStatus
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackIsEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 12:59:49'!
-pop
+!OOStackStatus methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:30:15'!
+initialize
+	! !
 
-	stack isEmpty ifTrue: [^self signalStackIsEmpty].
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'OOStackStatus class' category: 'Stack-Exercise'!
+OOStackStatus class
+	instanceVariableNames: ''!
+
+!OOStackStatus class methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:37:22'!
+newWith: aStack"
+	self subclasses do: [:statusSubclasses |
+					(statusSubclasses assignSubclassStatusWith: aStack)
+					ifTrue: [^ statusSubclasses new initializeWith: aStack]
+					]."! !
+
+
+!classDefinition: #OOStackIsEmpty category: 'Stack-Exercise'!
+OOStackStatus subclass: #OOStackIsEmpty
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOStackIsEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:22:42'!
+popWhileStatusFrom: aStack
+	^aStack signalStackIsEmpty.
 ! !
 
-!OOStackIsEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 13:00:29'!
-top
+!OOStackIsEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:22:35'!
+topWhileStatusFrom: aStack
 
-	stack isEmpty ifTrue: [^self signalStackIsEmpty].
+	^aStack signalStackIsEmpty.
 ! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'OOStackIsEmpty class' category: 'Stack-Exercise'!
+OOStackIsEmpty class
+	instanceVariableNames: ''!
+
+!OOStackIsEmpty class methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:42:49'!
+assignSubclassStatusWith: aStack
+
+	^ aStack isEmpty.! !
 
 
 !classDefinition: #OOStackIsNotEmpty category: 'Stack-Exercise'!
-OOStack subclass: #OOStackIsNotEmpty
+OOStackStatus subclass: #OOStackIsNotEmpty
 	instanceVariableNames: 'element'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 13:27:33'!
-initializeWith: anElement
-
-	anElement isEmpty ifTrue: [ self error: 'nop' ].
-
-	element := anElement.! !
-
-!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 12:10:31'!
-pop
+!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:16:02'!
+popWhileStatusFrom: aStack
 
 	| anElement |
 	
-	anElement := stack removeFirst.
-	self decreaseSizeOfStack.
-	
+	anElement := aStack removeFirst.	
 	^anElement .
 ! !
 
-!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 13:00:43'!
-top
+!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:16:21'!
+topWhileStatusFrom: aStack
 
-	^stack at: 1.! !
+	^aStack at: 1.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'OOStackIsNotEmpty class' category: 'Stack-Exercise'!
 OOStackIsNotEmpty class
 	instanceVariableNames: ''!
+
+!OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:43:14'!
+assignSubclassStatusWith: aStack
+
+	! !
 
 !OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 10:57:37'!
 with: anElement
