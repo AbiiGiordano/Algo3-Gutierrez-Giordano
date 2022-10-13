@@ -150,6 +150,47 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 		
 ! !
 
+!OOStackTest methodsFor: 'test' stamp: 'AGH 10/13/2022 17:47:31'!
+test11PushElementsAboveLimitRaiseError
+
+	| stack |
+	stack := OOStack newWith: 2.
+	
+	stack push: 'something'.
+	stack push: 'anotherSomething'.
+	
+	[stack push: 'TryPush'. self fail]
+	on: Error
+	do: [self assert: stack size = 2].
+	! !
+
+!OOStackTest methodsFor: 'test' stamp: 'AGH 10/13/2022 17:51:41'!
+test12PopElementsFromAFullStack
+
+	| stack |
+	stack := OOStack newWith: 2.
+	
+	stack push: 'something'.
+	stack push: 'anotherSomething'.
+	stack pop.
+	
+	self assert: stack size = 1.
+	self deny: stack isFull.! !
+
+!OOStackTest methodsFor: 'test' stamp: 'AGH 10/13/2022 17:51:23'!
+test13TopFromAFullStackDoesNotRemoveTheElement
+
+	| stack element |
+	stack := OOStack newWith: 2.
+	
+	stack push: 'something'.
+	stack push: 'anotherSomething'.
+	
+	element := stack top.
+
+	self assert: element = 'anotherSomething'.
+	self assert: stack isFull.! !
+
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
@@ -335,7 +376,7 @@ test09FindASentenceLongerThanTheElement
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'stack stackStatus'
+	instanceVariableNames: 'stack stackStatus limit'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
@@ -345,6 +386,11 @@ signalStackIsEmpty
 
 	self error: self class stackEmptyErrorDescription .! !
 
+!OOStack methodsFor: 'signals' stamp: 'AGH 10/13/2022 17:22:31'!
+signalStackIsFull
+
+	self error: self class stackFullErrorDescription .! !
+
 
 !OOStack methodsFor: 'operations' stamp: 'lv 10/13/2022 11:55:29'!
 pop
@@ -352,12 +398,11 @@ pop
 	
 ! !
 
-!OOStack methodsFor: 'operations' stamp: 'lv 10/13/2022 10:57:19'!
+!OOStack methodsFor: 'operations' stamp: 'AGH 10/13/2022 17:30:56'!
 push: anElement
 
-	stack addFirst: anElement.
+	^stackStatus tryPush: anElement from: self.
 	
-	stackStatus := 		OOStackStatus newWith: self.
 ! !
 
 !OOStack methodsFor: 'operations' stamp: 'lv 10/13/2022 11:55:47'!
@@ -366,13 +411,21 @@ top
 ! !
 
 
-!OOStack methodsFor: 'initialization' stamp: 'lvg 10/11/2022 21:33:26'!
+!OOStack methodsFor: 'initialization' stamp: 'AGH 10/13/2022 17:41:15'!
 initialize
 
 	stack := OrderedCollection new.
-	stackStatus := OOStackStatus newWith: self.
+	stackStatus := OOStackStatus newWith: self.	
+	limit := 1000000000.
 
 ! !
+
+!OOStack methodsFor: 'initialization' stamp: 'AGH 10/13/2022 17:17:15'!
+initializeWith: aLimit
+
+	stack := OrderedCollection new.
+	stackStatus := OOStackStatus newWith: self.	
+	limit := aLimit.! !
 
 
 !OOStack methodsFor: 'valid operations' stamp: 'lv 10/13/2022 10:49:51'!
@@ -384,6 +437,12 @@ canPop
 	stackStatus := 	OOStackStatus newWith: self.
 	
 	^anElement.! !
+
+!OOStack methodsFor: 'valid operations' stamp: 'AGH 10/13/2022 17:20:59'!
+canPush: anElement
+
+	stack addFirst: anElement.
+	stackStatus := 		OOStackStatus newWith: self.! !
 
 !OOStack methodsFor: 'valid operations' stamp: 'lv 10/13/2022 11:02:48'!
 canTop
@@ -402,6 +461,11 @@ isEmpty
 
 	^stack isEmpty.! !
 
+!OOStack methodsFor: 'testing' stamp: 'AGH 10/13/2022 17:16:53'!
+isFull
+
+	^ self size = limit.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'OOStack class' category: 'Stack-Exercise'!
@@ -412,6 +476,17 @@ OOStack class
 stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
+
+!OOStack class methodsFor: 'error descriptions' stamp: 'AGH 10/13/2022 17:22:44'!
+stackFullErrorDescription
+	
+	^ 'Stack is full'! !
+
+
+!OOStack class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 17:11:26'!
+newWith: aLimit
+
+	^self new initializeWith: aLimit.! !
 
 
 !classDefinition: #OOStackStatus category: 'Stack-Exercise'!
@@ -470,6 +545,11 @@ tryPop: aStack
 	^aStack signalStackIsEmpty.
 ! !
 
+!OOStackIsEmpty methodsFor: 'stack status operations' stamp: 'AGH 10/13/2022 17:30:22'!
+tryPush: anElement from: aStack
+
+	^ aStack canPush: anElement.! !
+
 !OOStackIsEmpty methodsFor: 'stack status operations' stamp: 'lv 10/13/2022 11:55:47'!
 tryTop: aStack
 
@@ -488,6 +568,43 @@ assignSubclassStatusWith: aStack
 	^ aStack isEmpty.! !
 
 
+!classDefinition: #OOStackIsFull category: 'Stack-Exercise'!
+OOStackStatus subclass: #OOStackIsFull
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOStackIsFull methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 17:23:21'!
+tryPop: aStack
+
+	^aStack canPop.
+	
+! !
+
+!OOStackIsFull methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 17:30:10'!
+tryPush: anElement from: aStack
+	
+	^ aStack signalStackIsFull.
+! !
+
+!OOStackIsFull methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 17:23:33'!
+tryTop: aStack
+
+	^aStack canTop.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'OOStackIsFull class' category: 'Stack-Exercise'!
+OOStackIsFull class
+	instanceVariableNames: ''!
+
+!OOStackIsFull class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 17:15:43'!
+assignSubclassStatusWith: aStack
+
+	^aStack isFull.! !
+
+
 !classDefinition: #OOStackIsNotEmpty category: 'Stack-Exercise'!
 OOStackStatus subclass: #OOStackIsNotEmpty
 	instanceVariableNames: ''
@@ -502,6 +619,11 @@ tryPop: aStack
 	
 ! !
 
+!OOStackIsNotEmpty methodsFor: 'stack status operations' stamp: 'AGH 10/13/2022 17:30:36'!
+tryPush: anElement from: aStack
+
+	^ aStack canPush: anElement.! !
+
 !OOStackIsNotEmpty methodsFor: 'stack status operations' stamp: 'lv 10/13/2022 11:55:47'!
 tryTop: aStack
 
@@ -513,10 +635,10 @@ tryTop: aStack
 OOStackIsNotEmpty class
 	instanceVariableNames: ''!
 
-!OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'lv 10/13/2022 10:53:11'!
+!OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 17:44:31'!
 assignSubclassStatusWith: aStack
 
-	^aStack isEmpty not.
+	^aStack isEmpty not and: [aStack isFull not].
 
 	! !
 
