@@ -150,33 +150,6 @@ Object subclass: #OOStack
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:33:26'!
-initialize
-
-	stack := OrderedCollection new.
-	stackStatus := OOStackStatus newWith: self.
-
-! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 20:51:51'!
-isEmpty
-
-	^stack isEmpty.! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 09:56:05'!
-pop
-	stackStatus popWhileStatusFrom: self.
-	
-! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 20:55:41'!
-push: anElement
-
-	stackStatus := OOStackIsNotEmpty.
-	^stack addFirst: anElement.
-	
-! !
-
 !OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/9/2022 11:50:31'!
 signalStackIsEmpty
 
@@ -187,9 +160,54 @@ size
 
 	^stack size.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:17:57'!
+
+!OOStack methodsFor: 'operations' stamp: 'lvg 10/11/2022 20:51:51'!
+isEmpty
+
+	^stack isEmpty.! !
+
+!OOStack methodsFor: 'operations' stamp: 'lv 10/13/2022 10:58:24'!
+pop
+	^stackStatus popWhileStatusFrom: self.
+	
+! !
+
+!OOStack methodsFor: 'operations' stamp: 'lv 10/13/2022 10:57:19'!
+push: anElement
+
+	stack addFirst: anElement.
+	
+	stackStatus := 		OOStackStatus newWith: self.
+! !
+
+!OOStack methodsFor: 'operations' stamp: 'lv 10/13/2022 10:58:34'!
 top
-	stackStatus topWhileStatusFrom: self.
+	^stackStatus topWhileStatusFrom: self.
+! !
+
+
+!OOStack methodsFor: 'doubleDispatch' stamp: 'lv 10/13/2022 10:49:51'!
+canPop
+
+	| anElement |
+	
+	anElement := stack removeFirst.	
+	stackStatus := 	OOStackStatus newWith: self.
+	
+	^anElement.! !
+
+!OOStack methodsFor: 'doubleDispatch' stamp: 'lv 10/13/2022 11:02:48'!
+canTop
+
+	^stack at: 1.! !
+
+
+!OOStack methodsFor: 'initialization' stamp: 'lvg 10/11/2022 21:33:26'!
+initialize
+
+	stack := OrderedCollection new.
+	stackStatus := OOStackStatus newWith: self.
+
 ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -211,15 +229,21 @@ Object subclass: #OOStackStatus
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackStatus methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 09:48:17'!
+!OOStackStatus methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 10:30:36'!
+popWhileStatusFrom: aStack
+
+	self subclassResponsibility ! !
+
+!OOStackStatus methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 10:31:00'!
+topWhileStatusFrom: aStack
+
+	self subclassResponsibility.! !
+
+
+!OOStackStatus methodsFor: 'initialization' stamp: 'lvg 10/13/2022 09:48:17'!
 initializeWith: aStack
 	
 	stack := aStack! !
-
-!OOStackStatus methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 09:47:34'!
-with: aStack
-
-	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -227,12 +251,12 @@ with: aStack
 OOStackStatus class
 	instanceVariableNames: ''!
 
-!OOStackStatus class methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 10:12:33'!
+!OOStackStatus class methodsFor: 'as yet unclassified' stamp: 'lv 10/13/2022 10:54:19'!
 newWith: aStack
-	self subclasses do: [:statusSubclasses |
-					(statusSubclasses assignSubclassStatusWith: aStack)
-					ifTrue: [^ statusSubclasses new initializeWith: aStack]
-					].
+
+	^(self subclasses detect: [:statusSubclasses |
+				statusSubclasses assignSubclassStatusWith: aStack
+				]) new.
 				! !
 
 
@@ -274,21 +298,17 @@ OOStackStatus subclass: #OOStackIsNotEmpty
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 10:01:58'!
+!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lv 10/13/2022 10:48:32'!
 popWhileStatusFrom: aStack
 
-	| anElement |
+	^aStack canPop.
 	
-	anElement := aStack removeFirst.	
-	OOStackStatus initializeWith: aStack .
-	
-	^anElement .
 ! !
 
-!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:16:21'!
+!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lv 10/13/2022 11:03:06'!
 topWhileStatusFrom: aStack
 
-	^aStack at: 1.! !
+	^aStack canTop.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -296,10 +316,10 @@ topWhileStatusFrom: aStack
 OOStackIsNotEmpty class
 	instanceVariableNames: ''!
 
-!OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 10:08:17'!
+!OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'lv 10/13/2022 10:53:11'!
 assignSubclassStatusWith: aStack
 
-	^((aStack size) > 0).
+	^aStack isEmpty not.
 
 	! !
 
