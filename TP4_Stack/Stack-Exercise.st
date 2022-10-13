@@ -163,7 +163,7 @@ isEmpty
 
 	^stack isEmpty.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:36:03'!
+!OOStack methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 09:56:05'!
 pop
 	stackStatus popWhileStatusFrom: self.
 	
@@ -206,13 +206,19 @@ stackEmptyErrorDescription
 
 !classDefinition: #OOStackStatus category: 'Stack-Exercise'!
 Object subclass: #OOStackStatus
-	instanceVariableNames: ''
+	instanceVariableNames: 'stack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackStatus methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:30:15'!
-initialize
+!OOStackStatus methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 09:48:17'!
+initializeWith: aStack
+	
+	stack := aStack! !
+
+!OOStackStatus methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 09:47:34'!
+with: aStack
+
 	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -221,12 +227,13 @@ initialize
 OOStackStatus class
 	instanceVariableNames: ''!
 
-!OOStackStatus class methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:37:22'!
-newWith: aStack"
+!OOStackStatus class methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 10:12:33'!
+newWith: aStack
 	self subclasses do: [:statusSubclasses |
 					(statusSubclasses assignSubclassStatusWith: aStack)
 					ifTrue: [^ statusSubclasses new initializeWith: aStack]
-					]."! !
+					].
+				! !
 
 
 !classDefinition: #OOStackIsEmpty category: 'Stack-Exercise'!
@@ -236,8 +243,9 @@ OOStackStatus subclass: #OOStackIsEmpty
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackIsEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:22:42'!
+!OOStackIsEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 10:02:58'!
 popWhileStatusFrom: aStack
+
 	^aStack signalStackIsEmpty.
 ! !
 
@@ -266,12 +274,14 @@ OOStackStatus subclass: #OOStackIsNotEmpty
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:16:02'!
+!OOStackIsNotEmpty methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 10:01:58'!
 popWhileStatusFrom: aStack
 
 	| anElement |
 	
 	anElement := aStack removeFirst.	
+	OOStackStatus initializeWith: aStack .
+	
 	^anElement .
 ! !
 
@@ -286,15 +296,17 @@ topWhileStatusFrom: aStack
 OOStackIsNotEmpty class
 	instanceVariableNames: ''!
 
-!OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'lvg 10/11/2022 21:43:14'!
+!OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 10:08:17'!
 assignSubclassStatusWith: aStack
+
+	^((aStack size) > 0).
 
 	! !
 
-!OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'lvg 10/10/2022 10:57:37'!
-with: anElement
+!OOStackIsNotEmpty class methodsFor: 'as yet unclassified' stamp: 'lvg 10/13/2022 09:51:22'!
+with: aStack
 
-	"OOStackIsNotEmpty new initializeWith: anElement.
+	"OOStackIsNotEmpty new initializeWith: aStack.
 	^ anElement. "! !
 
 
