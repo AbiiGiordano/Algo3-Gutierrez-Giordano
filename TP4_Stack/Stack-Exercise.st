@@ -1,3 +1,19 @@
+!classDefinition: #EmptyStack category: 'Stack-Exercise'!
+Error subclass: #EmptyStack
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+
+!classDefinition: #InvalidPrefix category: 'Stack-Exercise'!
+Error subclass: #InvalidPrefix
+	instanceVariableNames: 'stackTarget'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+
 !classDefinition: #OOStackTest category: 'Stack-Exercise'!
 TestCase subclass: #OOStackTest
 	instanceVariableNames: ''
@@ -142,76 +158,75 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 12:36:13'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:59:20'!
 test01FindASentenceInAnEmptyStackAndRaiseError
 	
-	|aStack aFinder aPrefixToFind|
+	|aStack sentenceFinder aPrefixToFind|	
 	
 	aStack := OOStack new.
-	aFinder := SentenceFinderByPrefix newWith: aStack.
-	aPrefixToFind := 'a'.
+	sentenceFinder := SentenceFinderByPrefix newWith: aStack.
+	aPrefixToFind := Prefix newWith: 'a'.
 	
-	[aFinder findByPrefix: aPrefixToFind. self fail]
-	on: Error
+	[sentenceFinder findByPrefix: aPrefixToFind. self fail]
+	on: EmptyStack
 	do: [self assert: aStack isEmpty]
 	
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 12:52:28'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 17:02:30'!
 test02FindAnEmptySentenceShouldRaiseAnError
 
-	|aStack element aFinder prefixToFind|
+	|aStack element sentenceFinder prefixToFind|
 	
 	aStack := OOStack new.
 	element := 'ASentence'.
 	aStack push: element.
 	
-	aFinder := SentenceFinderByPrefix newWith: aStack.
-	prefixToFind := ''.
+	sentenceFinder := SentenceFinderByPrefix newWith: aStack.
+	prefixToFind := Prefix newWith: ''.
 	
-	[aFinder findByPrefix: prefixToFind. self fail]
-	on: Error
-	do: [[self assert: prefixToFind isEmpty] and: [self assert: aStack top = element]]! !
+	[sentenceFinder findByPrefix: prefixToFind. self fail]
+	on: InvalidPrefix
+	do: [self assert: aStack top = element].! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 12:54:02'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 17:02:33'!
 test03FindASentenceWithSpacesShouldRaiseAnError
 	
-	|aStack element aFinder prefixToFind|
+	|aStack element sentenceFinder prefixToFind|
 	
 	aStack := OOStack new.
 	element := 'ASentence'.
 	aStack push: element.
 	
-	aFinder := SentenceFinderByPrefix newWith: aStack.
-	prefixToFind := 'A Sentence'.
+	sentenceFinder := SentenceFinderByPrefix newWith: aStack.
+	prefixToFind := Prefix newWith: 'A Sentence'.
 	
-	[aFinder findByPrefix: prefixToFind. self fail]
-	on: Error
-	"do: [[self assert: [prefixToFind indexOf: $  ifAbsent: [0]]] and: [self assert: aStack top = element]]"
-	do: [^'Hacer verificacion!!!!!!'].! !
+	[sentenceFinder findByPrefix: prefixToFind. self fail]
+	on: InvalidPrefix
+	do: [self assert: aStack top = element].! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 13:19:24'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:59:40'!
 test04FindASentenceIsCaseSensitive
 
-	|aStack element aFinder prefixToFind coincidences|
+	|aStack element sentenceFinder prefixToFind coincidences|
 	
 	aStack := OOStack new.
 	element := 'ASentence'.
 	aStack push: element.
 	
-	aFinder := SentenceFinderByPrefix newWith: aStack.
-	prefixToFind := 'asentence'.
+	sentenceFinder := SentenceFinderByPrefix newWith: aStack.
+	prefixToFind := Prefix newWith: 'asentence'.
 	
-	coincidences := aFinder findByPrefix: prefixToFind.
+	coincidences := sentenceFinder findByPrefix: prefixToFind.
 	
 	self assert: coincidences isEmpty.
 	self assert: aStack top = element.
 ! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 13:16:53'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:59:46'!
 test05FindASentenceWithoutCoincidences
 	
-	|aStack element anotherElement aFinder prefixToFind coincidences|
+	|aStack element anotherElement sentenceFinder prefixToFind coincidences|
 	
 	aStack := OOStack new.
 	element := 'ASentence'.
@@ -220,18 +235,18 @@ test05FindASentenceWithoutCoincidences
 	aStack push: element.
 	aStack push: anotherElement.
 	
-	aFinder := SentenceFinderByPrefix newWith: aStack.
-	prefixToFind := 'OneSentence'.
+	sentenceFinder := SentenceFinderByPrefix newWith: aStack.
+	prefixToFind := Prefix newWith: 'OneSentence'.
 	
-	coincidences := aFinder findByPrefix: prefixToFind.
+	coincidences := sentenceFinder findByPrefix: prefixToFind.
 	
 	self assert: coincidences isEmpty.
 	self assert: aStack size = 2.! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 13:16:50'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:59:50'!
 test06FindASentenceWithOneCoincidence
 	
-	|aStack element anotherElement aFinder prefixToFind coincidences|
+	|aStack element anotherElement sentenceFinder prefixToFind coincidences|
 	
 	aStack := OOStack new.
 	element := 'ASentence'.
@@ -240,19 +255,20 @@ test06FindASentenceWithOneCoincidence
 	aStack push: element.
 	aStack push: anotherElement.
 	
-	aFinder := SentenceFinderByPrefix newWith: aStack.
-	prefixToFind := 'ASen'.
+	sentenceFinder := SentenceFinderByPrefix newWith: aStack.
+	prefixToFind := Prefix newWith: 'ASen'.
 	
-	coincidences := aFinder findByPrefix: prefixToFind.
+	coincidences := sentenceFinder findByPrefix: prefixToFind..
 	
-	self assert: coincidences size = 1.
-	self assert: coincidences includes: element.
-	self assert: aStack size = 2.! !
+	self assert: coincidences size = 1.			"Prueba"
+	self assert: aStack size = 2.			
+	self assert: aStack top = anotherElement.	 "Prueba"
+	self assert: coincidences includes: element.! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 13:16:42'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:59:54'!
 test07FindASentenceWithMultiplesCoincidences
 	
-	|aStack element anotherElement lastElement aFinder prefixToFind coincidences|
+	|aStack element anotherElement lastElement sentenceFinder prefixToFind coincidences|
 	
 	aStack := OOStack new.
 	element := 'ASentence'.
@@ -263,20 +279,20 @@ test07FindASentenceWithMultiplesCoincidences
 	aStack push: anotherElement.
 	aStack push: lastElement.
 	
-	aFinder := SentenceFinderByPrefix newWith: aStack.
-	prefixToFind := 'AS'.
+	sentenceFinder := SentenceFinderByPrefix newWith: aStack.
+	prefixToFind := Prefix newWith: 'AS'.
 	
-	coincidences := aFinder findByPrefix: prefixToFind.
+	coincidences := sentenceFinder findByPrefix: prefixToFind.
 	
 	self assert: coincidences size = 2.
 	self assert: coincidences includes: element.
 	self assert: coincidences includes: lastElement.
 	self assert: aStack size = 3.! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 13:25:25'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:59:58'!
 test08FindASentenceInElementsWithPrefixInTheMiddle
 	
-	|aStack element anotherElement lastElement aFinder prefixToFind coincidences|
+	|aStack element anotherElement lastElement sentenceFinder prefixToFind coincidences|
 	
 	aStack := OOStack new.
 	element := 'ASentence'.
@@ -287,19 +303,19 @@ test08FindASentenceInElementsWithPrefixInTheMiddle
 	aStack push: anotherElement.
 	aStack push: lastElement.
 	
-	aFinder := SentenceFinderByPrefix newWith: aStack.
-	prefixToFind := 'AS'.
+	sentenceFinder := SentenceFinderByPrefix newWith: aStack.
+	prefixToFind := Prefix newWith: 'AS'.
 	
-	coincidences := aFinder findByPrefix: prefixToFind.
+	coincidences := sentenceFinder findByPrefix: prefixToFind.
 	
 	self assert: coincidences size = 1.
 	self assert: coincidences includes: element.
 	self assert: aStack size = 3.! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 13:23:57'!
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 17:00:02'!
 test09FindASentenceLongerThanTheElement
 	
-	|aStack element anotherElement aFinder prefixToFind coincidences|
+	|aStack element anotherElement sentenceFinder prefixToFind coincidences|
 	
 	aStack := OOStack new.
 	element := 'ASentence'.
@@ -308,28 +324,13 @@ test09FindASentenceLongerThanTheElement
 	aStack push: element.
 	aStack push: anotherElement.
 	
-	aFinder := SentenceFinderByPrefix newWith: aStack.
-	prefixToFind := 'ASentenceOfSmalltalk'.
+	sentenceFinder := SentenceFinderByPrefix newWith: aStack.
+	prefixToFind := Prefix newWith: 'ASentenceOfSmalltalk'.
 	
-	coincidences := aFinder findByPrefix: prefixToFind.
+	coincidences := sentenceFinder findByPrefix: prefixToFind.
 	
 	self assert: coincidences isEmpty.
 	self assert: aStack size = 2.! !
-
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 13:30:58'!
-test10ASentenceIsNotAString
-	
-	|aStack element aFinder aPrefixToFind |
-	
-	aStack := OOStack new.
-	element := '1'.
-	
-	aFinder := SentenceFinderByPrefix newWith: aStack.
-	aPrefixToFind := 1.
-	
-	[aFinder findByPrefix: aPrefixToFind. self fail]
-	on: Error
-	do: [self assert: element ~= aPrefixToFind].! !
 
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
@@ -374,7 +375,7 @@ initialize
 ! !
 
 
-!OOStack methodsFor: 'validOperations' stamp: 'lv 10/13/2022 10:49:51'!
+!OOStack methodsFor: 'valid operations' stamp: 'lv 10/13/2022 10:49:51'!
 canPop
 
 	| anElement |
@@ -384,7 +385,7 @@ canPop
 	
 	^anElement.! !
 
-!OOStack methodsFor: 'validOperations' stamp: 'lv 10/13/2022 11:02:48'!
+!OOStack methodsFor: 'valid operations' stamp: 'lv 10/13/2022 11:02:48'!
 canTop
 
 	^stack at: 1.! !
@@ -442,7 +443,12 @@ tryTop: aStack
 OOStackStatus class
 	instanceVariableNames: ''!
 
-!OOStackStatus class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 12:15:46'!
+!OOStackStatus class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:57:43'!
+assignSubclassStatusWith: aStack
+
+	self subclassResponsibility.! !
+
+!OOStackStatus class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:53:03'!
 newWith: aStack
 
 	^(self subclasses detect: [:statusSubclasses |
@@ -515,23 +521,128 @@ assignSubclassStatusWith: aStack
 	! !
 
 
-!classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
-Object subclass: #SentenceFinderByPrefix
-	instanceVariableNames: 'stackTarget'
+!classDefinition: #Prefix category: 'Stack-Exercise'!
+Object subclass: #Prefix
+	instanceVariableNames: 'prefix'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'operations' stamp: 'AGH 10/13/2022 12:28:03'!
-findByPrefix: aPrefix
-
+!Prefix methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:58:52'!
+initializeWith: aString
+	
+	prefix := aString.
 	! !
 
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!SentenceFinderByPrefix methodsFor: 'initialization' stamp: 'AGH 10/13/2022 12:20:34'!
+!classDefinition: 'Prefix class' category: 'Stack-Exercise'!
+Prefix class
+	instanceVariableNames: ''!
+
+!Prefix class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:56:48'!
+assignSubclassPrefixWith: aString
+
+	self subclassResponsibility.! !
+
+!Prefix class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:55:50'!
+newWith: aString
+	
+	^(self subclasses detect: [:prefixSubclasses |
+				prefixSubclasses assignSubclassPrefixWith: aString
+				]) new.! !
+
+
+!classDefinition: #PrefixInvalid category: 'Stack-Exercise'!
+Prefix subclass: #PrefixInvalid
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!PrefixInvalid methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 17:00:54'!
+validate
+
+	^InvalidPrefix signal.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PrefixInvalid class' category: 'Stack-Exercise'!
+PrefixInvalid class
+	instanceVariableNames: ''!
+
+!PrefixInvalid class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:54:26'!
+assignSubclassPrefixWith: aString
+
+	^(aString isEmpty or: [aString includesSubString: ' ']).! !
+
+
+!classDefinition: #PrefixValid category: 'Stack-Exercise'!
+Prefix subclass: #PrefixValid
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!PrefixValid methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 17:00:33'!
+validate
+	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PrefixValid class' category: 'Stack-Exercise'!
+PrefixValid class
+	instanceVariableNames: ''!
+
+!PrefixValid class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 16:55:33'!
+assignSubclassPrefixWith: aString
+
+	^(aString isEmpty not and: [(aString includesSubString: ' ') not]).! !
+
+
+!classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
+Object subclass: #SentenceFinderByPrefix
+	instanceVariableNames: 'stackTarget coincidences'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!SentenceFinderByPrefix methodsFor: 'operations' stamp: 'AGH 10/13/2022 17:00:28'!
+findByPrefix: aPrefix
+
+	|auxiliarStack|
+	aPrefix validate.
+	self validateStack.
+
+	auxiliarStack := OOStack new.
+	self iterate: stackTarget creating: auxiliarStack andDo: [].
+	self iterate: auxiliarStack creating: stackTarget andDo: [(stackTarget top is: aPrefix substringAt: 1) ifTrue: [coincidences add: (stackTarget top)]].
+	
+	^coincidences! !
+
+
+!SentenceFinderByPrefix methodsFor: 'initialization' stamp: 'AGH 10/13/2022 16:28:45'!
 initializeWith: aStack
 	
-	stackTarget := aStack.! !
+	stackTarget := aStack.
+	coincidences := OrderedCollection new.! !
+
+
+!SentenceFinderByPrefix methodsFor: 'iterate - private' stamp: 'AGH 10/13/2022 16:23:45'!
+iterate: aStack creating: anotherStack andDo: aBlock
+	
+	[aStack isEmpty not] whileTrue: [ |actualElement|
+		actualElement := aStack pop.
+		anotherStack push: actualElement.
+		aBlock.
+		].! !
+
+
+!SentenceFinderByPrefix methodsFor: 'validations' stamp: 'AGH 10/13/2022 16:37:48'!
+validateStack
+
+	stackTarget isEmpty ifTrue: [^EmptyStack signal].
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -539,7 +650,7 @@ initializeWith: aStack
 SentenceFinderByPrefix class
 	instanceVariableNames: ''!
 
-!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 12:25:28'!
+!SentenceFinderByPrefix class methodsFor: 'as yet unclassified' stamp: 'AGH 10/13/2022 14:43:44'!
 newWith: aStack
 	
-	self new initializeWith: aStack.! !
+	^self new initializeWith: aStack.! !
