@@ -418,6 +418,31 @@ test10SentenceIsNotAString
 	on: InvalidPrefix
 	do: [self assert: stack top = anElement].! !
 
+!SentenceFinderByPrefixTest methodsFor: 'tests' stamp: 'lvg 10/14/2022 14:00:28'!
+test11StacksRemainsSameOrderAfterPrevioslyFoundSomeCoincidences
+	
+	| stack anElement anotherElement lastElement sentenceFinder prefixToFind coincidences |
+	
+	stack := OOStack new.
+	anElement := 'ASentence'.
+	anotherElement := 'AnotherSentence'.
+	lastElement := 'ASuperSentence'.
+	
+	stack push: anElement.
+	stack push: anotherElement.
+	stack push: lastElement.
+	
+	sentenceFinder := SentenceFinderByPrefix newWith: stack.
+	prefixToFind := 'AS'.
+	
+	coincidences := sentenceFinder findByPrefix: prefixToFind.
+	
+	self assert: stack pop = lastElement .
+	self assert: stack pop = anotherElement .
+	self assert: stack pop = anElement.
+	self assert: coincidences includes: anElement.	
+	self assert: coincidences includes: lastElement.! !
+
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
@@ -701,7 +726,7 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'operations' stamp: 'lvg 10/14/2022 01:05:25'!
+!SentenceFinderByPrefix methodsFor: 'operations' stamp: 'lvg 10/14/2022 13:44:21'!
 findByPrefix: aPrefix
 
 	| auxiliarStack |
