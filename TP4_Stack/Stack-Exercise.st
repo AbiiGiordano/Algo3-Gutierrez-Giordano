@@ -726,7 +726,7 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'operations' stamp: 'lvg 10/14/2022 13:44:21'!
+!SentenceFinderByPrefix methodsFor: 'operations' stamp: 'lvg 10/14/2022 15:11:36'!
 findByPrefix: aPrefix
 
 	| auxiliarStack |
@@ -737,10 +737,6 @@ findByPrefix: aPrefix
 
 	self iterate: stackTarget creating: auxiliarStack andLookFor: aPrefix.
 	self iterate: auxiliarStack creating: stackTarget andLookFor: 'doNothing'.
-	
-	"
-	self compares: aPrefix fromEachElementIn: auxiliarStack.
-	self fillStackFromAn: auxiliarStack.	"
 
 	^coincidences! !
 
@@ -751,24 +747,6 @@ initializeWith: aStack
 	stackTarget := aStack.
 	coincidences := OrderedCollection new.! !
 
-
-!SentenceFinderByPrefix methodsFor: 'iterate - private' stamp: 'lvg 10/13/2022 23:21:39'!
-compares: aPrefix fromEachElementIn: anAuxiliarStack
-
-	^ [stackTarget isEmpty not] whileTrue: [ |actualElement  |
-		actualElement := stackTarget pop.
-		anAuxiliarStack push: actualElement.
-		(actualElement is: aPrefix substringAt: 1) ifTrue: [coincidences add: actualElement]
-
-		]! !
-
-!SentenceFinderByPrefix methodsFor: 'iterate - private' stamp: 'lvg 10/13/2022 23:23:18'!
-fillStackFromAn: auxiliarStack
-
-	^ [auxiliarStack isEmpty not] whileTrue: [ |actualElement|
-		actualElement := auxiliarStack pop.
-		stackTarget push: actualElement.
-		]! !
 
 !SentenceFinderByPrefix methodsFor: 'iterate - private' stamp: 'lvg 10/14/2022 00:12:43'!
 iterate: aStack creating: anotherStack andLookFor: aPrefix
