@@ -5,129 +5,124 @@ TestCase subclass: #MarsRoverTest
 	poolDictionaries: ''
 	category: 'MarsRover-Exercise'!
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 10/29/2022 12:44:19'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 10/30/2022 17:10:34'!
 test01
 
-	| marsRoverCoordenates marsRoverDirection |
-	marsRoverCoordenates := (0@0).
-	marsRoverDirection := $E.
+	| coordinates driveString direction marsRover |
+	
+	coordinates := (0@0).
+	direction := $N.
+	marsRover := MarsRover new.
+	marsRover initializeWithDirection: direction andWith: coordinates .
+	
+	driveString := ''.
+	marsRover operate: driveString.
+ 
+	
+	self assert: (marsRover coordinates = (0@0)).
+	self assert: (marsRover cardinalDirection = $N)! !
 
-	self assert: 		marsRoverCoordenates = (0@0).
-	self assert: 		marsRoverDirection = $E.! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 10/29/2022 13:47:53'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 10/30/2022 17:19:14'!
 test02
 
 	| marsRoverCoordinates driveString marsRoverDirection marsRover |
-	marsRoverCoordinates := (0@0).
-	marsRoverDirection := $F.
-	marsRover := MarsRover new.
-	driveString := ''.
 	
-	
-	self assert: driveString isEmpty.
-	self deny: 		marsRoverCoordinates = (1@0).
-	self deny: (marsRover isItAValidDirection: marsRoverDirection).! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 10/29/2022 16:51:48'!
-test03
-
-	| marsRoverCoordinates driveString marsRoverDirection marsRover |
 	marsRoverCoordinates := (0@0).
 	marsRoverDirection := $N.
 	marsRover := MarsRover new.
-	driveString := 'P'.
-	marsRover navigationMode: driveString.
+	marsRover initializeWithDirection: marsRoverDirection andWith: marsRoverCoordinates.
 	
-	self assert: (marsRoverCoordinates = (0@0)).
-	self assert: (marsRoverDirection  = $N)! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 10/29/2022 17:40:32'!
-test04
-
-	| marsRoverCoordinates driveString marsRoverDirection marsRover marsRoverFinalState|
-	marsRoverCoordinates := (0@0).
-	marsRoverDirection := $N.
-	marsRover := MarsRover new.
 	driveString := 'F'.
-	marsRoverFinalState := marsRover navigationMode: driveString withDirection: marsRoverDirection andCoordanates: marsRoverCoordinates .
+	marsRover operate: driveString .
 	
-	self assert: (marsRoverFinalState = (0@1)).
-	self assert: (marsRoverDirection  = $N)! !
+	self assert: (marsRover coordinates = (0@1)).
+	"self assert: (marsRover cardinalDirection = $N)"! !
 
 
 !classDefinition: #MarsRover category: 'MarsRover-Exercise'!
 Object subclass: #MarsRover
-	instanceVariableNames: 'marsRover cardinalPoint'
+	instanceVariableNames: 'marsRoverCoordinates marsRoverCardinalDirection'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Exercise'!
 
-!MarsRover methodsFor: 'validation' stamp: 'lvg 10/29/2022 13:44:12'!
-isItAValidDirection: aCardinalDirection
-	| validDirections |
-	validDirections := OrderedCollection newFrom: #($N $S $W $E).	
-	
-	^ validDirections includes: aCardinalDirection.! !
 
+!MarsRover methodsFor: 'navigation' stamp: 'lvg 10/30/2022 17:03:20'!
+moveBackwards 
 
-!MarsRover methodsFor: 'navigation' stamp: 'lvg 10/29/2022 17:38:35'!
-moveForwardsFromA: aCoordinate withDirection: aCardinalDirection 
+	( self cardinalDirection = $N) ifTrue: [^ self coordinates + (0@-1) ].
+	( self cardinalDirection = $S) ifTrue: [^ self coordinates + (0@1)].	
+	( self cardinalDirection = $E) ifTrue: [^ self coordinates + (-1@0)].
+	( self cardinalDirection = $W) ifTrue: [^ self coordinates + (1@0)].! !
 
-	(aCardinalDirection = $N) ifTrue: [^aCoordinate + (0@1)]! !
+!MarsRover methodsFor: 'navigation' stamp: 'lvg 10/30/2022 17:23:50'!
+moveForwards
 
-!MarsRover methodsFor: 'navigation' stamp: 'lvg 10/29/2022 17:04:33'!
-navigationMode: aStearString
+	marsRoverCoordinates := marsRoverCoordinates + (0@1).
+	"
+	(self cardinalDirection = $S) ifTrue: [^ self coordinates + (0@-1)].	
+	(self cardinalDirection = $E) ifTrue: [^ self coordinates + (1@0)].
+	(self cardinalDirection = $W) ifTrue: [^ self coordinates + (-1@0)].
+	"! !
 
-	aStearString do: [: aStear | 
+!MarsRover methodsFor: 'navigation' stamp: 'lvg 10/30/2022 17:20:26'!
+operate: aStearString
+
+	(aStearString = 'F') ifTrue: [self moveForwards ].	
+	"^(aStearString do: [: aStear | 
 		
-		(aStear = $B) ifTrue: [^'Backwards'].
-		(aStear = $F) ifTrue: [^ self moveForwards].
-		(aStear = $R) ifTrue: [^'Right'].
-		(aStear = $L) ifTrue: [^'Left'] ifFalse: [^self"self error: 'Caracter no soportado'"]
+		(aStear = $B) ifTrue: [self moveBackwards].
+		(aStear = $F) ifTrue: [self moveForwards ].
+		(aStear = $R) ifTrue: [self turnRight].
+		(aStear = $L) ifTrue: [self turnLeft] ifFalse: [^selfself error: 'Caracter no soportado']
 
-		]  ! !
+		]  )
+	"! !
 
-!MarsRover methodsFor: 'navigation' stamp: 'lvg 10/29/2022 17:31:16'!
-navigationMode: aStearString withDirection: aCardinalDirection andCoordanates: aCoordinate 
+!MarsRover methodsFor: 'navigation' stamp: 'lvg 10/30/2022 16:24:29'!
+turnLeft
 
-	
-	aStearString do: [: aStear | 
-		
-		(aStear = $B) ifTrue: [^'Backwards'].
-		(aStear = $F) ifTrue: [^ self moveForwardsFromA: aCoordinate withDirection: aCardinalDirection  ].
-		(aStear = $R) ifTrue: [^'Right'].
-		(aStear = $L) ifTrue: [^'Left'] ifFalse: [^self"self error: 'Caracter no soportado'"]
+	(self cardinalDirection = $N) ifTrue: [^ marsRoverCardinalDirection = $W].
+	(self cardinalDirection = $S) ifTrue: [^ marsRoverCardinalDirection = $E].	
+	(self cardinalDirection = $E) ifTrue: [^ marsRoverCardinalDirection = $N].
+	(self cardinalDirection = $W) ifTrue: [^ marsRoverCardinalDirection = $S].! !
 
-		]  ! !
+!MarsRover methodsFor: 'navigation' stamp: 'lvg 10/30/2022 16:24:46'!
+turnRight
 
-
-!classDefinition: #MarsRoverCoordinates category: 'MarsRover-Exercise'!
-Object subclass: #MarsRoverCoordinates
-	instanceVariableNames: 'marsRover cardinalPoint'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'MarsRover-Exercise'!
+	(self cardinalDirection = $N) ifTrue: [^ marsRoverCardinalDirection = $E].
+	(self cardinalDirection = $S) ifTrue: [^ marsRoverCardinalDirection = $W].	
+	(self cardinalDirection = $E) ifTrue: [^ marsRoverCardinalDirection = $S].
+	(self cardinalDirection = $W) ifTrue: [^ marsRoverCardinalDirection = $N].! !
 
-!MarsRoverCoordinates methodsFor: 'initialization' stamp: 'lvg 10/29/2022 12:29:47'!
-initialize
 
-	marsRover := Point new.
-	cardinalPoint := 'N'! !
+!MarsRover methodsFor: 'initialization' stamp: 'lvg 10/30/2022 15:47:48'!
+initializeWithDirection: aCardinalDirection andWith: aCoordinate
 
-!MarsRoverCoordinates methodsFor: 'initialization' stamp: 'lvg 10/29/2022 12:25:51'!
-initializeWith: aCardinalPoint
+	marsRoverCoordinates :=  aCoordinate .
+	marsRoverCardinalDirection := aCardinalDirection .	
 
-	marsRover := Point new.
-	cardinalPoint := aCardinalPoint .! !
+! !
+
+
+!MarsRover methodsFor: 'accesing' stamp: 'lvg 10/30/2022 16:11:45'!
+cardinalDirection
+
+	^marsRoverCardinalDirection .! !
+
+!MarsRover methodsFor: 'accesing' stamp: 'lvg 10/30/2022 16:11:16'!
+coordinates
+
+	^marsRoverCoordinates.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'MarsRoverCoordinates class' category: 'MarsRover-Exercise'!
-MarsRoverCoordinates class
+!classDefinition: 'MarsRover class' category: 'MarsRover-Exercise'!
+MarsRover class
 	instanceVariableNames: ''!
 
-!MarsRoverCoordinates class methodsFor: 'as yet unclassified' stamp: 'lvg 10/29/2022 12:28:06'!
-newWith: aCardinalPoint
-
-	^self new initializeWith: aCardinalPoint.! !
+!MarsRover class methodsFor: 'as yet unclassified' stamp: 'lvg 10/30/2022 17:04:10'!
+with: aCoordinate and: aDirection.
+	
+	^self  new initializeWithDirection: aDirection andWith: aCoordinate.
+	! !
