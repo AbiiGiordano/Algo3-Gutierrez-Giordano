@@ -246,21 +246,6 @@ test16ChangesDirectionFromWestToNorthByUsingRightCommand
 	self assert: (marsRover coordinateEquals: (0@-1)).
 	self assert: (marsRover cardinalDirectionEquals: 'N')! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 10/31/2022 13:07:59'!
-test17ChangesToAllDirectionsAndMovements
-
-	| marsRoverCoordinates driveString marsRoverDirection marsRover |
-	
-	marsRoverCoordinates := (0@0).
-	marsRoverDirection := 'W'.
-	marsRover := MarsRover withACoordinate: marsRoverCoordinates andADirection: marsRoverDirection.
-	
-	driveString := 'LLLLBRFRRR'.
-	marsRover operate: driveString .
-	
-	self assert: (marsRover coordinateEquals: (1@1)).
-	self assert: (marsRover cardinalDirectionEquals: 'W')! !
-
 
 !classDefinition: #MarsRover category: 'MarsRover-Exercise'!
 Object subclass: #MarsRover
@@ -329,11 +314,11 @@ turnRight
 	(self cardinalDirection = 'W') ifTrue: [^ marsRoverCardinalDirection := 'N'].! !
 
 
-!MarsRover methodsFor: 'navigation - public' stamp: 'lvg 10/31/2022 13:26:17'!
+!MarsRover methodsFor: 'navigation - public' stamp: 'lvg 10/31/2022 17:26:47'!
 operate: aStearString
 
 	aStearString do: [: aStear | 
-		(self isItAValidDirection: aStear) ifTrue: [
+		(self isItAValidCommand: aStear) ifTrue: [
 			(aStear = $B) ifTrue: [self moveBackwards].
 			(aStear = $F) ifTrue: [self moveForwards ].
 			(aStear = $R) ifTrue: [self turnRight].
@@ -343,12 +328,14 @@ operate: aStearString
 ! !
 
 
-!MarsRover methodsFor: 'validation - private' stamp: 'lvg 10/31/2022 12:09:54'!
-isItAValidDirection: aCardinalDirection
-	| validDirections |
-	validDirections := OrderedCollection newFrom: #($F $B $L $R).	
+!MarsRover methodsFor: 'validation - private' stamp: 'lvg 10/31/2022 17:29:17'!
+isItAValidCommand: aCommand
 
-	^ validDirections includes: aCardinalDirection.! !
+	| validCommands |
+	
+	validCommands := OrderedCollection newFrom: #($F $B $L $R).	
+
+	^ validCommands includes: aCommand.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -356,8 +343,20 @@ isItAValidDirection: aCardinalDirection
 MarsRover class
 	instanceVariableNames: ''!
 
-!MarsRover class methodsFor: 'initialization' stamp: 'lvg 10/30/2022 18:53:53'!
+!MarsRover class methodsFor: 'initialization' stamp: 'lvg 10/31/2022 17:25:18'!
 withACoordinate: aCoordinate andADirection: aDirection.
+
+	 (self isAValidDirection: aDirection) ifFalse: [ self error: 'aDirection must be N,S,E, or W' ].
 	
 	^self  new initializeWithDirection: aDirection andWith: aCoordinate.
 	! !
+
+
+!MarsRover class methodsFor: 'validation' stamp: 'lvg 10/31/2022 17:30:02'!
+isAValidDirection: aCardinalDirection
+ 
+	| validDirections |
+	
+	validDirections := OrderedCollection newFrom: #('N' 'S' 'E' 'W').	
+
+	^ validDirections includes: aCardinalDirection.! !
