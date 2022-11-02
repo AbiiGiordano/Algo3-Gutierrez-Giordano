@@ -40,7 +40,7 @@ test02ReceivesOnlyOneCommandAndIsAbleToMoveForwards
 	 	endsUpIn: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/2/2022 13:23:07'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/2/2022 14:02:00'!
 test03ReceivesWrongCommandDoNothing
 
 	self 
@@ -53,7 +53,7 @@ test03ReceivesWrongCommandDoNothing
 		]
 		raise: Error
 		withExceptionDo: [ :anError | self assert: MarsRover invalidCommandErrorDescription equals: anError messageText ]
-	! !
+! !
 
 !MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/2/2022 12:43:50'!
 test04ReceivesOnlyOneCommandAndIsAbleToMoveToTheLeft
@@ -128,24 +128,19 @@ test07ReceivesStringCommandAndIsAbleToMoveAndChangeDirection
 		endsUpIn: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/2/2022 13:36:48'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/2/2022 14:05:21'!
 test08ReceivesAStringStopsAtTheFirstWrongCommand
-
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
-	marsRoverCoordinates := (0@0).
-	marsRoverDirection := 'N'.
-
-	driveString := 'LLLLPF'.
-	
-	marsRoverExpectedCoordinates := 0@0.
-	marsRoverExpectedDirection := 'N'.
-	
-	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection
-		canDrive: driveString 
-		endsUpIn: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
-
+	self 
+		should: [ 
+		| driveString marsRover |
+		
+		marsRover := MarsRover withACoordinate: (0@0) andADirection: 'N'.
+		driveString := 'LLLLPF'.
+		marsRover operate: driveString . 
+		]
+		raise: Error
+		withExceptionDo: [ :anError | self assert: MarsRover invalidCommandErrorDescription equals: anError messageText ]
 	
 ! !
 
@@ -565,7 +560,7 @@ initializeWithDirection: aCardinalDirection andWith: aCoordinate
 	! !
 
 
-!MarsRover methodsFor: 'navigation - public' stamp: 'lvg 11/2/2022 13:28:11'!
+!MarsRover methodsFor: 'navigation - public' stamp: 'lvg 11/2/2022 14:11:51'!
 operate: aStearString
 
 	
@@ -576,7 +571,7 @@ operate: aStearString
 			(aStear = $F) ifTrue: [marsRoverCoordinates :=	cardinalDirection moveForwards: marsRoverCoordinates ].
 			(aStear = $R) ifTrue: [marsRoverCardinalDirection := cardinalDirection turnRight ].
 			(aStear = $L) ifTrue: [marsRoverCardinalDirection := cardinalDirection turnLeft].
-		]ifFalse: [self error: 'Wrong command' ].
+		]ifFalse: [^ self error: 'Invalid command, expected commands are: F,B,R or L' ].
 	]  
 ! !
 
