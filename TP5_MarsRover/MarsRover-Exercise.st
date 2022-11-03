@@ -243,25 +243,26 @@ isCoordinateEquals: aCoordinate
 	^ marsRoverCoordinates = aCoordinate .! !
 
 
-!MarsRover methodsFor: 'initialization' stamp: 'lvg 11/3/2022 14:50:09'!
+!MarsRover methodsFor: 'initialization' stamp: 'lvg 11/3/2022 15:15:12'!
 initializeWithDirection: aCardinalDirection andWith: aCoordinate
 
 	marsRoverCoordinates :=  aCoordinate .
 	marsRoverCardinalDirection := aCardinalDirection .	
 	marsRoverCommands := Dictionary newFrom: { 
 						$B -> [marsRoverCoordinates :=  marsRoverCardinalDirection  moveBackwards: marsRoverCoordinates].
-	 					$F -> [marsRoverCoordinates :=  marsRoverCardinalDirection  moveForwards: marsRoverCoordinates] .
+	 					$F -> [marsRoverCoordinates :=  marsRoverCardinalDirection  moveForwards: marsRoverCoordinates].
 	 					$R -> [marsRoverCardinalDirection := 	marsRoverCardinalDirection turnRight].
-	 					$L -> [marsRoverCardinalDirection := marsRoverCardinalDirection turnLeft] }.
+	 					$L -> [marsRoverCardinalDirection := marsRoverCardinalDirection turnLeft].
+						}.
 
 ! !
 
 
-!MarsRover methodsFor: 'navigation - public' stamp: 'lvg 11/3/2022 14:42:20'!
+!MarsRover methodsFor: 'navigation - public' stamp: 'lvg 11/3/2022 15:11:41'!
 operate: aStearString
 	
 	aStearString do: [: aStear |
-		|aBlock| 
+		| aBlock | 
 		aBlock := marsRoverCommands at: aStear ifAbsent: [^ self error: 'Invalid command, expected commands are: F,B,R or L' ].
 		aBlock value.
 	]  
