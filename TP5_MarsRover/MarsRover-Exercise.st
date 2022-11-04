@@ -5,8 +5,8 @@ TestCase subclass: #MarsRoverTest
 	poolDictionaries: ''
 	category: 'MarsRover-Exercise'!
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 14:31:55'!
-test01EmptyCommandLIne
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:00:53'!
+test01EmptyCommandLine
 
 	| coordinates driveString direction marsRover |
 	
@@ -21,8 +21,8 @@ test01EmptyCommandLIne
 	self assert: (marsRover isCoordinateEquals: (0@0)).
 	self assert: (marsRover isCardinalDirectionEquals: 	(MarsRoverCardinalDirections with: 'N'))! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:57:11'!
-test03ReceivesOnlyOneCommandAndIsAbleToMoveForwards
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:01:46'!
+test02ReceivesOnlyOneCommandAndIsAbleToMoveForwards
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
@@ -39,8 +39,8 @@ test03ReceivesOnlyOneCommandAndIsAbleToMoveForwards
 		canDrive: driveString 
 	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:57:01'!
-test04ReceivesAWrongCommandRaiseAnError
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:02:03'!
+test03ReceivesAWrongCommandRaiseAnError
 
 	self 
 		should: [ 
@@ -53,8 +53,8 @@ test04ReceivesAWrongCommandRaiseAnError
 		raise: Error
 		withExceptionDo: [ :anError | self assert: MarsRover invalidCommandErrorDescription equals: anError messageText ]! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:56:49'!
-test05ReceivesOnlyOneCommandAndIsAbleToMoveBackWards
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:02:50'!
+test04ReceivesOnlyOneCommandAndIsAbleToMoveBackWards
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
@@ -71,8 +71,8 @@ test05ReceivesOnlyOneCommandAndIsAbleToMoveBackWards
 		canDrive: driveString 
 	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:56:42'!
-test06ReceivesOnlyOneCommandAndIsAbleToTurnLeft
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:03:02'!
+test05ReceivesOnlyOneCommandAndIsAbleToTurnLeft
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
@@ -89,8 +89,8 @@ test06ReceivesOnlyOneCommandAndIsAbleToTurnLeft
 		canDrive: driveString 
 	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:56:26'!
-test07ReceivesOnlyOneCommandAndIsAbleToTurnRight
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:03:13'!
+test06ReceivesOnlyOneCommandAndIsAbleToTurnRight
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
@@ -107,8 +107,8 @@ test07ReceivesOnlyOneCommandAndIsAbleToTurnRight
 		canDrive: driveString 
 	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:56:17'!
-test08ChangesDirectionFromWestToSouthByUsingLeftCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:03:23'!
+test07ChangesDirectionFromWestToSouthByUsingLeftCommand
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
@@ -126,8 +126,8 @@ test08ChangesDirectionFromWestToSouthByUsingLeftCommand
 	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:56:10'!
-test09ReceivesAStringStopsAtTheFirstWrongCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:03:36'!
+test08ReceivesAStringStopsAtTheFirstWrongCommand
 
 	self 
 		should: [ 
@@ -140,8 +140,8 @@ test09ReceivesAStringStopsAtTheFirstWrongCommand
 		raise: Error
 		withExceptionDo: [ :anError | self assert: MarsRover invalidCommandErrorDescription equals: anError messageText ]! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:53:23'!
-test10ChangesDirectionFromNorthToWestByUsingLeftCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:03:53'!
+test09ChangesDirectionFromNorthToWestByUsingLeftCommand
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
@@ -160,8 +160,8 @@ test10ChangesDirectionFromNorthToWestByUsingLeftCommand
 
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:53:14'!
-test11ChangesDirectionFromSouthToEastByUsingLeftCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:04:01'!
+test10ChangesDirectionFromSouthToEastByUsingLeftCommand
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
@@ -179,8 +179,8 @@ test11ChangesDirectionFromSouthToEastByUsingLeftCommand
 	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:53:06'!
-test12ChangesDirectionFromEastToNorthByUsingLeftCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:04:16'!
+test11ChangesDirectionFromEastToNorthByUsingLeftCommand
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
@@ -200,8 +200,8 @@ test12ChangesDirectionFromEastToNorthByUsingLeftCommand
 
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:42:14'!
-test13ChangesDirectionFromNorthToEastByUsingRightCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:04:33'!
+test12ChangesDirectionFromNorthToEastByUsingRightCommand
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
@@ -219,8 +219,8 @@ test13ChangesDirectionFromNorthToEastByUsingRightCommand
 	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:41:59'!
-test14ChangesDirectionFromEastToSouthByUsingRightCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:04:40'!
+test13ChangesDirectionFromEastToSouthByUsingRightCommand
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
@@ -238,8 +238,8 @@ test14ChangesDirectionFromEastToSouthByUsingRightCommand
 	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:41:48'!
-test15ChangesDirectionFromSouthToWestByUsingRightCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:05:08'!
+test14ChangesDirectionFromSouthToWestByUsingRightCommand
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
@@ -257,8 +257,8 @@ test15ChangesDirectionFromSouthToWestByUsingRightCommand
 	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 19:40:33'!
-test16ChangesDirectionFromWestToNorthByUsingRightCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:05:24'!
+test15ChangesDirectionFromWestToNorthByUsingRightCommand
 
 	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
 	
