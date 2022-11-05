@@ -96,17 +96,16 @@ TestCase subclass: #TransferenceTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 20:09:25'!
-test01AccountIsAbleToMakeATransference
+!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 20:37:04'!
+test01AnAccountIsAbleToMakeATransferenceToARecipientsAccount
 
-	| sendersAccount recipientsAccount  |
+	| account anotherAccount transferenceValue |
 	
-	sendersAccount := ReceptiveAccount new.
-	recipientsAccount := ReceptiveAccount new.
+	account := ReceptiveAccount new.
+	anotherAccount := ReceptiveAccount new.
+	transferenceValue := 50 * peso.
 	
-	self assert: (Transference fromSendersAccount: sendersAccount toARecipientsAccount: recipientsAccount thisAmount: 50) value equals: 50*peso.
-
-	! !
+	self assert: transferenceValue equals: (Transference register: transferenceValue on: account off: anotherAccount) value! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -175,44 +174,6 @@ Deposit class
 	instanceVariableNames: ''!
 
 !Deposit class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:38'!
-for: aValue
-
-	^ self new initializeFor: aValue ! !
-
-
-!classDefinition: #Transference category: 'ServiciosFinancieros-Ejercicio'!
-AccountTransaction subclass: #Transference
-	instanceVariableNames: 'value'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Ejercicio'!
-
-!Transference methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 20:10:11'!
-initializeFor: aValue
-
-	value := aValue ! !
-
-!Transference methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 19:38:19'!
-value
-
-	^ value! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'Transference class' category: 'ServiciosFinancieros-Ejercicio'!
-Transference class
-	instanceVariableNames: ''!
-
-!Transference class methodsFor: 'initialization' stamp: 'lvg 11/5/2022 12:07:01'!
-fromSendersAccount: anAccount toARecipientsAccount: anotherAccount thisAmount: anAmount
-
-	
-	Withdraw register: anAmount on: anotherAccount.
-	Deposit register: anAmount on: anotherAccount.
-! !
-
-
-!Transference class methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 19:41:34'!
 for: aValue
 
 	^ self new initializeFor: aValue ! !
@@ -304,3 +265,44 @@ register: aTransaction
 transactions 
 
 	^ transactions copy! !
+
+
+!classDefinition: #Transference category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Transference
+	instanceVariableNames: 'value'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Transference methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 20:45:30'!
+initializeFor: aValue
+
+	value := aValue ! !
+
+!Transference methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 20:42:54'!
+value
+
+	^ value! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Transference class' category: 'ServiciosFinancieros-Ejercicio'!
+Transference class
+	instanceVariableNames: ''!
+
+!Transference class methodsFor: 'category-name' stamp: 'lvg 11/5/2022 20:41:58'!
+register: anAmount on: aRecipientAccount off: aSendersAccount 
+
+	| transaction |
+	
+	transaction := self for: anAmount.
+	aRecipientAccount register: transaction.
+	aSendersAccount register: transaction.
+	^transaction.
+		! !
+
+
+!Transference class methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 20:44:53'!
+for: aValue
+
+	^ self new initializeFor: aValue ! !
