@@ -96,16 +96,115 @@ TestCase subclass: #TransferenceTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 20:37:04'!
-test01AnAccountIsAbleToMakeATransferenceToARecipientsAccount
-
-	| account anotherAccount transferenceValue |
+!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/8/2022 16:55:26'!
+test00
+"
+	| aRecipientAccount aSendersAccount transferenceValue transferenceValue2 transference transference2|
 	
-	account := ReceptiveAccount new.
-	anotherAccount := ReceptiveAccount new.
+	aRecipientAccount := ReceptiveAccount new.
+	aSendersAccount := ReceptiveAccount new.
+	transferenceValue := 50 * peso.
+	transferenceValue2 := 100 * peso.
+	transference := Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
+	transference2 := Transference register: transferenceValue2 on: aRecipientAccount  off: aSendersAccount.
+	
+	self assert: 2 equals: aRecipientAccount transactionsSize. 
+	self assert: 2 equals: aSendersAccount transactionsSize.
+	self assert: (aRecipientAccount transactionsIncludes: transference ).
+	self assert: (aSendersAccount transactionsIncludes: transference).
+	self assert: (aSendersAccount transactionsIncludes: transference2).
+	
+
+	self assert: transferenceValue equals: (Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount) value.
+	self assert: transferenceValue2 equals: (Transference register: transferenceValue2 on: aRecipientAccount off: aSendersAccount) value"! !
+
+!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/8/2022 17:22:06'!
+test01makeTransference
+
+	| aRecipientAccount aSendersAccount transferenceValue  |
+	
+	aRecipientAccount := ReceptiveAccount new.
+	aSendersAccount := ReceptiveAccount new.
+	transferenceValue := 50 * peso.
+	Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
+	
+	self assert: transferenceValue  equals: aRecipientAccount balance.
+	self assert:  (-50)*peso equals: aSendersAccount  balance.
+	
+	 
+! !
+
+!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/8/2022 17:22:50'!
+test02
+
+	| aRecipientAccount aSendersAccount transferenceValue anotherTransferenceValue   |
+	
+	aRecipientAccount := ReceptiveAccount new.
+	aSendersAccount := ReceptiveAccount new.
+	transferenceValue := 50 * peso.
+	anotherTransferenceValue := 100*peso.
+	
+	Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
+	Transference register: anotherTransferenceValue on: aRecipientAccount off: aSendersAccount.
+	
+	self assert: 150*peso  equals: aRecipientAccount balance.
+	self assert: (-150)*peso equals: aSendersAccount balance .
+	
+	 
+! !
+
+!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/8/2022 17:24:52'!
+test03
+
+	| aRecipientAccount aSendersAccount transferenceValue anotherTransferenceValue transference anotherTransference |
+	
+	aRecipientAccount := ReceptiveAccount new.
+	aSendersAccount := ReceptiveAccount new.
+	transferenceValue := 50 * peso.
+	anotherTransferenceValue := 100*peso.
+	
+	transference := Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
+	anotherTransference := Transference register: anotherTransferenceValue on: aRecipientAccount off: aSendersAccount.
+	
+	self assert: 2 equals: aRecipientAccount transactionsSize.
+	self assert: 2 equals: aSendersAccount transactionsSize.
+
+	 
+! !
+
+!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/8/2022 17:33:45'!
+test04
+
+	| aRecipientAccount aSendersAccount transferenceValue  transference  |
+	
+	aRecipientAccount := ReceptiveAccount new.
+	aSendersAccount := ReceptiveAccount new.
 	transferenceValue := 50 * peso.
 	
-	self assert: transferenceValue equals: (Transference register: transferenceValue on: account off: anotherAccount) value! !
+	transference := Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
+	
+	self assert: (aRecipientAccount contraparte: transference ) = aSendersAccount.
+	self deny: (aRecipientAccount contraparte: transference ) = aRecipientAccount.
+
+	 
+! !
+
+!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/8/2022 17:34:38'!
+test05
+
+	| aRecipientAccount aSendersAccount transferenceValue  transference  |
+	
+	aRecipientAccount := ReceptiveAccount new.
+	aSendersAccount := ReceptiveAccount new.
+	transferenceValue := 50 * peso.
+	
+	transference := Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
+	
+	self assert: (aSendersAccount contraparte: transference ) = aRecipientAccount.
+	self deny: (aSendersAccount contraparte: transference ) = aSendersAccount.
+
+	 
+! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -228,7 +327,7 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'lvg 11/4/2022 21:48:48'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'lvg 11/8/2022 14:43:54'!
 balance
 
 	| aBalance |
@@ -238,13 +337,7 @@ balance
 	transactions do: [ :aTransaction |
 		
 		aBalance := aTransaction operation: aBalance.
-		
-		"
-		(aTransaction isKindOf: Deposit) ifTrue:[
-			aBalance := aBalance + aTransaction value.].
-		(aTransaction  isKindOf:  Withdraw) ifTrue:[
-			aBalance := aBalance - aTransaction value.].
-		"
+
 		 ].
 	
 	^aBalance .! !
@@ -266,23 +359,43 @@ transactions
 
 	^ transactions copy! !
 
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'lvg 11/8/2022 15:32:28'!
+transactionsIncludes: aTransaction
+
+	^ transactions includes: aTransaction.! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'lvg 11/8/2022 15:35:27'!
+transactionsSize
+
+	^ transactions size.! !
+
+
+!ReceptiveAccount methodsFor: 'validation' stamp: 'lvg 11/8/2022 17:30:39'!
+contraparte: aTransference 
+	
+	^aTransference cualEsLaContraparte: self.! !
+
 
 !classDefinition: #Transference category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Transference
-	instanceVariableNames: 'value'
+	instanceVariableNames: 'amount recipientAccount sendersAccount value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Transference methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 20:45:30'!
-initializeFor: aValue
+!Transference methodsFor: 'initialization' stamp: 'lvg 11/8/2022 17:02:57'!
+initializeRegister: anAmount on: aRecipientAccount off: aSendersAccount 
+	
+	value := anAmount.
+	recipientAccount := aRecipientAccount.
+	sendersAccount := aSendersAccount.! !
 
-	value := aValue ! !
 
-!Transference methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 20:42:54'!
-value
+!Transference methodsFor: 'op' stamp: 'lvg 11/8/2022 17:33:07'!
+cualEsLaContraparte: aReceptiveAccount 
 
-	^ value! !
+	(aReceptiveAccount = recipientAccount ) ifTrue: [^sendersAccount ].
+	(aReceptiveAccount = sendersAccount ) ifTrue: [^recipientAccount ].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -290,19 +403,13 @@ value
 Transference class
 	instanceVariableNames: ''!
 
-!Transference class methodsFor: 'category-name' stamp: 'lvg 11/5/2022 20:41:58'!
-register: anAmount on: aRecipientAccount off: aSendersAccount 
+!Transference class methodsFor: 'instance creation' stamp: 'lvg 11/8/2022 17:10:41'!
+register: anAmount on: aRecipientAccount off: aSendersAccount
 
-	| transaction |
+	| transference |
+	transference := self new initializeRegister: anAmount on: aRecipientAccount off: aSendersAccount .
+	Withdraw register: anAmount  on: aSendersAccount.
+	Deposit register: anAmount on: aRecipientAccount.
 	
-	transaction := self for: anAmount.
-	aRecipientAccount register: transaction.
-	aSendersAccount register: transaction.
-	^transaction.
-		! !
-
-
-!Transference class methodsFor: 'as yet unclassified' stamp: 'lvg 11/5/2022 20:44:53'!
-for: aValue
-
-	^ self new initializeFor: aValue ! !
+	^transference .
+! !
