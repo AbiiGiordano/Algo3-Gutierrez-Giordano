@@ -1,3 +1,105 @@
+!classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Ejercicio'!
+TestCase subclass: #PortfolioTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'AGH 11/8/2022 20:21:32'!
+test01CreateEmptyPortfolioAndCheckBalance
+	
+	|portfolio|
+	portfolio := Portfolio new.
+	
+	self assert: portfolio balanceDePortfolio equals: 0*peso! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'AGH 11/8/2022 20:40:57'!
+test02AddAccountAndCheckBalance
+	
+	|portfolio account accounts |
+	
+	account := ReceptiveAccount new.
+	Deposit register: 10*peso on: account.
+	accounts := OrderedCollection with: account.
+	portfolio := Portfolio with: accounts.
+	
+	self assert: portfolio balanceDePortfolio equals: 10*peso! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'AGH 11/8/2022 20:31:52'!
+test03AddMoreThanOneAccountAndCheckBalance
+	
+	|portfolio account anotherAccount accounts |
+	
+	account := ReceptiveAccount new.
+	anotherAccount := ReceptiveAccount new.
+	Deposit register: 10*peso on: account.
+	Withdraw register: 5*peso on: anotherAccount.
+	
+	accounts := OrderedCollection with: account with: anotherAccount.
+	portfolio := Portfolio with: accounts.
+	
+	self assert: portfolio balanceDePortfolio equals: 5*peso! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'AGH 11/8/2022 21:02:09'!
+test04AskForAParticularTransactionToPortfolio
+	
+	|portfolio account anotherAccount accounts transaction |
+	
+	account := ReceptiveAccount new.
+	anotherAccount := ReceptiveAccount new.
+	transaction := Deposit register: 10*peso on: account.
+	Withdraw register: 5*peso on: anotherAccount.
+	
+	accounts := OrderedCollection with: account with: anotherAccount.
+	portfolio := Portfolio with: accounts.
+	
+	self assert: (portfolio includesTheTransaction: transaction).! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'AGH 11/8/2022 20:52:53'!
+test05AskForAllTransactionsToPortfolio
+	
+	|portfolio account anotherAccount accounts transaction anotherTransaction transactions |
+	
+	account := ReceptiveAccount new.
+	anotherAccount := ReceptiveAccount new.
+	
+	transaction := Deposit register: 10*peso on: account.
+	anotherTransaction := Withdraw register: 5*peso on: anotherAccount.
+	
+	transactions := OrderedCollection with: transaction with: anotherTransaction.
+	
+	accounts := OrderedCollection with: account with: anotherAccount.
+	portfolio := Portfolio with: accounts.
+	
+	self assert: transactions equals: portfolio getTransactions.! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'AGH 11/8/2022 21:08:02'!
+test06APortfolioWithOnePortfolio
+	
+	| elements portfolio |
+	elements := OrderedCollection with: (Portfolio new).
+	portfolio := Portfolio with: elements.
+	
+	self assert: 0*peso equals: portfolio balanceDePortfolio.! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'AGH 11/8/2022 21:30:15'!
+test07APortfolioWithDifferentTypeOfElements
+	
+	| elements portfolio account elementPortfolio innerPortfolio |
+	
+	account := ReceptiveAccount new.
+	Deposit register: 50*peso on: account.
+	
+	innerPortfolio := OrderedCollection with: account.
+	elementPortfolio := Portfolio with: innerPortfolio.
+	
+	"agregar una cuenta al portoflio de afuera"
+	elements := OrderedCollection with: elementPortfolio.
+	portfolio := Portfolio with: elements.
+	
+	self assert: 50*peso equals: portfolio balanceDePortfolio.! !
+
+
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #ReceptiveAccountTest
 	instanceVariableNames: ''
@@ -15,12 +117,12 @@ test01ReceptiveAccountHaveZeroAsBalanceWhenCreated
 	self assert: 0 equals: account balance
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:14:20'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'AGH 11/8/2022 20:22:37'!
 test02DepositIncreasesBalanceOnTransactionValue 
 
 	| account |
 	
-	account := ReceptiveAccount  new.
+	account := ReceptiveAccount new.
 	Deposit register: 100 * peso on: account.
 		
 	self assert: 100 * peso equals: account balance
@@ -134,8 +236,8 @@ test01makeTransference
 	 
 ! !
 
-!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/8/2022 17:22:50'!
-test02
+!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'AGH 11/8/2022 19:49:24'!
+test02makeMoreThanOneTransference
 
 	| aRecipientAccount aSendersAccount transferenceValue anotherTransferenceValue   |
 	
@@ -153,8 +255,8 @@ test02
 	 
 ! !
 
-!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/8/2022 17:24:52'!
-test03
+!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'AGH 11/8/2022 19:49:57'!
+test03registerTransfererenceCorrectly
 
 	| aRecipientAccount aSendersAccount transferenceValue anotherTransferenceValue transference anotherTransference |
 	
@@ -172,8 +274,8 @@ test03
 	 
 ! !
 
-!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/8/2022 17:33:45'!
-test04
+!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'AGH 11/8/2022 19:50:29'!
+test04getSenderAccount
 
 	| aRecipientAccount aSendersAccount transferenceValue  transference  |
 	
@@ -189,8 +291,8 @@ test04
 	 
 ! !
 
-!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'lvg 11/8/2022 17:34:38'!
-test05
+!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'AGH 11/8/2022 19:50:41'!
+test05getRecipientAccount
 
 	| aRecipientAccount aSendersAccount transferenceValue  transference  |
 	
@@ -314,6 +416,52 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
+!classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Portfolio
+	instanceVariableNames: 'accounts'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Portfolio methodsFor: 'category-name' stamp: 'AGH 11/8/2022 21:11:14'!
+balance
+	^ self balanceDePortfolio.! !
+
+!Portfolio methodsFor: 'category-name' stamp: 'AGH 11/8/2022 21:09:17'!
+balanceDePortfolio
+
+	^ (accounts = nil) ifTrue: [^0*peso] ifFalse: [accounts sum: [:actualAccount | actualAccount balance] ].! !
+
+!Portfolio methodsFor: 'category-name' stamp: 'AGH 11/8/2022 21:09:10'!
+getTransactions
+
+	| transactions |
+	transactions := OrderedCollection new.
+	accounts do: [:actualAccount | transactions addAllLast: (actualAccount transactions)].
+	^transactions.! !
+
+!Portfolio methodsFor: 'category-name' stamp: 'AGH 11/8/2022 21:09:06'!
+includesTheTransaction: aTransaction 
+
+	accounts do: [:actualAccount | (actualAccount transactionsIncludes: aTransaction) ifTrue: [^true]].
+	^false.! !
+
+!Portfolio methodsFor: 'category-name' stamp: 'AGH 11/8/2022 21:09:22'!
+with: aReceptiveAccount 
+
+	accounts := aReceptiveAccount.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
+Portfolio class
+	instanceVariableNames: ''!
+
+!Portfolio class methodsFor: 'category-name' stamp: 'AGH 11/8/2022 20:24:21'!
+with: aReceptiveAccount 
+	^self new with: aReceptiveAccount.! !
+
+
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #ReceptiveAccount
 	instanceVariableNames: 'transactions'
@@ -327,18 +475,14 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'lvg 11/8/2022 14:43:54'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'AGH 11/8/2022 21:21:24'!
 balance
 
 	| aBalance |
 	
 	aBalance := 0.
 
-	transactions do: [ :aTransaction |
-		
-		aBalance := aTransaction operation: aBalance.
-
-		 ].
+	transactions do: [ :aTransaction | aBalance := aTransaction operation: aBalance].
 	
 	^aBalance .! !
 
@@ -403,12 +547,12 @@ cualEsLaContraparte: aReceptiveAccount
 Transference class
 	instanceVariableNames: ''!
 
-!Transference class methodsFor: 'instance creation' stamp: 'lvg 11/8/2022 17:10:41'!
+!Transference class methodsFor: 'instance creation' stamp: 'AGH 11/8/2022 20:10:54'!
 register: anAmount on: aRecipientAccount off: aSendersAccount
 
 	| transference |
 	transference := self new initializeRegister: anAmount on: aRecipientAccount off: aSendersAccount .
-	Withdraw register: anAmount  on: aSendersAccount.
+	Withdraw register: anAmount on: aSendersAccount.
 	Deposit register: anAmount on: aRecipientAccount.
 	
 	^transference .
