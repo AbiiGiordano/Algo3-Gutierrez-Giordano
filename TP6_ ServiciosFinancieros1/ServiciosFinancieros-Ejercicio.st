@@ -101,7 +101,7 @@ test07AddAPortfolioAndAnAccountToAnotherPortfolio
 	self assert: (portfolio isBalance: 60*peso).
 ! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 01:26:05'!
+!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 14:48:35'!
 test08APortfolioCannotAddTheSameAccountMoreThanOnce
 
 	self
@@ -115,26 +115,8 @@ test08APortfolioCannotAddTheSameAccountMoreThanOnce
 		Portfolio with: elements .
 	]
 	raise: Error
-	withExceptionDo: [ :anError | self assert: Portfolio invalidAccountTwiceErrorDescription equals: anError messageText ]
+	withExceptionDo: [ :anError | self assert: Portfolio addingAnAccountMoreThanOnceIntoAPortfolioErrorDescription equals: anError messageText ]
 	! !
-
-!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 02:22:01'!
-test09APortfolioCannotAddAccountThatItIsAlreadyIncludeInPrevioslyAddedPortfolio
-"
-	self
-	should:[
-		| account elements innerElements innerPortfolio |
-		
-		account := ReceptiveAccount new.
-		innerElements := OrderedCollection with: account.
-		innerPortfolio := Portfolio with: innerElements.
-		elements := OrderedCollection with: innerPortfolio with: account.
-		Portfolio with: elements.
-
-	]
-	raise: Error
-	withExceptionDo: [ :anError | self assert: Portfolio invalidAccountTwiceErrorDescription equals: anError messageText ]
-	"! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
@@ -410,8 +392,8 @@ transactionValue
 	^transactionValue! !
 
 
-!AccountTransaction methodsFor: 'operation' stamp: 'lvg 11/10/2022 22:43:29'!
-transaction: aBalance
+!AccountTransaction methodsFor: 'operation' stamp: 'lvg 11/11/2022 14:46:07'!
+makeTransaction: aBalance
 
 	self subclassResponsibility ! !
 
@@ -440,8 +422,8 @@ initializeFor: aValue
 	transactionValue := aValue ! !
 
 
-!Deposit methodsFor: 'operation' stamp: 'lvg 11/10/2022 22:43:29'!
-transaction: aBalance
+!Deposit methodsFor: 'operation' stamp: 'lvg 11/11/2022 14:46:07'!
+makeTransaction: aBalance
 
 	^ aBalance + transactionValue.! !
 
@@ -500,8 +482,8 @@ counterpartTransaction
 
 	^ transference transferenceWithdraw.! !
 
-!TransferenceDeposit methodsFor: 'operations' stamp: 'lvg 11/10/2022 22:43:29'!
-transaction: aBalance
+!TransferenceDeposit methodsFor: 'operations' stamp: 'lvg 11/11/2022 14:46:07'!
+makeTransaction: aBalance
 
 	^ aBalance + transactionValue.! !
 
@@ -545,8 +527,8 @@ counterpartTransaction
 
 	^ transference transferenceDeposit.! !
 
-!TransferenceWithdraw methodsFor: 'operation' stamp: 'lvg 11/10/2022 22:43:29'!
-transaction: aBalance
+!TransferenceWithdraw methodsFor: 'operation' stamp: 'lvg 11/11/2022 14:46:07'!
+makeTransaction: aBalance
 
 	^ aBalance - transactionValue.! !
 
@@ -599,8 +581,8 @@ initializeFor: aValue
 	transactionValue := aValue ! !
 
 
-!Withdraw methodsFor: 'operation' stamp: 'lvg 11/10/2022 22:43:29'!
-transaction: aBalance
+!Withdraw methodsFor: 'operation' stamp: 'lvg 11/11/2022 14:46:07'!
+makeTransaction: aBalance
 
 	^ aBalance - transactionValue.! !
 
@@ -723,29 +705,21 @@ with: aCollectionOfPorfolioElements
 ! !
 
 
-!Portfolio class methodsFor: 'error description' stamp: 'lvg 11/11/2022 01:20:34'!
-invalidAccountTwiceErrorDescription
+!Portfolio class methodsFor: 'error description' stamp: 'lvg 11/11/2022 14:48:35'!
+addingAnAccountMoreThanOnceIntoAPortfolioErrorDescription
 
 	^'The financial account already exist'.! !
 
 
-!Portfolio class methodsFor: 'validation' stamp: 'lvg 11/11/2022 02:21:46'!
+!Portfolio class methodsFor: 'validation' stamp: 'lvg 11/11/2022 14:50:43'!
 isACollectionOfPortfoliosValid: aCollectionOfPortfolios 
 		
 	aCollectionOfPortfolios ifEmpty: [		^true].
 	
-	((aCollectionOfPortfolios size) = 1) ifTrue: [
-		 (aCollectionOfPortfolios includes: aCollectionOfPortfolios ) ifTrue:[self error: 'The financial account already exist']. 
-		^true.
-	].
-	((aCollectionOfPortfolios size) > 1)ifTrue:[
-		aCollectionOfPortfolios do: [: anElementFromACollectionOfPortfolios|
-			 (aCollectionOfPortfolios occurrencesOf: anElementFromACollectionOfPortfolios) > 1 ifTrue:[self error: 'The financial account already exist'].
-			"		((anElementFromACollectionOfPortfolios size)>1) ifTrue:[anElementFromACollectionOfPortfolios 
-				do:[:innerElement| (innerElement = anElementFromACollectionOfPortfolios) ifTrue:[self error: 'The financial account already exist']. ].
-			]."
-	].
-	].
+	((aCollectionOfPortfolios size) = 1) ifTrue: [(aCollectionOfPortfolios includes: aCollectionOfPortfolios ) ifTrue:[self error: 'The financial account already exist']. 
+		^true.].
+	((aCollectionOfPortfolios size) > 1)ifTrue:[aCollectionOfPortfolios do: [: anElementFromACollectionOfPortfolios|
+			 (aCollectionOfPortfolios occurrencesOf: anElementFromACollectionOfPortfolios) > 1 ifTrue:[self error: 'The financial account already exist'].].].
 	^true.! !
 
 
@@ -762,14 +736,14 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'lvg 11/10/2022 22:43:29'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'lvg 11/11/2022 14:46:07'!
 balance
 
 	| aBalance |
 	
 	aBalance := 0.
 
-	transactions do: [ :aTransaction | aBalance := aTransaction transaction: aBalance].
+	transactions do: [ :aTransaction | aBalance := aTransaction makeTransaction: aBalance].
 	
 	^aBalance .! !
 
