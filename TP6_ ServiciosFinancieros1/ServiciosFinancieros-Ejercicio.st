@@ -5,15 +5,15 @@ TestCase subclass: #PortfolioTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 18:11:11'!
+!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 23:41:57'!
 test01CreateEmptyPortfolio
 	
 	|portfolio|
 	portfolio := Portfolio new.
 	
-	self assert: portfolio balance equals: 0*peso! !
+	self assert: (portfolio isBalance: 0*peso)! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 18:11:04'!
+!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 23:42:25'!
 test02AddAnAccountToAPortfolio
 	
 	|portfolio account accounts |
@@ -23,9 +23,9 @@ test02AddAnAccountToAPortfolio
 	accounts := OrderedCollection with: account.
 	portfolio := Portfolio with: accounts.
 	
-	self assert: portfolio balance equals: 10*peso! !
+	self assert: (portfolio isBalance: 10*peso).! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 18:10:31'!
+!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 23:42:46'!
 test03AddMoreThanOneAccountToAPortfolio
 	
 	|portfolio account anotherAccount accounts |
@@ -38,7 +38,7 @@ test03AddMoreThanOneAccountToAPortfolio
 	accounts := OrderedCollection with: account with: anotherAccount.
 	portfolio := Portfolio with: accounts.
 	
-	self assert: portfolio balance equals: 5*peso! !
+	self assert: (portfolio isBalance: 5*peso)! !
 
 !PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 18:07:20'!
 test04AskForAParticularTransactionToAPortfolio
@@ -73,16 +73,16 @@ test05GetAllTransactionsOfAPortfolio
 	
 	self assert: transactions equals: portfolio transactions.! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 18:09:10'!
+!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 23:45:49'!
 test06AddAPortfolioToAnotherPortfolio
 	
 	| elements portfolio |
 	elements := OrderedCollection with: (Portfolio new).
 	portfolio := Portfolio with: elements.
 	
-	self assert: 0*peso equals: portfolio balance.! !
+	self assert: (portfolio isBalance: 0*peso) .! !
 
-!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 18:13:09'!
+!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 23:46:12'!
 test07AddAPortfolioAndAnAccountToAnotherPortfolio
 	
 	| elements portfolio account innerPortfolio elementInnerPortfolio anotherAccount |
@@ -98,8 +98,43 @@ test07AddAPortfolioAndAnAccountToAnotherPortfolio
 	elements := OrderedCollection with: innerPortfolio with: anotherAccount.
 	portfolio := Portfolio with: elements.
 	
-	self assert: 60*peso equals: portfolio balance.
+	self assert: (portfolio isBalance: 60*peso).
 ! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 01:26:05'!
+test08APortfolioCannotAddTheSameAccountMoreThanOnce
+
+	self
+	should:[
+		| account elements |
+		
+		account := ReceptiveAccount new.
+		Deposit register: 50*peso on: account.
+
+		elements := OrderedCollection with: account with: account .
+		Portfolio with: elements .
+	]
+	raise: Error
+	withExceptionDo: [ :anError | self assert: Portfolio invalidAccountTwiceErrorDescription equals: anError messageText ]
+	! !
+
+!PortfolioTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 02:22:01'!
+test09APortfolioCannotAddAccountThatItIsAlreadyIncludeInPrevioslyAddedPortfolio
+"
+	self
+	should:[
+		| account elements innerElements innerPortfolio |
+		
+		account := ReceptiveAccount new.
+		innerElements := OrderedCollection with: account.
+		innerPortfolio := Portfolio with: innerElements.
+		elements := OrderedCollection with: innerPortfolio with: account.
+		Portfolio with: elements.
+
+	]
+	raise: Error
+	withExceptionDo: [ :anError | self assert: Portfolio invalidAccountTwiceErrorDescription equals: anError messageText ]
+	"! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
@@ -109,17 +144,17 @@ TestCase subclass: #ReceptiveAccountTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:43'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 00:06:17'!
 test01ReceptiveAccountHaveZeroAsBalanceWhenCreated 
 
 	| account |
 	
 	account := ReceptiveAccount new.
 
-	self assert: 0 equals: account balance
+	self assert: (account isBalance: 0*peso).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'AGH 11/8/2022 20:22:37'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 00:07:12'!
 test02DepositIncreasesBalanceOnTransactionValue 
 
 	| account |
@@ -127,10 +162,10 @@ test02DepositIncreasesBalanceOnTransactionValue
 	account := ReceptiveAccount new.
 	Deposit register: 100 * peso on: account.
 		
-	self assert: 100 * peso equals: account balance
+	self assert: (account isBalance: 100*peso).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:14:24'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 00:07:42'!
 test03WithdrawDecreasesBalanceOnTransactionValue 
 
 	| account |
@@ -139,18 +174,24 @@ test03WithdrawDecreasesBalanceOnTransactionValue
 	Deposit register: 100 * peso on: account.
 	Withdraw register: 50 * peso on: account.
 		
-	self assert: 50 * peso equals: account balance
+	self assert: (account isBalance: 50*peso).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'AGH 11/10/2022 19:04:48'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 00:29:09'!
 test04WithdrawValueMustBePositive 
 
-	| account withdrawValue |
+	self
+	should:[
+		| account withdrawValue |
+		
+		account := ReceptiveAccount new.
+		withdrawValue := (-50) * peso.
+		Withdraw register: withdrawValue on: account.
+	]
+	raise: Error
+	withExceptionDo: [ :anError | self assert: Withdraw invalidWithdrawAmountErrorDescription equals: anError messageText ]
+
 	
-	account := ReceptiveAccount new.
-	withdrawValue := 50 * peso.
-	
-	self assert: withdrawValue equals: (Withdraw register: withdrawValue on: account) transactionValue.
 ! !
 
 !ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:22'!
@@ -179,17 +220,39 @@ test06ReceptiveAccountDoNotKnowNotRegisteredTransactions
 	self deny: (account hasRegistered: withdraw).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 15:58:33'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 00:08:57'!
 test07AccountKnowsItsTransactions 
 
-	| account deposit |
+	| account anotherAccount deposit depositToAnotherAccount |
 	
 	account := ReceptiveAccount new.
+	anotherAccount := ReceptiveAccount new.
 	
 	deposit := Deposit register: 50 * peso on: account.
+	depositToAnotherAccount := Deposit register: 100*peso on: anotherAccount .
+	
 		
-	self assert: 1 equals: account transactions size.
+	self assert: (account isTransactionsSize: 1).
 	self assert: (account transactions includes: deposit).
+	self deny: (account includesTheTransaction: depositToAnotherAccount).
+
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 00:31:12'!
+test08DepositValueMustBePositive 
+
+	self
+	should:[
+		| account depositValue |
+		
+		account := ReceptiveAccount new.
+		depositValue := (-50) * peso.
+		Deposit register: depositValue on: account.
+	]
+	raise: Error
+	withExceptionDo: [ :anError | self assert: Deposit invalidDepositAmountErrorDescription equals: anError messageText ]
+
+	
 ! !
 
 
@@ -200,8 +263,25 @@ TestCase subclass: #TransferenceTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferenceTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 17:19:55'!
-test00TransferenceCannotBeWithZeroAmount
+!TransferenceTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 23:28:33'!
+test01MoneyCanBeTransferredBetweenAccounts
+
+	| aRecipientAccount aSendersAccount transferenceValue expectedTransferenceWithDrawValue |
+	
+	aRecipientAccount := ReceptiveAccount new.
+	aSendersAccount := ReceptiveAccount new.
+	transferenceValue := 50 * peso.
+	Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
+	
+	expectedTransferenceWithDrawValue := (-50) * peso. "solo para validar y no romper encapsulamiento"
+	
+	self assert: (aRecipientAccount isBalance: transferenceValue).
+	self assert: (aSendersAccount isBalance: expectedTransferenceWithDrawValue).
+	
+! !
+
+!TransferenceTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 23:11:12'!
+test02TransferenceWithZeroAmountCannotBePosible
 
 	self
 	should:[
@@ -217,8 +297,8 @@ test00TransferenceCannotBeWithZeroAmount
 	 
 ! !
 
-!TransferenceTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 17:21:11'!
-test00sameaccountTransferenceIna
+!TransferenceTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 23:11:31'!
+test03AnAccountCannotTransferMoneyToItself
 
 	self
 	should:[
@@ -236,26 +316,10 @@ test00sameaccountTransferenceIna
 	 
 ! !
 
-!TransferenceTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 16:05:49'!
-test01makeTransference
+!TransferenceTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 23:30:05'!
+test04AnAccountCanTransferMoneyMoreThanOnce
 
-	| aRecipientAccount aSendersAccount transferenceValue transference |
-	
-	aRecipientAccount := ReceptiveAccount new.
-	aSendersAccount := ReceptiveAccount new.
-	transferenceValue := 50 * peso.
-	transference :=  Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
-	
-	self assert: transferenceValue  equals: aRecipientAccount balance.
-	self assert:  (-50)*peso equals: aSendersAccount  balance.
-	"self assert: (aRecipientAccount hasRegistered: (	transference pataExtraccion ) ) "
-	
-! !
-
-!TransferenceTest methodsFor: 'tests' stamp: 'AGH 11/8/2022 19:49:24'!
-test02makeMoreThanOneTransference
-
-	| aRecipientAccount aSendersAccount transferenceValue anotherTransferenceValue   |
+	| aRecipientAccount aSendersAccount transferenceValue anotherTransferenceValue expectedTransferenceWithdrawValue expectedTotalTransferValue |
 	
 	aRecipientAccount := ReceptiveAccount new.
 	aSendersAccount := ReceptiveAccount new.
@@ -265,14 +329,17 @@ test02makeMoreThanOneTransference
 	Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
 	Transference register: anotherTransferenceValue on: aRecipientAccount off: aSendersAccount.
 	
-	self assert: 150*peso  equals: aRecipientAccount balance.
-	self assert: (-150)*peso equals: aSendersAccount balance .
+	expectedTransferenceWithdrawValue := (-150)*peso.	
+	expectedTotalTransferValue := 150*peso.
+	
+	self assert: (aRecipientAccount isBalance: expectedTotalTransferValue).
+	self assert: (aSendersAccount isBalance: expectedTransferenceWithdrawValue).
 	
 	 
 ! !
 
-!TransferenceTest methodsFor: 'tests' stamp: 'AGH 11/8/2022 19:49:57'!
-test03registerTransfererenceCorrectly
+!TransferenceTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 00:00:13'!
+test05AnAccountRegisterTransfererenceCorrectly
 
 	| aRecipientAccount aSendersAccount transferenceValue anotherTransferenceValue transference anotherTransference |
 	
@@ -284,50 +351,50 @@ test03registerTransfererenceCorrectly
 	transference := Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
 	anotherTransference := Transference register: anotherTransferenceValue on: aRecipientAccount off: aSendersAccount.
 	
-	self assert: 2 equals: aRecipientAccount transactionsSize.
-	self assert: 2 equals: aSendersAccount transactionsSize.
+	self assert: (aRecipientAccount isTransactionsSize: 2).
+	self assert: (aSendersAccount isTransactionsSize: 2).
 
 	 
 ! !
 
-!TransferenceTest methodsFor: 'tests' stamp: 'AGH 11/10/2022 19:32:14'!
-test04getTransactionPataExtraccion
+!TransferenceTest methodsFor: 'tests' stamp: 'lvg 11/10/2022 23:37:50'!
+test06TransferenceWithdrawKnowsItsCounterpart
 
-	| aRecipientAccount aSendersAccount transferenceValue  transference pataExtraccion pataDeposito |
+	| aRecipientAccount aSendersAccount transferenceValue  transference transferenceWithdraw transferenceDeposit |
 	
 	aRecipientAccount := ReceptiveAccount new.
 	aSendersAccount := ReceptiveAccount new.
 	transferenceValue := 50 * peso.
 	
 	transference := Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
-	pataExtraccion := 	transference transferenceWithdraw.
-	pataDeposito  := transference transferenceDeposit.
+	transferenceWithdraw := 	transference transferenceWithdraw.
+	transferenceDeposit  := transference transferenceDeposit.
 	
-	self assert: (pataExtraccion counterpart) = pataDeposito.
-	self deny: (pataExtraccion counterpart ) = pataExtraccion.
+	self assert: (transferenceWithdraw isCounterpartTransaction: transferenceDeposit).
+	self deny: (transferenceWithdraw isCounterpartTransaction: transferenceWithdraw).
 
 	 
 
 ! !
 
-!TransferenceTest methodsFor: 'tests' stamp: 'AGH 11/10/2022 19:32:14'!
-test07getTransactionPataDeposito
+!TransferenceTest methodsFor: 'tests' stamp: 'lvg 11/11/2022 01:18:39'!
+test07TransferenceDepositKnowsItsCounterpart
 
-	| aRecipientAccount aSendersAccount transferenceValue  transference pataExtraccion pataDeposito |
+	| aRecipientAccount aSendersAccount transferenceValue  transference transferenceWithdraw transferenceDeposit |
 	
 	aRecipientAccount := ReceptiveAccount new.
 	aSendersAccount := ReceptiveAccount new.
 	transferenceValue := 50 * peso.
 	
 	transference := Transference register: transferenceValue on: aRecipientAccount off: aSendersAccount.
-	pataExtraccion := 	transference transferenceWithdraw.
-	pataDeposito  := transference transferenceDeposit.
+	transferenceWithdraw := 	transference transferenceWithdraw.
+	transferenceDeposit  := transference transferenceDeposit.
 	
-	self assert: (pataDeposito counterpart) = pataExtraccion .
-	self deny: (pataDeposito counterpart ) = pataDeposito .
-
+	self assert: (transferenceDeposit isCounterpartTransaction: transferenceWithdraw ).
+	self deny: (transferenceDeposit isCounterpartTransaction: transferenceDeposit ).
 
 	 
+
 ! !
 
 
@@ -343,8 +410,8 @@ transactionValue
 	^transactionValue! !
 
 
-!AccountTransaction methodsFor: 'operation' stamp: 'AGH 11/10/2022 19:19:31'!
-makeTransaction: aBalance
+!AccountTransaction methodsFor: 'operation' stamp: 'lvg 11/10/2022 22:43:29'!
+transaction: aBalance
 
 	self subclassResponsibility ! !
 
@@ -354,126 +421,29 @@ makeTransaction: aBalance
 AccountTransaction class
 	instanceVariableNames: ''!
 
-!AccountTransaction class methodsFor: 'instance creation' stamp: 'AGH 11/10/2022 19:38:12'!
-register: aValue on: anAccount
+!AccountTransaction class methodsFor: 'instance creation' stamp: 'lvg 11/11/2022 00:32:39'!
+register: anAmount on: anAccount
 
 	self subclassResponsibility.! !
 
 
-!classDefinition: #EgressAmount category: 'ServiciosFinancieros-Ejercicio'!
-AccountTransaction subclass: #EgressAmount
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Ejercicio'!
-
-!EgressAmount methodsFor: 'operations' stamp: 'AGH 11/10/2022 19:29:17'!
-makeTransaction: anAccountBalance
-
-	^ anAccountBalance - transactionValue.! !
-
-
-!classDefinition: #TransferenceWithdraw category: 'ServiciosFinancieros-Ejercicio'!
-EgressAmount subclass: #TransferenceWithdraw
-	instanceVariableNames: 'transference'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Ejercicio'!
-
-!TransferenceWithdraw methodsFor: 'operation' stamp: 'AGH 11/10/2022 19:32:13'!
-counterpart
-
-	^ transference transferenceDeposit.! !
-
-
-!TransferenceWithdraw methodsFor: 'initialization' stamp: 'lvg 11/10/2022 18:29:53'!
-initializeWith: aTransference 
-
-	transference := aTransference.
-	transactionValue := aTransference transferenceAmount.! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'TransferenceWithdraw class' category: 'ServiciosFinancieros-Ejercicio'!
-TransferenceWithdraw class
-	instanceVariableNames: ''!
-
-!TransferenceWithdraw class methodsFor: 'instance creation' stamp: 'lvg 11/10/2022 16:44:30'!
-ofTransference: aTransference
-
-	^self new initializeWith: aTransference.! !
-
-!TransferenceWithdraw class methodsFor: 'instance creation' stamp: 'AGH 11/10/2022 19:35:49'!
-register: aTransference on: anAccount
-
-	| transaction |
-	
-	transaction := self ofTransference: aTransference.
-	anAccount register: transaction.
-		
-	^ transaction! !
-
-
-!classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
-EgressAmount subclass: #Withdraw
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Ejercicio'!
-
-!Withdraw methodsFor: 'initialization' stamp: 'AGH 11/10/2022 19:28:43'!
-initializeFor: aWithdrawAmount
-
-	transactionValue := aWithdrawAmount ! !
-
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'Withdraw class' category: 'ServiciosFinancieros-Ejercicio'!
-Withdraw class
-	instanceVariableNames: ''!
-
-!Withdraw class methodsFor: 'instance creation' stamp: 'lvg 11/10/2022 16:42:27'!
-for: aValue
-
-	^ self new initializeFor: aValue ! !
-
-!Withdraw class methodsFor: 'instance creation' stamp: 'AGH 11/10/2022 19:37:05'!
-register: anAmount on: anAccount
-
-	| transaction |
-	
-	transaction := self for: anAmount.
-	anAccount register: transaction.
-		
-	^ transaction! !
-
-
-!classDefinition: #EntryAmount category: 'ServiciosFinancieros-Ejercicio'!
-AccountTransaction subclass: #EntryAmount
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Ejercicio'!
-
-!EntryAmount methodsFor: 'operations' stamp: 'AGH 11/10/2022 19:29:30'!
-makeTransaction: anAccountBalance
-
-	^ anAccountBalance + transactionValue.! !
-
-
 !classDefinition: #Deposit category: 'ServiciosFinancieros-Ejercicio'!
-EntryAmount subclass: #Deposit
+AccountTransaction subclass: #Deposit
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Deposit methodsFor: 'initialization' stamp: 'AGH 11/10/2022 19:28:21'!
-initializeFor: aDepositAmount
+!Deposit methodsFor: 'initialization' stamp: 'lvg 11/10/2022 18:29:25'!
+initializeFor: aValue
 
-	transactionValue := aDepositAmount ! !
+	transactionValue := aValue ! !
 
+
+!Deposit methodsFor: 'operation' stamp: 'lvg 11/10/2022 22:43:29'!
+transaction: aBalance
+
+	^ aBalance + transactionValue.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -481,24 +451,38 @@ initializeFor: aDepositAmount
 Deposit class
 	instanceVariableNames: ''!
 
-!Deposit class methodsFor: 'instance creation' stamp: 'lvg 11/10/2022 16:42:04'!
-for: aValue
+!Deposit class methodsFor: 'instance creation' stamp: 'lvg 11/11/2022 00:35:03'!
+for: anAmount
 
-	^ self new initializeFor: aValue ! !
+	^ self new initializeFor: anAmount ! !
 
-!Deposit class methodsFor: 'instance creation' stamp: 'AGH 11/10/2022 19:37:52'!
+!Deposit class methodsFor: 'instance creation' stamp: 'lvg 11/11/2022 00:33:09'!
 register: anAmount on: anAccount
 
-	| transaction |
+	(self isAValidDepositAmount: anAmount) ifTrue: [
+		| transaction |
+
+		transaction := self for: anAmount.
+		anAccount register: transaction.
+			
+		^ transaction
+	] ifFalse: [self error: 'Deposit cannot be less than 0*peso']! !
+
+
+!Deposit class methodsFor: 'validation' stamp: 'lvg 11/11/2022 00:20:07'!
+isAValidDepositAmount: anAmount 
 	
-	transaction := self for: anAmount.
-	anAccount register: transaction.
-		
-	^ transaction! !
+	^anAmount>0.! !
+
+
+!Deposit class methodsFor: 'error description' stamp: 'lvg 11/11/2022 00:22:25'!
+invalidDepositAmountErrorDescription
+
+	^'Deposit cannot be less than 0*peso'! !
 
 
 !classDefinition: #TransferenceDeposit category: 'ServiciosFinancieros-Ejercicio'!
-EntryAmount subclass: #TransferenceDeposit
+AccountTransaction subclass: #TransferenceDeposit
 	instanceVariableNames: 'transference'
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -511,10 +495,21 @@ initializeWith: aTransference
 	transactionValue :=  aTransference transferenceAmount.! !
 
 
-!TransferenceDeposit methodsFor: 'operations' stamp: 'AGH 11/10/2022 19:32:13'!
-counterpart
+!TransferenceDeposit methodsFor: 'operations' stamp: 'lvg 11/10/2022 22:49:33'!
+counterpartTransaction
 
 	^ transference transferenceWithdraw.! !
+
+!TransferenceDeposit methodsFor: 'operations' stamp: 'lvg 11/10/2022 22:43:29'!
+transaction: aBalance
+
+	^ aBalance + transactionValue.! !
+
+
+!TransferenceDeposit methodsFor: 'accesing' stamp: 'lvg 11/10/2022 23:39:43'!
+isCounterpartTransaction: aTransferenceDeposit 
+	
+	^self counterpartTransaction  = aTransferenceDeposit.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -527,7 +522,7 @@ ofTransference: aTransference
 
 	^self new initializeWith: aTransference.! !
 
-!TransferenceDeposit class methodsFor: 'instance creation' stamp: 'AGH 11/10/2022 19:37:37'!
+!TransferenceDeposit class methodsFor: 'instance creation' stamp: 'lvg 11/11/2022 00:33:35'!
 register: aTransference on: anAccount
 
 	| transaction |
@@ -536,6 +531,113 @@ register: aTransference on: anAccount
 	anAccount register: transaction.
 		
 	^ transaction! !
+
+
+!classDefinition: #TransferenceWithdraw category: 'ServiciosFinancieros-Ejercicio'!
+AccountTransaction subclass: #TransferenceWithdraw
+	instanceVariableNames: 'transference'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferenceWithdraw methodsFor: 'operation' stamp: 'lvg 11/10/2022 22:49:33'!
+counterpartTransaction
+
+	^ transference transferenceDeposit.! !
+
+!TransferenceWithdraw methodsFor: 'operation' stamp: 'lvg 11/10/2022 22:43:29'!
+transaction: aBalance
+
+	^ aBalance - transactionValue.! !
+
+
+!TransferenceWithdraw methodsFor: 'initialization' stamp: 'lvg 11/10/2022 18:29:53'!
+initializeWith: aTransference 
+
+	transference := aTransference.
+	transactionValue := aTransference transferenceAmount.! !
+
+
+!TransferenceWithdraw methodsFor: 'accesing' stamp: 'lvg 11/10/2022 23:38:39'!
+isCounterpartTransaction: aTransferenceDeposit 
+	
+	^self counterpartTransaction  = aTransferenceDeposit.
+	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferenceWithdraw class' category: 'ServiciosFinancieros-Ejercicio'!
+TransferenceWithdraw class
+	instanceVariableNames: ''!
+
+!TransferenceWithdraw class methodsFor: 'instance creation' stamp: 'lvg 11/10/2022 16:44:30'!
+ofTransference: aTransference
+
+	^self new initializeWith: aTransference.! !
+
+!TransferenceWithdraw class methodsFor: 'instance creation' stamp: 'lvg 11/11/2022 00:33:58'!
+register: aTransference on: anAccount
+
+	| transaction |
+	
+	transaction := self ofTransference: aTransference.
+	anAccount register: transaction.
+		
+	^ transaction! !
+
+
+!classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
+AccountTransaction subclass: #Withdraw
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Withdraw methodsFor: 'initialization' stamp: 'AGH 11/10/2022 19:02:50'!
+initializeFor: aValue
+
+	transactionValue := aValue ! !
+
+
+!Withdraw methodsFor: 'operation' stamp: 'lvg 11/10/2022 22:43:29'!
+transaction: aBalance
+
+	^ aBalance - transactionValue.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Withdraw class' category: 'ServiciosFinancieros-Ejercicio'!
+Withdraw class
+	instanceVariableNames: ''!
+
+!Withdraw class methodsFor: 'instance creation' stamp: 'lvg 11/11/2022 00:34:44'!
+for: anAmount
+
+	^ self new initializeFor: anAmount ! !
+
+!Withdraw class methodsFor: 'instance creation' stamp: 'lvg 11/11/2022 00:34:30'!
+register: anAmount on: anAccount
+
+	(self isAValidWithdrawAmount: anAmount) ifTrue: [
+		| transaction |
+
+		transaction := self for: anAmount.
+		anAccount register: transaction.
+			
+		^ transaction
+	] ifFalse: [self error: 'Withdraw cannot be less than 0*peso']! !
+
+
+!Withdraw class methodsFor: 'validation' stamp: 'lvg 11/11/2022 00:21:59'!
+isAValidWithdrawAmount: anAmount 
+	
+	^anAmount>0.! !
+
+
+!Withdraw class methodsFor: 'error description' stamp: 'lvg 11/11/2022 00:22:45'!
+invalidWithdrawAmountErrorDescription
+
+	^'Withdraw cannot be less than 0*peso'! !
 
 
 !classDefinition: #FinancialAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -595,10 +697,18 @@ initialize
 	portfolioElements := OrderedCollection new.
 	! !
 
-!Portfolio methodsFor: 'initialization' stamp: 'lvg 11/10/2022 17:46:44'!
+!Portfolio methodsFor: 'initialization' stamp: 'lvg 11/11/2022 01:21:33'!
 with: aCollectionOfportfolioElements 
 
-	portfolioElements := aCollectionOfportfolioElements.! !
+	portfolioElements := aCollectionOfportfolioElements.
+! !
+
+
+!Portfolio methodsFor: 'accessing' stamp: 'lvg 11/10/2022 23:15:34'!
+isBalance: aBalance
+
+	^self balance = aBalance.
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -606,9 +716,37 @@ with: aCollectionOfportfolioElements
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'instance creation' stamp: 'lvg 11/10/2022 18:05:25'!
+!Portfolio class methodsFor: 'instance creation' stamp: 'lvg 11/11/2022 01:21:51'!
 with: aCollectionOfPorfolioElements 
-	^self new with: aCollectionOfPorfolioElements.! !
+	(self isACollectionOfPortfoliosValid: aCollectionOfPorfolioElements)ifTrue:[
+	^self new with: aCollectionOfPorfolioElements.	].
+! !
+
+
+!Portfolio class methodsFor: 'error description' stamp: 'lvg 11/11/2022 01:20:34'!
+invalidAccountTwiceErrorDescription
+
+	^'The financial account already exist'.! !
+
+
+!Portfolio class methodsFor: 'validation' stamp: 'lvg 11/11/2022 02:21:46'!
+isACollectionOfPortfoliosValid: aCollectionOfPortfolios 
+		
+	aCollectionOfPortfolios ifEmpty: [		^true].
+	
+	((aCollectionOfPortfolios size) = 1) ifTrue: [
+		 (aCollectionOfPortfolios includes: aCollectionOfPortfolios ) ifTrue:[self error: 'The financial account already exist']. 
+		^true.
+	].
+	((aCollectionOfPortfolios size) > 1)ifTrue:[
+		aCollectionOfPortfolios do: [: anElementFromACollectionOfPortfolios|
+			 (aCollectionOfPortfolios occurrencesOf: anElementFromACollectionOfPortfolios) > 1 ifTrue:[self error: 'The financial account already exist'].
+			"		((anElementFromACollectionOfPortfolios size)>1) ifTrue:[anElementFromACollectionOfPortfolios 
+				do:[:innerElement| (innerElement = anElementFromACollectionOfPortfolios) ifTrue:[self error: 'The financial account already exist']. ].
+			]."
+	].
+	].
+	^true.! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -624,14 +762,14 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'AGH 11/10/2022 19:19:32'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'lvg 11/10/2022 22:43:29'!
 balance
 
 	| aBalance |
 	
 	aBalance := 0.
 
-	transactions do: [ :aTransaction | aBalance := aTransaction makeTransaction: aBalance].
+	transactions do: [ :aTransaction | aBalance := aTransaction transaction: aBalance].
 	
 	^aBalance .! !
 
@@ -661,6 +799,16 @@ transactions
 transactionsSize
 
 	^ transactions size.! !
+
+
+!ReceptiveAccount methodsFor: 'accessing' stamp: 'lvg 11/10/2022 23:17:19'!
+isBalance: aBalance
+
+	^self balance = aBalance .! !
+
+!ReceptiveAccount methodsFor: 'accessing' stamp: 'lvg 11/10/2022 23:35:08'!
+isTransactionsSize: aPosibleSIze 
+	^self transactionsSize = aPosibleSIze ! !
 
 
 !classDefinition: #Transference category: 'ServiciosFinancieros-Ejercicio'!
