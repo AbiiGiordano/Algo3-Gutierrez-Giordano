@@ -1,0 +1,52 @@
+distribuir procesamiento delegado polimoficamente
+
+contra reconocer tipo de obj y saber como descomponerlos en partes simples
+comparador dificil de de desarrollas y mantener
+
+enfoque orientado objetos: le diga a los objtos q se comparen entre si 
+
+(objeto le dice al comparador que hcer pero no como hacerlo) en vez del objeto compararse asi mismo sus partes saben compararse
+
+CLAVES: 
+-2 clases polimorficas 1 maneja consulta recursiva la otra la consulta sin recursion
+-msj separado (3era clase no polimofica con las otras dos inicia consulta)
+
+APLICabilidad: estructuras enlazada
+-destino desconocdo
+-msjs a todos los nodos
+-distribuyendo responsabilidad de un comportamiento
+
+PARTICIPANTES: initiator, handler, recurser, terminator
+
+colaboracion: 
+*initiator inicia y pide q manje al handler
+*handlres es recurser le pide a otro hanlres devuelve
+* handlre es un terminator- maneja la solicitud sin delegar devuelve el resuladp
+
+CONSECUENCIAS
+
+VENTAJAS
+-procesamiento distribuido
+-flexibilidad en las responsabilidades
+-flexibildad de roles
+-aumento de encapsulamiento
+
+DESVENTAJAS:
+-complijidad para programacion... recursvidad= dificil de entener y mantener
+
+
+IMPLEMENTACION:
+1. tipos separados del inititor
+2. definir el sucesor
+
+USOS CONOCIDOS:
+equal hash copy derivados clonar
+
+PATRONES RELACIONADOS
+
+*
+
+
+
+
+
