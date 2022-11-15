@@ -832,6 +832,15 @@ isComposedBy: anAccount
 
 	^self = anAccount ! !
 
+
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 20:07:11'!
+iterate: aBlock
+
+	| accountSummary |
+	accountSummary := OrderedCollection new.
+	transactions do: aBlock value.
+	^ accountSummary.! !
+
 
 !classDefinition: #AccountReport category: 'ServiciosFinancieros-Solucion'!
 Object subclass: #AccountReport
@@ -846,47 +855,46 @@ of: anAccount
 	account := anAccount .! !
 
 
-!AccountReport methodsFor: 'reports' stamp: 'lvg 11/14/2022 19:07:22'!
+!AccountReport methodsFor: 'reports' stamp: 'AGH 11/15/2022 20:24:16'!
 summaryReport
 
 	| accountSummary |
 	
 	accountSummary := OrderedCollection new.
-
-	(account transactions) do: [:actualTransaction | 
-		(actualTransaction isKindOf: Deposit) ifTrue: [ accountSummary add: ('Depósito por ' , (actualTransaction value) asString)].
-		(actualTransaction isKindOf: Withdraw) ifTrue: [accountSummary add:('Extracción por ', (actualTransaction value) asString)].				
-		(actualTransaction isKindOf: TransferWithdrawLeg) ifTrue: [accountSummary add:('Salida por transferencia de ',(actualTransaction value) asString)].
-		(actualTransaction isKindOf: TransferDepositLeg) ifTrue: [accountSummary add:('Entrada por transferencia de ',(actualTransaction value) asString)].
-		].
 	
+	(account transactions) do: [:actualTransaction | self reportLineOf: actualTransaction from: accountSummary].
 	accountSummary add: ('Balance = ', (account balance) asString).	
 	
 	^accountSummary.
 ! !
 
-!AccountReport methodsFor: 'reports' stamp: 'lvg 11/14/2022 19:07:56'!
+!AccountReport methodsFor: 'reports' stamp: 'AGH 11/15/2022 20:24:20'!
 transferNetReport
 
 	|  transferenceNetAmount |
 	
 	transferenceNetAmount := 0*peso.
 
-	(account transactions) do: [:actualTransaction | 	
-		(actualTransaction isKindOf: TransferWithdrawLeg) ifTrue: [
-												transferenceNetAmount := transferenceNetAmount - actualTransaction value.].
-		(actualTransaction isKindOf: TransferDepositLeg) ifTrue: [					transferenceNetAmount := transferenceNetAmount + actualTransaction value.].
-		].
-	
+	(account transactions) do: [:actualTransaction |
+	(actualTransaction isKindOf: TransferLeg) ifTrue: [transferenceNetAmount := actualTransaction affectBalance: transferenceNetAmount]].
+		
 	^ transferenceNetAmount.
 ! !
+
+
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 20:14:51'!
+reportLineOf: actualTransaction from: accountSummary
+	
+	(actualTransaction isKindOf: Deposit) ifTrue: [accountSummary add: ('Depósito por ' , (actualTransaction value) asString)].
+	(actualTransaction isKindOf: Withdraw) ifTrue: [accountSummary add:('Extracción por ', (actualTransaction value) asString)].				
+	(actualTransaction isKindOf: TransferWithdrawLeg) ifTrue: [accountSummary add:('Salida por transferencia de ',(actualTransaction value) asString)].
+	(actualTransaction isKindOf: TransferDepositLeg) ifTrue: [accountSummary add:('Entrada por transferencia de ',(actualTransaction value) asString)].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'AccountReport class' category: 'ServiciosFinancieros-Solucion'!
 AccountReport class
 	instanceVariableNames: ''!
-
 
 !AccountReport class methodsFor: 'as yet unclassified' stamp: 'lvg 11/14/2022 19:04:59'!
 of: anAccount
