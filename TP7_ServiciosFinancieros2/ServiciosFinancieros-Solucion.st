@@ -311,19 +311,19 @@ TestCase subclass: #ReportTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:19:43'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:56:54'!
 test01AccountWithNoTransactionsReport
 
 	| account summary accountSummary |
 	
 	account := ReceptiveAccount new.
 	summary := OrderedCollection  with:  'Balance = 0 * pesos'.
-	accountSummary := AccountReport of: account.
+	accountSummary := SummaryReport of: account.
 
 	self assert: summary equals: accountSummary summaryReport.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:19:43'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:56:59'!
 test02AccountReportIncludesDeposit
 
 	| account summary accountSummary |
@@ -332,12 +332,12 @@ test02AccountReportIncludesDeposit
 	Deposit register: 100*peso  on: account.
 	
 	summary := OrderedCollection with: 'Depósito por 100 * pesos' with: 'Balance = 100 * pesos'.
-	accountSummary := AccountReport of: account.
+	accountSummary := SummaryReport of: account.
 	 
 	self assert: summary  equals: accountSummary summaryReport.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:19:43'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:57:04'!
 test03AccountReportIncludesAWitdraw
 
 	| account summary accountSummary |
@@ -346,13 +346,13 @@ test03AccountReportIncludesAWitdraw
 	Withdraw register: 50*peso on: account.
 	
 	summary := OrderedCollection with: 'Extracción por 50 * pesos' with: 'Balance = -50 * pesos' .
-	accountSummary := AccountReport of: account.
+	accountSummary := SummaryReport of: account.
 	 
 	self assert: summary  equals: accountSummary summaryReport.
 	
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:19:43'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:57:09'!
 test04AccountReportIncludesATransferWithdraw
 
 	| account anotherAccount summary accountSummary |
@@ -363,13 +363,13 @@ test04AccountReportIncludesATransferWithdraw
 	Transfer amount: 20*peso from: account  to: anotherAccount.
 	
 	summary := OrderedCollection with: 'Salida por transferencia de 20 * pesos' with: 'Balance = -20 * pesos'.
-	accountSummary := AccountReport of: account.
+	accountSummary := SummaryReport of: account.
 	 
 	self assert: summary  equals: accountSummary summaryReport.
 	
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:19:43'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:57:16'!
 test05AccountReportIncludesATransferDeposit
 
 	| account anotherAccount summary accountSummary |
@@ -380,12 +380,12 @@ test05AccountReportIncludesATransferDeposit
 	Transfer amount: 30*peso from: anotherAccount  to: account.
 	
 	summary := OrderedCollection with: 'Entrada por transferencia de 30 * pesos' with: 'Balance = 30 * pesos'.
-	accountSummary := AccountReport of: account.
+	accountSummary := SummaryReport of: account.
 	 
 	self assert: summary  equals: accountSummary summaryReport.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:19:43'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:57:19'!
 test06AcountReportWithSeveraTransactions
 
 	| account anotherAccount summary accountSummary |
@@ -399,24 +399,24 @@ test06AcountReportWithSeveraTransactions
 	Transfer amount: 30*peso from: anotherAccount  to: account.
 	
 	summary := OrderedCollection with: 'Depósito por 100 * pesos' with: 'Extracción por 50 * pesos' with: 'Salida por transferencia de 20 * pesos' with: 'Entrada por transferencia de 30 * pesos' with: 'Balance = 60 * pesos'.
-	accountSummary := AccountReport of: account.
+	accountSummary := SummaryReport of: account.
 	 
 	self assert: summary  equals: accountSummary summaryReport.
 	
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:19:43'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:57:32'!
 test07NetTransferReportZeroTrasnfers
 
 	| account transactionReport |
 	
 	account := ReceptiveAccount new.
-	transactionReport := AccountReport of: account.
+	transactionReport := TransferNetReport of: account.
 	 
 	self assert: 0*peso  equals: transactionReport transferNetReport.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:19:43'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:57:35'!
 test08NetTransferenceReportWithTransferDeposit
 
 	| account anotherAcount transactionReport |
@@ -425,12 +425,12 @@ test08NetTransferenceReportWithTransferDeposit
 	anotherAcount := ReceptiveAccount new.
 	
 	Transfer amount: 53*peso from: anotherAcount  to: account. 	
-	transactionReport := AccountReport of: account.
+	transactionReport := TransferNetReport of: account.
 	 
 	self assert: 53*peso  equals: transactionReport transferNetReport.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:19:43'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:57:38'!
 test09NetTransferenceReportWithTransferWithdraw
 
 	| account anotherAcount transactionReport |
@@ -439,12 +439,12 @@ test09NetTransferenceReportWithTransferWithdraw
 	anotherAcount := ReceptiveAccount new.
 	
 	Transfer amount: 53*peso from: account  to: anotherAcount. 
-	transactionReport := AccountReport of: account.
+	transactionReport := TransferNetReport of: account.
 	 
 	self assert: (-53*peso)  equals: transactionReport transferNetReport.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:19:43'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:57:42'!
 test10NetTransferReport
 
 	| account anotherAccount transactionReport |
@@ -456,12 +456,12 @@ test10NetTransferReport
 	Withdraw register: 50*peso on: account.
 	Transfer amount: 20*peso from: account to: anotherAccount.
 	Transfer amount: 30*peso from: anotherAccount  to: account.	
-	transactionReport := AccountReport of: account.
+	transactionReport := TransferNetReport of: account.
 	 
 	self assert: 10*peso  equals: transactionReport transferNetReport.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:27:50'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:58:44'!
 test11
 	| account portfolio transactionReport summary |
 	
@@ -471,12 +471,12 @@ test11
 	summary := OrderedCollection with: 'Depósito por 100 * pesos' with: 'Balance = 100 * pesos'.
 
 	portfolio := Portfolio with: account.
-	transactionReport := AccountReport of: portfolio.
+	transactionReport := SummaryReport of: portfolio.
 	 
 	self assert: summary equals: transactionReport summaryReport.
 	! !
 
-!ReportTest methodsFor: 'tests' stamp: 'lvg 11/14/2022 19:31:32'!
+!ReportTest methodsFor: 'tests' stamp: 'AGH 11/15/2022 21:58:48'!
 test12
 
 	| simplePortfolioAccount simplePortfolio composedPortfolioAccount composedPortofolio summary transactionReport |
@@ -491,7 +491,7 @@ test12
 	
 	summary := OrderedCollection with: 'Depósito por 100 * pesos' with: 'Extracción por 50 * pesos'  with: 'Balance = 50 * pesos'.
 
-	transactionReport := AccountReport of: composedPortofolio.
+	transactionReport := SummaryReport of: composedPortofolio.
 	 
 	self assert: summary equals: transactionReport summaryReport.
 	! !
@@ -639,6 +639,12 @@ isComposedBy: anAccount
 addTransactionsTo: aCollectionOfTransactions
 
 	self subclassResponsibility ! !
+
+
+!Account methodsFor: 'visitor' stamp: 'AGH 11/15/2022 22:31:03'!
+visitor: aVisitor
+ 
+	(self transactions) do: [:actualTransaction | aVisitor operateTransaction: actualTransaction].! !
 
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Solucion'!
@@ -833,14 +839,6 @@ isComposedBy: anAccount
 	^self = anAccount ! !
 
 
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 20:07:11'!
-iterate: aBlock
-
-	| accountSummary |
-	accountSummary := OrderedCollection new.
-	transactions do: aBlock value.
-	^ accountSummary.! !
-
 
 !classDefinition: #AccountReport category: 'ServiciosFinancieros-Solucion'!
 Object subclass: #AccountReport
@@ -848,47 +846,6 @@ Object subclass: #AccountReport
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
-
-!AccountReport methodsFor: 'initialization' stamp: 'lvg 11/14/2022 19:05:25'!
-of: anAccount
-
-	account := anAccount .! !
-
-
-!AccountReport methodsFor: 'reports' stamp: 'AGH 11/15/2022 20:24:16'!
-summaryReport
-
-	| accountSummary |
-	
-	accountSummary := OrderedCollection new.
-	
-	(account transactions) do: [:actualTransaction | self reportLineOf: actualTransaction from: accountSummary].
-	accountSummary add: ('Balance = ', (account balance) asString).	
-	
-	^accountSummary.
-! !
-
-!AccountReport methodsFor: 'reports' stamp: 'AGH 11/15/2022 20:24:20'!
-transferNetReport
-
-	|  transferenceNetAmount |
-	
-	transferenceNetAmount := 0*peso.
-
-	(account transactions) do: [:actualTransaction |
-	(actualTransaction isKindOf: TransferLeg) ifTrue: [transferenceNetAmount := actualTransaction affectBalance: transferenceNetAmount]].
-		
-	^ transferenceNetAmount.
-! !
-
-
-!AccountReport methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 20:14:51'!
-reportLineOf: actualTransaction from: accountSummary
-	
-	(actualTransaction isKindOf: Deposit) ifTrue: [accountSummary add: ('Depósito por ' , (actualTransaction value) asString)].
-	(actualTransaction isKindOf: Withdraw) ifTrue: [accountSummary add:('Extracción por ', (actualTransaction value) asString)].				
-	(actualTransaction isKindOf: TransferWithdrawLeg) ifTrue: [accountSummary add:('Salida por transferencia de ',(actualTransaction value) asString)].
-	(actualTransaction isKindOf: TransferDepositLeg) ifTrue: [accountSummary add:('Entrada por transferencia de ',(actualTransaction value) asString)].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -900,6 +857,88 @@ AccountReport class
 of: anAccount
 
 	^self new of: anAccount.! !
+
+
+!classDefinition: #SummaryReport category: 'ServiciosFinancieros-Solucion'!
+AccountReport subclass: #SummaryReport
+	instanceVariableNames: 'summaryReport'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!SummaryReport methodsFor: 'initialization' stamp: 'AGH 11/15/2022 21:49:50'!
+of: anAccount
+
+	account := anAccount .
+	summaryReport := OrderedCollection new.! !
+
+
+!SummaryReport methodsFor: 'private' stamp: 'AGH 11/15/2022 22:29:51'!
+operateTransaction: actualTransaction
+	
+	summaryReport add: (actualTransaction summaryReportLineOf: self).! !
+
+
+!SummaryReport methodsFor: 'description' stamp: 'AGH 11/15/2022 22:02:20'!
+summaryDepositLegLine: aDepositLeg
+	
+	^('Entrada por transferencia de ',(aDepositLeg value) asString)
+! !
+
+!SummaryReport methodsFor: 'description' stamp: 'AGH 11/15/2022 22:02:27'!
+summaryDepositLine: aDeposit
+	
+	^ ('Depósito por ' , (aDeposit value) asString).! !
+
+!SummaryReport methodsFor: 'description' stamp: 'AGH 11/15/2022 22:02:35'!
+summaryWithdrawLegLine: aWithdrawLeg
+	
+	^('Salida por transferencia de ',(aWithdrawLeg value) asString)
+! !
+
+!SummaryReport methodsFor: 'description' stamp: 'AGH 11/15/2022 22:02:45'!
+summaryWithdrawLine: aWithdraw
+	
+	^ ('Extracción por ', (aWithdraw value) asString)! !
+
+
+!SummaryReport methodsFor: 'report' stamp: 'AGH 11/15/2022 22:31:03'!
+summaryReport
+		
+	account visitor: self.
+	
+	summaryReport add: ('Balance = ', (account balance) asString).	
+	
+	^summaryReport.! !
+
+
+!classDefinition: #TransferNetReport category: 'ServiciosFinancieros-Solucion'!
+AccountReport subclass: #TransferNetReport
+	instanceVariableNames: 'transferNetValue'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!TransferNetReport methodsFor: 'report' stamp: 'AGH 11/15/2022 22:31:03'!
+transferNetReport
+
+	
+	account visitor: self.
+	^ transferNetValue.
+! !
+
+
+!TransferNetReport methodsFor: 'initialization' stamp: 'AGH 11/15/2022 21:50:13'!
+of: anAccount
+
+	account := anAccount .
+	transferNetValue :=  0*peso.! !
+
+
+!TransferNetReport methodsFor: 'private' stamp: 'AGH 11/15/2022 22:29:59'!
+operateTransaction: actualTransaction
+	
+	transferNetValue := actualTransaction transferenceNetValue: transferNetValue.! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Solucion'!
@@ -919,6 +958,16 @@ value
 affectBalance: aBalance
 
 	self subclassResponsibility ! !
+
+
+!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 21:42:52'!
+summaryReportLineOf: anAccountReport
+	self subclassResponsibility.! !
+
+!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 21:08:29'!
+transferenceNetValue: transferenceNetAmount.
+
+	self subclassResponsibility.! !
 
 
 !classDefinition: #Deposit category: 'ServiciosFinancieros-Solucion'!
@@ -944,6 +993,17 @@ value
 affectBalance: aBalance
 
 	^aBalance + value ! !
+
+
+!Deposit methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 20:58:59'!
+summaryReportLineOf: anAccountReport
+
+	^ anAccountReport summaryDepositLine: self.! !
+
+!Deposit methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 21:09:18'!
+transferenceNetValue: transferenceNetAmount.
+
+	^ transferenceNetAmount.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -986,6 +1046,12 @@ initializeWith: aTransfer
 
 	transfer := aTransfer! !
 
+
+!TransferLeg methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 21:09:55'!
+transferenceNetValue: transferenceNetAmount.
+
+	^ self affectBalance: transferenceNetAmount.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TransferLeg class' category: 'ServiciosFinancieros-Solucion'!
@@ -1021,6 +1087,12 @@ affectBalance: aBalance
 
 	^aBalance + self value! !
 
+
+!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 20:59:05'!
+summaryReportLineOf: anAccountReport
+	
+	^ anAccountReport summaryDepositLegLine: self.! !
+
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros-Solucion'!
 TransferLeg subclass: #TransferWithdrawLeg
@@ -1039,6 +1111,12 @@ depositLeg
 affectBalance: aBalance
 
 	^aBalance - self value! !
+
+
+!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 20:59:14'!
+summaryReportLineOf: anAccountSumary
+	 
+	^ anAccountSumary summaryWithdrawLegLine: self.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Solucion'!
@@ -1064,6 +1142,17 @@ value
 affectBalance: aBalance
 
 	^aBalance - value! !
+
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 20:59:21'!
+summaryReportLineOf: anAccountReport
+
+	^ anAccountReport summaryWithdrawLine: self.! !
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'AGH 11/15/2022 21:09:30'!
+transferenceNetValue: transferenceNetAmount.
+
+	^ transferenceNetAmount.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
