@@ -751,7 +751,7 @@ test01EmptyPortfolioDetailedReport
 	
 	! !
 
-!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/18/2022 17:09:40'!
+!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'AGH 11/18/2022 17:27:19'!
 test02PortfolioDetailedReportWithAnAccountWithoutTransactions
 	
 	| portfolio portfolioTreeDetailedReport tree myAccount summaryReport |
@@ -763,15 +763,16 @@ test02PortfolioDetailedReportWithAnAccountWithoutTransactions
 	portfolioTreeDetailedReport := PortfolioDetailedTreeReport of: portfolio.
 	portfolioTreeDetailedReport createReport.
 	
-	summaryReport := OrderedCollection with: '  Balance = 0 * pesos'.
+	summaryReport := SummaryReport of: myAccount.
+	summaryReport createReport .
 	 
-	tree := OrderedCollection with: 'Portfolio de la familia' with:  ' Cuenta mia' with: summaryReport with: 'Balance = 0 * pesos'.
+	tree := OrderedCollection with: 'Portfolio de la familia' with: 'Cuenta mia' with: 	summaryReport summaryReport with: 'Balance = 0 * pesos'.
 	
 	self assert: tree equals: portfolioTreeDetailedReport portfolioTreeDetailedReport.
 	
 	! !
 
-!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/18/2022 17:10:32'!
+!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'AGH 11/18/2022 17:27:44'!
 test03PortfolioDetailedReportWithAnAccountWithTransactions
 	
 	| portfolio portfolioTreeDetailedReport tree myAccount summaryReport |
@@ -784,18 +785,19 @@ test03PortfolioDetailedReportWithAnAccountWithTransactions
 	portfolioTreeDetailedReport := PortfolioDetailedTreeReport of: portfolio.
 	portfolioTreeDetailedReport createReport.
 	
-	summaryReport := OrderedCollection with: '  Depósito por 100 * pesos' with: '  Balance = 100 * pesos'.
+	summaryReport := SummaryReport of: myAccount.
+	summaryReport createReport .
 	 
-	tree := OrderedCollection with: 'Portfolio de la familia' with:  ' Cuenta mia' with: summaryReport with: 'Balance = 100 * pesos'.
+	tree := OrderedCollection with: 'Portfolio de la familia' with: 'Cuenta mia' with: summaryReport summaryReport with: 'Balance = 100 * pesos'.
 	
 	self assert: tree equals: portfolioTreeDetailedReport portfolioTreeDetailedReport.
 	
 	! !
 
-!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/18/2022 17:11:04'!
+!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'AGH 11/18/2022 17:32:02'!
 test04PortfolioDetailedReportWithAnEmptyPortfolio
 	
-	| portfolio portfolioTreeDetailedReport tree innerPortfolio summaryReport |
+	| portfolio portfolioTreeDetailedReport tree innerPortfolio |
 	
 	portfolio := Portfolio named: 'Portfolio de la familia'.
 	innerPortfolio := Portfolio named: 'Portfolio de hijos'.
@@ -803,19 +805,17 @@ test04PortfolioDetailedReportWithAnEmptyPortfolio
 
 	portfolioTreeDetailedReport := PortfolioDetailedTreeReport of: portfolio.
 	portfolioTreeDetailedReport createReport.
-	
-	summaryReport := OrderedCollection with: '  Balance = 0 * pesos'.
 
-	tree := OrderedCollection with: 'Portfolio de la familia' with:  (OrderedCollection with: ' Portfolio de hijos' with: summaryReport) with: 'Balance = 0 * pesos'.
+	tree := OrderedCollection with: 'Portfolio de la familia' with: (OrderedCollection with: 'Portfolio de hijos' with: 'Balance = 0 * pesos') with: 'Balance = 0 * pesos'.
 	
 	self assert: tree equals: portfolioTreeDetailedReport portfolioTreeDetailedReport.
 	
 	! !
 
-!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/18/2022 16:47:58'!
+!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'AGH 11/18/2022 17:34:13'!
 test05PortfolioDetailedReportWithAnAccountAndEmptyPortfolio
 	
-	| familyPortfolio portfolioTreeDetailedReport tree childrenPortfolio myAccount summaryReport anotherSummary |
+	| familyPortfolio portfolioTreeDetailedReport tree childrenPortfolio myAccount summaryReport |
 	
 	myAccount := ReceptiveAccount named: 'Cuenta mia'.
 	Withdraw register: (50*peso) on: myAccount.
@@ -826,11 +826,10 @@ test05PortfolioDetailedReportWithAnAccountAndEmptyPortfolio
 	portfolioTreeDetailedReport := PortfolioDetailedTreeReport of: familyPortfolio.
 	portfolioTreeDetailedReport createReport.
 	
-	summaryReport := OrderedCollection with: '  Extracción por 50 * pesos' with: '  Balance = -50 * pesos'.
-	anotherSummary := OrderedCollection  with: ' Balance = 0 * pesos'.
-
+	summaryReport := SummaryReport of: myAccount.
+	summaryReport createReport .
 	  
-	tree := OrderedCollection with: 'Portfolio de la familia' with: ' Cuenta mia' with: summaryReport with:  (OrderedCollection with: ' Portfolio de hijos' with: anotherSummary ) with: 'Balance = -50 * pesos'.
+	tree := OrderedCollection with: 'Portfolio de la familia' with: 'Cuenta mia' with: (summaryReport summaryReport) with: (OrderedCollection with: 'Portfolio de hijos' with: 'Balance = 0 * pesos') with: 'Balance = -50 * pesos'.
 	
 	self assert: tree equals: portfolioTreeDetailedReport portfolioTreeDetailedReport.
 	
@@ -1259,29 +1258,20 @@ AccountReport subclass: #PortfolioDetailedTreeReport
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!PortfolioDetailedTreeReport methodsFor: 'initialization' stamp: 'lvg 11/18/2022 17:06:18'!
+!PortfolioDetailedTreeReport methodsFor: 'initialization' stamp: 'AGH 11/18/2022 17:22:13'!
 initializeOf: aPortfolio 
 
 	portfolio := aPortfolio.
 	treeStructureDetailed := OrderedCollection new.
-	identation := 0.! !
-
-!PortfolioDetailedTreeReport methodsFor: 'initialization' stamp: 'lvg 11/18/2022 16:48:34'!
-initializeOf: aPortfolio with: indentation
-
-	portfolio := aPortfolio.
-	treeStructureDetailed := OrderedCollection new.
-	identation := indentation.! !
+! !
 
 
-!PortfolioDetailedTreeReport methodsFor: 'report' stamp: 'lvg 11/18/2022 17:19:25'!
+!PortfolioDetailedTreeReport methodsFor: 'report' stamp: 'AGH 11/18/2022 17:22:04'!
 createReport
 
-	treeStructureDetailed add: ((self indent) , (portfolio portfolioName)).
-	identation := identation + 1.
+	treeStructureDetailed add: (portfolio portfolioName).
 	portfolio visitPortfolio: self.
-	identation := identation - 1.
-	treeStructureDetailed add: ((self indent),'Balance = ', (portfolio balance) asString).	
+	treeStructureDetailed add: ('Balance = ', (portfolio balance) asString).	
 ! !
 
 !PortfolioDetailedTreeReport methodsFor: 'report' stamp: 'lvg 11/18/2022 13:29:19'!
@@ -1290,57 +1280,29 @@ portfolioTreeDetailedReport
 	^treeStructureDetailed.! !
 
 
-!PortfolioDetailedTreeReport methodsFor: 'account - visitor' stamp: 'lvg 11/18/2022 17:02:45'!
+!PortfolioDetailedTreeReport methodsFor: 'account - visitor' stamp: 'AGH 11/18/2022 17:22:24'!
 portfolioVisited: aPortfolio 
 
 	
 	| innerReport |
-	innerReport := (PortfolioDetailedTreeReport of: aPortfolio with: identation ) createReport.
+	innerReport := (PortfolioDetailedTreeReport of: aPortfolio) createReport.
 	treeStructureDetailed add: (innerReport portfolioTreeDetailedReport).
 ! !
 
-!PortfolioDetailedTreeReport methodsFor: 'account - visitor' stamp: 'lvg 11/18/2022 17:00:12'!
+!PortfolioDetailedTreeReport methodsFor: 'account - visitor' stamp: 'AGH 11/18/2022 17:22:51'!
 receptiveAccountVisited: aReceptiveAccount 
 
-	| summaryReport indentedSummary |
+	| summaryReport |
 	
-	treeStructureDetailed add: (self indent, (aReceptiveAccount accountName)).
+	treeStructureDetailed add: (aReceptiveAccount accountName).
 	
 	summaryReport := SummaryReport of: aReceptiveAccount.
 	summaryReport createReport.
-	indentedSummary := (self addSummaryIndentations: summaryReport summaryReport).
 	
-	treeStructureDetailed  add: (	indentedSummary).
-	
-	! !
-
-
-!PortfolioDetailedTreeReport methodsFor: 'as yet unclassified' stamp: 'lvg 11/18/2022 17:03:53'!
-addSummaryIndentations: summaryReport
-
-	| indentetSummary |
-	
-	indentetSummary := OrderedCollection new.
-	
-	summaryReport  do: [: element| 
-		indentetSummary add: (' ',(self indent), element)].
-	
-	^indentetSummary.
-	
-	
+	treeStructureDetailed  add: (	summaryReport summaryReport).
 	
 	! !
 
-!PortfolioDetailedTreeReport methodsFor: 'as yet unclassified' stamp: 'lvg 11/18/2022 17:05:43'!
-indent
-	
-	| space |
-	
-	space := ''.
-	
-	1 to: identation do: [:a| space := (space , ' ')]. 
-	
-	^space.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1420,7 +1382,6 @@ portfolioVisited: aPortfolio
 receptiveAccountVisited: aReceptiveAccount
 	
 	treeStructure add: (self indent , (aReceptiveAccount accountName)).! !
-
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
