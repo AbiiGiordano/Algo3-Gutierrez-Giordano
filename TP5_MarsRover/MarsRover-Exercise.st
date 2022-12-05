@@ -5,282 +5,174 @@ TestCase subclass: #MarsRoverTest
 	poolDictionaries: ''
 	category: 'MarsRover-Exercise'!
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:00:53'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:51:07'!
 test01EmptyCommandLine
 
-	| coordinates driveString direction marsRover |
+	| coordinates driveString marsRover |
 	
 	coordinates := (0@0).
-	direction := MarsRoverCardinalDirections with: 'N'.
-	marsRover := MarsRover withACoordinate: coordinates andADirection: direction .
+	marsRover := MarsRover withACoordinate: coordinates andADirection: 'N' .
 	
 	driveString := ''.
 	marsRover operate: driveString.
  
 
-	self assert: (marsRover isCoordinateEquals: (0@0)).
-	self assert: (marsRover isCardinalDirectionEquals: 	(MarsRoverCardinalDirections with: 'N'))! !
+	self assert: (marsRover isAt: (0@0) facing: 'N' ).! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:01:46'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 17:27:06'!
 test02ReceivesOnlyOneCommandAndIsAbleToMoveForwards
 
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (0@0).
-	marsRoverDirection :=  MarsRoverCardinalDirections with: 'W'.
-
-	driveString := 'F'.
-
-	marsRoverExpectedCoordinates := -1@0.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'W'.
-	
 	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:02:03'!
-test03ReceivesAWrongCommandRaiseAnError
-
-	self 
-		should: [ 
-		| driveString marsRover |
+		assertMarsRoverWithCoordinates:  (0@0) andWithDirection: 'W' 
+		canDrive: 'F'
+	 	endsUpAt: (-1@0) andWithADirection:  'W'.
 		
-		marsRover := MarsRover withACoordinate: (0@0) andADirection: (MarsRoverCardinalDirections with: 'N').
-		driveString := 'p'.
-		marsRover operate: driveString . 
-		]
-		raise: Error
-		withExceptionDo: [ :anError | self assert: MarsRover invalidCommandErrorDescription equals: anError messageText ]! !
+		! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:02:50'!
-test04ReceivesOnlyOneCommandAndIsAbleToMoveBackWards
-
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (2@2).
-	marsRoverDirection :=  MarsRoverCardinalDirections with: 'W'.
-
-	driveString := 'B'.
-
-	marsRoverExpectedCoordinates := 3@2.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'W'.
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:41:01'!
+test03ReceivesOnlyOneCommandAndIsAbleToMoveBackWards
 	
 	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.! !
+		assertMarsRoverWithCoordinates: (2@2) andWithDirection: 'W' 
+		canDrive:  'B' 
+	 	endsUpAt: (3@2) andWithADirection: 'W'.! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:03:02'!
-test05ReceivesOnlyOneCommandAndIsAbleToTurnLeft
-
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (2@2).
-	marsRoverDirection :=  MarsRoverCardinalDirections with: 'W'.
-
-	driveString := 'L'.
-
-	marsRoverExpectedCoordinates := 2@2.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'S'.
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:41:09'!
+test04ReceivesOnlyOneCommandAndIsAbleToTurnLeft
 	
 	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.! !
+		assertMarsRoverWithCoordinates: (2@2) andWithDirection: 'W' 
+		canDrive: 'L' 
+	 	endsUpAt: (2@2) andWithADirection: 'S'.! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:03:13'!
-test06ReceivesOnlyOneCommandAndIsAbleToTurnRight
-
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (-1@-1).
-	marsRoverDirection :=  MarsRoverCardinalDirections with: 'S'.
-
-	driveString := 'R'.
-
-	marsRoverExpectedCoordinates := -1@-1.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'W'.
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:41:26'!
+test05ReceivesOnlyOneCommandAndIsAbleToTurnRight
 	
 	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.! !
+		assertMarsRoverWithCoordinates: (-1@-1) andWithDirection: 'S' 
+		canDrive: 'R' 
+	 	endsUpAt: (-1@-1) andWithADirection: 'W'.! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:03:23'!
-test07ChangesDirectionFromWestToSouthByUsingLeftCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:40:42'!
+test06ReceivesAWrongCommandRaiseAnError
 
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (0@0).
-	marsRoverDirection := MarsRoverCardinalDirections with: 'W'.
-
-	driveString := 'FBBLBFB'.
-
-	marsRoverExpectedCoordinates := 1@1.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'S'.
-	
-	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
-! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:03:36'!
-test08ReceivesAStringStopsAtTheFirstWrongCommand
-
-	self 
-		should: [ 
-		| driveString marsRover |
+	| marsRover |
 		
-		marsRover := MarsRover withACoordinate: (0@0) andADirection: (MarsRoverCardinalDirections with: 'N').
-		driveString := 'LLLLPF'.
-		marsRover operate: driveString . 
-		]
-		raise: Error
-		withExceptionDo: [ :anError | self assert: MarsRover invalidCommandErrorDescription equals: anError messageText ]! !
+	marsRover := MarsRover withACoordinate: (0@0) andADirection: 'N'.
+	self 
+		should: [ marsRover operate: 'p' . ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anException | 
+						self assert: anException messageText equals: marsRover invalidCommandErrorDescription.						
+						self assert: (marsRover isAt: (0@0) facing: 'N' )]
+		! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:03:53'!
-test09ChangesDirectionFromNorthToWestByUsingLeftCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:56:33'!
+test07ChangesDirectionFromNorthToWestByUsingLeftCommand
 
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (1@1).
-	marsRoverDirection := MarsRoverCardinalDirections with: 'N'.
-
-	driveString := 'BBFLBFF'.
-
-	marsRoverExpectedCoordinates := 0@0.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'W'.
-	
 	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
+		assertMarsRoverWithCoordinates: (1@1) andWithDirection: 'N' 
+		canDrive: 'L' 
+	 	endsUpAt: 1@1 andWithADirection: 'W'.
 
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:04:01'!
-test10ChangesDirectionFromSouthToEastByUsingLeftCommand
-
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (0@0).
-	marsRoverDirection := MarsRoverCardinalDirections with: 'S'.
-
-	driveString := 'BBFFBBLBF'.
-
-	marsRoverExpectedCoordinates := 0@2.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'E'.
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:56:19'!
+test08ChangesDirectionFromWestToSouthByUsingLeftCommand
 	
 	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
+		assertMarsRoverWithCoordinates: (0@0) andWithDirection:  'W' 
+		canDrive: 'L' 
+	 	endsUpAt: (0@0) andWithADirection: 'S'.
+! !
+
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:39:33'!
+test09ChangesDirectionFromSouthToEastByUsingLeftCommand
+	
+	self
+		assertMarsRoverWithCoordinates:  (0@0) andWithDirection:  'S' 
+		canDrive: 'L' 
+	 	endsUpAt:  (0@0) andWithADirection:  'E'.
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:04:16'!
-test11ChangesDirectionFromEastToNorthByUsingLeftCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:39:42'!
+test10ChangesDirectionFromEastToNorthByUsingLeftCommand
 
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (0@0).
-	marsRoverDirection := MarsRoverCardinalDirections with: 'E'.
-
-	driveString := 'BFLBBFFFF'.
-	
-	marsRoverExpectedCoordinates := 0@2.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'N'.
-	
 	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
+		assertMarsRoverWithCoordinates:  (0@2) andWithDirection: 'E' 
+		canDrive: 'L' 
+	 	endsUpAt: (0@2) andWithADirection: 'N'.
 	
 
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:04:33'!
-test12ChangesDirectionFromNorthToEastByUsingRightCommand
-
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (1@0).
-	marsRoverDirection := MarsRoverCardinalDirections with: 'N'.
-
-	driveString := 'BFRBBBFFF'.
-	
-	marsRoverExpectedCoordinates := 1@0.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'E'.
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:39:49'!
+test11ChangesDirectionFromNorthToEastByUsingRightCommand
 	
 	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
+		assertMarsRoverWithCoordinates: (1@0) andWithDirection: 'N' 
+		canDrive: 'R' 
+	 	endsUpAt: (1@0) andWithADirection: 'E'.
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:04:40'!
-test13ChangesDirectionFromEastToSouthByUsingRightCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:39:58'!
+test12ChangesDirectionFromEastToSouthByUsingRightCommand
 
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (0@0).
-	marsRoverDirection := MarsRoverCardinalDirections with: 'E'.
-
-	driveString := 'BFRBFB'.
-	
-	marsRoverExpectedCoordinates := 0@1.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'S'.
-	
 	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
+		assertMarsRoverWithCoordinates: (0@0) andWithDirection: 'E' 
+		canDrive: 'R' 
+	 	endsUpAt: (0@0) andWithADirection:  'S'.
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:05:08'!
-test14ChangesDirectionFromSouthToWestByUsingRightCommand
-
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (0@0).
-	marsRoverDirection := MarsRoverCardinalDirections with: 'S'.
-
-	driveString := 'BFBRBF'.
-	
-	marsRoverExpectedCoordinates := 0@1.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'W'.
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:40:06'!
+test13ChangesDirectionFromSouthToWestByUsingRightCommand
 	
 	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
+		assertMarsRoverWithCoordinates: (0@0) andWithDirection: 'S' 
+		canDrive:  'R' 
+	 	endsUpAt: (0@0) andWithADirection: 'W'.
 ! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/3/2022 21:05:24'!
-test15ChangesDirectionFromWestToNorthByUsingRightCommand
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:42:24'!
+test14ChangesDirectionFromWestToNorthByUsingRightCommand
 
-	| marsRoverCoordinates marsRoverDirection driveString marsRoverExpectedCoordinates marsRoverExpectedDirection |
-	
-	marsRoverCoordinates := (0@0).
-	marsRoverDirection := MarsRoverCardinalDirections with: 'W'.
-
-	driveString := 'BFRBFFBB'.	
-	
-	marsRoverExpectedCoordinates := 0@-1.
-	marsRoverExpectedDirection := MarsRoverCardinalDirections with: 'N'.
-	
 	self
-		assertMarsRoverWithCoordinates: marsRoverCoordinates andWithDirection: marsRoverDirection 
-		canDrive: driveString 
-	 	endsUpAt: marsRoverExpectedCoordinates andWithADirection: marsRoverExpectedDirection.
+		assertMarsRoverWithCoordinates: (0@-1) andWithDirection: 'W' 
+		canDrive: 'R' 
+	 	endsUpAt: (0@-1) andWithADirection: 'N'.
 
 
 
 ! !
 
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:53:57'!
+test15CanProcessMultipleCommands
 
-!MarsRoverTest methodsFor: 'asserts' stamp: 'lvg 11/2/2022 18:03:02'!
+	self
+		assertMarsRoverWithCoordinates: (0@0) andWithDirection: 'N' 
+		canDrive: 'FFBFRFFFFBBRBBFFRBBFFL' 
+	 	endsUpAt: (2@2) andWithADirection: 'S'.
+
+
+
+! !
+
+!MarsRoverTest methodsFor: 'tests' stamp: 'lvg 11/23/2022 22:38:57'!
+test16ReceivesAStringStopsAtTheFirstWrongCommand
+
+	| marsRover |
+		
+	marsRover := MarsRover withACoordinate: (0@0) andADirection:  'N'.
+	self 
+		should: [ marsRover operate: 'FP' . ]
+		raise: Error - MessageNotUnderstood
+		withExceptionDo: [ :anException | 
+						self assert: anException messageText equals: marsRover invalidCommandErrorDescription.						
+						self assert: (marsRover isAt: (0@1) facing: 'N')]
+		! !
+
+
+!MarsRoverTest methodsFor: 'asserts' stamp: 'lvg 11/23/2022 18:45:45'!
 assertMarsRoverWithCoordinates: anInitialCoordinate andWithDirection: anInitialDirection canDrive: aDriveString  endsUpAt: aFinalCoordinate andWithADirection: aFinalDirection
 
 	| marsRover |
@@ -289,52 +181,124 @@ assertMarsRoverWithCoordinates: anInitialCoordinate andWithDirection: anInitialD
 
 	marsRover operate: aDriveString .
 	
-	self assert: (marsRover isCoordinateEquals: aFinalCoordinate).
-	self assert: (marsRover isCardinalDirectionEquals: aFinalDirection)! !
+	self assert: (marsRover isAt: aFinalCoordinate facing: aFinalDirection).
+! !
 
 
 !classDefinition: #MarsRover category: 'MarsRover-Exercise'!
 Object subclass: #MarsRover
-	instanceVariableNames: 'marsRoverCoordinates marsRoverCardinalDirection marsRoverCommands'
+	instanceVariableNames: 'marsRoverCoordinates marsRoverHead'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Exercise'!
 
-!MarsRover methodsFor: 'testing' stamp: 'lvg 11/1/2022 18:59:24'!
-isCardinalDirectionEquals: aCardinalDirection
+!MarsRover methodsFor: 'testing' stamp: 'lvg 11/23/2022 19:17:03'!
+assertCommandIsValid: aStear 
 
-	^ aCardinalDirection  isKindOf: marsRoverCardinalDirection class.! !
+	^ (self isAValidCommand: aStear) ifFalse: [ self error: self invalidCommandErrorDescription ]! !
 
-!MarsRover methodsFor: 'testing' stamp: 'lvg 11/1/2022 15:02:04'!
-isCoordinateEquals: aCoordinate
+!MarsRover methodsFor: 'testing' stamp: 'lvg 11/23/2022 18:36:00'!
+isAValidCommand: aCommand
+	^ #($B $F $L $R ) includes: aCommand.! !
 
-	^ marsRoverCoordinates = aCoordinate .! !
+!MarsRover methodsFor: 'testing' stamp: 'lvg 11/23/2022 19:18:23'!
+isAt: aCoordinate facing: aCardinalDirection 
+
+	^ (marsRoverCoordinates = aCoordinate) and: [  marsRoverHead  isHeading: aCardinalDirection]! !
 
 
-!MarsRover methodsFor: 'initialization' stamp: 'lvg 11/3/2022 15:15:12'!
+!MarsRover methodsFor: 'initialization' stamp: 'lvg 11/23/2022 19:49:11'!
 initializeWithDirection: aCardinalDirection andWith: aCoordinate
 
 	marsRoverCoordinates :=  aCoordinate .
-	marsRoverCardinalDirection := aCardinalDirection .	
+	marsRoverHead := MarsRoverCardinalDirection of: self facing: aCardinalDirection.
+
+"
 	marsRoverCommands := Dictionary newFrom: { 
-						$B -> [marsRoverCoordinates :=  marsRoverCardinalDirection  moveBackwards: marsRoverCoordinates].
-	 					$F -> [marsRoverCoordinates :=  marsRoverCardinalDirection  moveForwards: marsRoverCoordinates].
-	 					$R -> [marsRoverCardinalDirection := 	marsRoverCardinalDirection turnRight].
-	 					$L -> [marsRoverCardinalDirection := marsRoverCardinalDirection turnLeft].
+						$B -> [marsRoverHead  moveBackwards].
+	 					$F -> [marsRoverHead  moveForwards].
+	 					$R -> [	marsRoverHead turnRight].
+	 					$L -> [marsRoverHead turnLeft].
 						}.
+"
 
 ! !
 
 
-!MarsRover methodsFor: 'navigation - public' stamp: 'lvg 11/3/2022 15:11:41'!
+!MarsRover methodsFor: 'navigation - public' stamp: 'lvg 11/23/2022 19:45:22'!
 operate: aStearString
-	
+
+	aStearString do: [: aStear |
+		self assertCommandIsValid: aStear.
+		self processCommand: aStear.
+		] 
+
+
+"	
 	aStearString do: [: aStear |
 		| aBlock | 
-		aBlock := marsRoverCommands at: aStear ifAbsent: [^ self error: 'Invalid command, expected commands are: F,B,R or L' ].
+		aBlock := marsRoverCommands at: aStear ifAbsent: [self error: self invalidCommandErrorDescription ].
 		aBlock value.
 	]  
+"
 ! !
+
+
+!MarsRover methodsFor: 'error description' stamp: 'lvg 11/23/2022 13:04:23'!
+invalidCommandErrorDescription
+
+	^ 'Invalid command, expected commands are: F,B,R or L'! !
+
+
+!MarsRover methodsFor: 'DD - moving' stamp: 'lvg 11/23/2022 17:20:54'!
+moveDown
+
+	marsRoverCoordinates := marsRoverCoordinates + (0@-1)! !
+
+!MarsRover methodsFor: 'DD - moving' stamp: 'lvg 11/23/2022 17:21:13'!
+moveLeft
+
+	marsRoverCoordinates := marsRoverCoordinates + (-1@0)! !
+
+!MarsRover methodsFor: 'DD - moving' stamp: 'lvg 11/23/2022 17:21:18'!
+moveRight
+
+	marsRoverCoordinates := marsRoverCoordinates + (1@0)! !
+
+!MarsRover methodsFor: 'DD - moving' stamp: 'lvg 11/23/2022 17:21:23'!
+moveUp
+
+	marsRoverCoordinates := marsRoverCoordinates + (0@1)! !
+
+
+!MarsRover methodsFor: 'DD - heading' stamp: 'lvg 11/23/2022 19:38:47'!
+headEast
+
+	marsRoverHead := MarsRoverFacesEast of: self.! !
+
+!MarsRover methodsFor: 'DD - heading' stamp: 'lvg 11/23/2022 19:38:59'!
+headNorth
+
+	marsRoverHead := MarsRoverFacesNorth of: self.! !
+
+!MarsRover methodsFor: 'DD - heading' stamp: 'lvg 11/23/2022 19:39:06'!
+headSouth
+
+	marsRoverHead := MarsRoverFacesSouth of: self.! !
+
+!MarsRover methodsFor: 'DD - heading' stamp: 'lvg 11/23/2022 19:39:13'!
+headWest
+
+	marsRoverHead := MarsRoverFacesWest of: self.! !
+
+
+!MarsRover methodsFor: 'navigation - private' stamp: 'lvg 11/23/2022 19:12:42'!
+processCommand: aStear 
+
+	(aStear = $B) ifTrue: [^ marsRoverHead  moveBackwards].
+	(aStear = $F) ifTrue: [^ marsRoverHead  moveForwards].
+	(aStear = $R) ifTrue: [^ marsRoverHead  turnRight].
+	(aStear = $L) ifTrue: [^ marsRoverHead  turnLeft].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -348,222 +312,226 @@ withACoordinate: aCoordinate andADirection: aDirection.
 	^self  new initializeWithDirection: aDirection andWith: aCoordinate.
 	! !
 
-
-!MarsRover class methodsFor: 'error descriptions' stamp: 'lvg 11/3/2022 20:03:04'!
-invalidCommandErrorDescription
-
-	^ 'Invalid command, expected commands are: F,B,R or L'! !
-
 
-!classDefinition: #MarsRoverCardinalDirections category: 'MarsRover-Exercise'!
-Object subclass: #MarsRoverCardinalDirections
-	instanceVariableNames: 'cardinalDirection'
+!classDefinition: #MarsRoverCardinalDirection category: 'MarsRover-Exercise'!
+Object subclass: #MarsRoverCardinalDirection
+	instanceVariableNames: 'cardinalDirection marsRover'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Exercise'!
 
-!MarsRoverCardinalDirections methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:57:58'!
-moveBackwards: aCoordinate
+!MarsRoverCardinalDirection methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:56:02'!
+moveBackwards
+
+	self subclassResponsibility ! !
+
+!MarsRoverCardinalDirection methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:34:30'!
+moveForwards
 	
 	self subclassResponsibility.! !
 
-!MarsRoverCardinalDirections methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:58:52'!
-moveForwards: aCoordinate
-	
-	self subclassResponsibility.! !
-
-!MarsRoverCardinalDirections methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:15:28'!
+!MarsRoverCardinalDirection methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:15:28'!
 turnLeft
 	
 	self subclassResponsibility.! !
 
-!MarsRoverCardinalDirections methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:15:33'!
+!MarsRoverCardinalDirection methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:15:33'!
 turnRight
 	
 	self subclassResponsibility.! !
 
 
-!MarsRoverCardinalDirections methodsFor: 'initialization' stamp: 'lvg 11/3/2022 20:53:16'!
-initializeWith: aCardinalDirection 
+!MarsRoverCardinalDirection methodsFor: 'initialization' stamp: 'lvg 11/23/2022 17:13:45'!
+initializeOf: aMarsRover 
 
-	cardinalDirection := aCardinalDirection! !
+	marsRover := aMarsRover.
+! !
+
+!MarsRoverCardinalDirection methodsFor: 'initialization' stamp: 'lvg 11/23/2022 17:11:36'!
+isHeading: aCardinalPoint
+
+	^self class whenFacing: aCardinalPoint! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'MarsRoverCardinalDirections class' category: 'MarsRover-Exercise'!
-MarsRoverCardinalDirections class
+!classDefinition: 'MarsRoverCardinalDirection class' category: 'MarsRover-Exercise'!
+MarsRoverCardinalDirection class
 	instanceVariableNames: ''!
 
-!MarsRoverCardinalDirections class methodsFor: 'instance creation' stamp: 'lvg 11/1/2022 13:49:11'!
-assignSubclassWith: aCardinalDirection
+!MarsRoverCardinalDirection class methodsFor: 'instance creation' stamp: 'lvg 11/23/2022 14:04:04'!
+of: aMarsRover
+
+	^self new initializeOf: aMarsRover! !
+
+!MarsRoverCardinalDirection class methodsFor: 'instance creation' stamp: 'lvg 11/23/2022 19:07:36'!
+of: aMarsRover facing: aCardinalDirection
+
+	| headingSubclass |
+	
+	headingSubclass := self subclasses detect: [ :aHeadingSubclass | aHeadingSubclass whenFacing: aCardinalDirection ].
+	
+	^headingSubclass of: aMarsRover.! !
+
+!MarsRoverCardinalDirection class methodsFor: 'instance creation' stamp: 'lvg 11/23/2022 17:11:17'!
+whenFacing: aCardinalDirection
 	
 	self subclassResponsibility.! !
 
-!MarsRoverCardinalDirections class methodsFor: 'instance creation' stamp: 'lvg 11/3/2022 20:51:16'!
-with: aCardinalDirection
-
-	MarsRoverCardinalDirections subclasses do: [:MarsRoverSubclasses |
-					(MarsRoverSubclasses assignSubclassWith: aCardinalDirection)
-					ifTrue: [^ MarsRoverSubclasses new initializeWith: aCardinalDirection]
-					].
-		! !
-
-
 
-!classDefinition: #East category: 'MarsRover-Exercise'!
-MarsRoverCardinalDirections subclass: #East
+!classDefinition: #MarsRoverFacesEast category: 'MarsRover-Exercise'!
+MarsRoverCardinalDirection subclass: #MarsRoverFacesEast
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Exercise'!
 
-!East methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:59:04'!
-moveBackwards: aCoordinate
+!MarsRoverFacesEast methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:54:06'!
+moveBackwards
 
-	^ aCoordinate + (-1@0)
+	^ marsRover moveLeft.
 ! !
 
-!East methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:59:11'!
-moveForwards: aCoordinate
+!MarsRoverFacesEast methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:54:34'!
+moveForwards
 
-	^ aCoordinate  + (1@0).! !
+	^marsRover moveRight.! !
 
-!East methodsFor: 'navigation' stamp: 'lvg 11/3/2022 14:31:55'!
+!MarsRoverFacesEast methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:55:06'!
 turnLeft
 
-	^ MarsRoverCardinalDirections with: 'N'.
+	^marsRover headNorth.
 ! !
 
-!East methodsFor: 'navigation' stamp: 'lvg 11/3/2022 14:31:55'!
+!MarsRoverFacesEast methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:55:11'!
 turnRight
 
-	^ MarsRoverCardinalDirections with: 'S'.! !
+	^marsRover headSouth.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'East class' category: 'MarsRover-Exercise'!
-East class
+!classDefinition: 'MarsRoverFacesEast class' category: 'MarsRover-Exercise'!
+MarsRoverFacesEast class
 	instanceVariableNames: ''!
 
-!East class methodsFor: 'instace creation' stamp: 'lvg 11/1/2022 13:52:32'!
-assignSubclassWith: aCardinalDirection
+!MarsRoverFacesEast class methodsFor: 'instace creation' stamp: 'lvg 11/23/2022 17:11:17'!
+whenFacing: aCardinalDirection
 
 	^ aCardinalDirection = 'E'.! !
 
 
-!classDefinition: #North category: 'MarsRover-Exercise'!
-MarsRoverCardinalDirections subclass: #North
+!classDefinition: #MarsRoverFacesNorth category: 'MarsRover-Exercise'!
+MarsRoverCardinalDirection subclass: #MarsRoverFacesNorth
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Exercise'!
 
-!North methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:59:18'!
-moveBackwards: aCoordinate
-	
-	^ aCoordinate + (0@-1).! !
+!MarsRoverFacesNorth methodsFor: 'navigation' stamp: 'lvg 11/23/2022 19:48:28'!
+moveBackwards
 
-!North methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:59:23'!
-moveForwards: aCoordinate
-	
-	^ aCoordinate + (0@1).
-! !
+	^marsRover moveDown.! !
 
-!North methodsFor: 'navigation' stamp: 'lvg 11/3/2022 14:31:55'!
+!MarsRoverFacesNorth methodsFor: 'navigation' stamp: 'lvg 11/23/2022 19:48:35'!
+moveForwards
+
+	^marsRover moveUp.
+	! !
+
+!MarsRoverFacesNorth methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:57:02'!
 turnLeft
 
-	^ MarsRoverCardinalDirections with: 'W'.! !
+	^marsRover headWest.! !
 
-!North methodsFor: 'navigation' stamp: 'lvg 11/3/2022 14:31:55'!
+!MarsRoverFacesNorth methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:56:54'!
 turnRight
 
-	^ MarsRoverCardinalDirections with:  'E'.! !
+	^marsRover headEast.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'North class' category: 'MarsRover-Exercise'!
-North class
+!classDefinition: 'MarsRoverFacesNorth class' category: 'MarsRover-Exercise'!
+MarsRoverFacesNorth class
 	instanceVariableNames: ''!
 
-!North class methodsFor: 'instance creation' stamp: 'lvg 11/1/2022 13:52:47'!
-assignSubclassWith: aCardinalDirection
+!MarsRoverFacesNorth class methodsFor: 'instance creation' stamp: 'lvg 11/23/2022 17:11:17'!
+whenFacing: aCardinalDirection
 
 	^ aCardinalDirection = 'N'.! !
 
 
-!classDefinition: #South category: 'MarsRover-Exercise'!
-MarsRoverCardinalDirections subclass: #South
+!classDefinition: #MarsRoverFacesSouth category: 'MarsRover-Exercise'!
+MarsRoverCardinalDirection subclass: #MarsRoverFacesSouth
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Exercise'!
 
-!South methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:59:30'!
-moveBackwards: aCoordinate
-	
-	^ aCoordinate + (0@1)! !
+!MarsRoverFacesSouth methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:57:36'!
+moveBackwards
 
-!South methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:59:38'!
-moveForwards: aCoordinate
-	
-	^ aCoordinate + (0@-1).	! !
+	^marsRover moveUp.! !
 
-!South methodsFor: 'navigation' stamp: 'lvg 11/3/2022 14:31:55'!
+!MarsRoverFacesSouth methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:57:53'!
+moveForwards
+	
+	^marsRover moveDown! !
+
+!MarsRoverFacesSouth methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:58:09'!
 turnLeft
 	
-	^ MarsRoverCardinalDirections with: 'E'.	! !
+	^marsRover headEast.! !
 
-!South methodsFor: 'navigation' stamp: 'lvg 11/3/2022 14:31:55'!
+!MarsRoverFacesSouth methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:58:16'!
 turnRight
 
-	^ MarsRoverCardinalDirections with: 'W'! !
+	^marsRover headWest.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'South class' category: 'MarsRover-Exercise'!
-South class
+!classDefinition: 'MarsRoverFacesSouth class' category: 'MarsRover-Exercise'!
+MarsRoverFacesSouth class
 	instanceVariableNames: ''!
 
-!South class methodsFor: 'instance creation' stamp: 'lvg 11/1/2022 13:53:03'!
-assignSubclassWith: aCardinalDirection
+!MarsRoverFacesSouth class methodsFor: 'instance creation' stamp: 'lvg 11/23/2022 17:11:17'!
+whenFacing: aCardinalDirection
 
 	^ aCardinalDirection = 'S'.! !
 
 
-!classDefinition: #West category: 'MarsRover-Exercise'!
-MarsRoverCardinalDirections subclass: #West
+!classDefinition: #MarsRoverFacesWest category: 'MarsRover-Exercise'!
+MarsRoverCardinalDirection subclass: #MarsRoverFacesWest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Exercise'!
 
-!West methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:59:44'!
-moveBackwards: aCoordinate 
+!MarsRoverFacesWest methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:58:36'!
+moveBackwards
 	
-	^aCoordinate + (1@0).! !
+	^marsRover moveRight.! !
 
-!West methodsFor: 'navigation' stamp: 'lvg 11/1/2022 14:59:51'!
-moveForwards: aCoordinate
+!MarsRoverFacesWest methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:58:52'!
+moveForwards
 	
-	^ aCoordinate + (-1@0).! !
+	^marsRover moveLeft.! !
 
-!West methodsFor: 'navigation' stamp: 'lvg 11/3/2022 14:31:55'!
+!MarsRoverFacesWest methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:59:11'!
 turnLeft
 
-	^ MarsRoverCardinalDirections with: 'S'.! !
+	^marsRover headSouth.! !
 
-!West methodsFor: 'navigation' stamp: 'lvg 11/3/2022 14:31:55'!
+!MarsRoverFacesWest methodsFor: 'navigation' stamp: 'lvg 11/23/2022 13:59:18'!
 turnRight
 
-	^ MarsRoverCardinalDirections with:  'N'.! !
+	^marsRover headNorth.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'West class' category: 'MarsRover-Exercise'!
-West class
+!classDefinition: 'MarsRoverFacesWest class' category: 'MarsRover-Exercise'!
+MarsRoverFacesWest class
 	instanceVariableNames: ''!
 
-!West class methodsFor: 'instance creation' stamp: 'lvg 11/1/2022 13:53:12'!
-assignSubclassWith: aCardinalDirection
+!MarsRoverFacesWest class methodsFor: 'instance creation' stamp: 'lvg 11/23/2022 17:11:17'!
+whenFacing: aCardinalDirection
 
 	^ aCardinalDirection = 'W'.! !
