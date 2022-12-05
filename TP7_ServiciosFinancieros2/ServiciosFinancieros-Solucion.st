@@ -654,10 +654,19 @@ setUp
 
 !classDefinition: #Test06PortfolioTreeStructureReport category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #Test06PortfolioTreeStructureReport
-	instanceVariableNames: 'fPortfolio'
+	instanceVariableNames: 'jonhsAccount angiesAccount myAccount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
+
+!Test06PortfolioTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/24/2022 01:27:55'!
+setUp
+	
+	jonhsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
+	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
+	myAccount := ReceptiveAccount named: 'Cuenta mia'. 
+	
+	! !
 
 !Test06PortfolioTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/18/2022 16:11:13'!
 test01EmptyPortfolioTreeReport
@@ -673,12 +682,11 @@ test01EmptyPortfolioTreeReport
 	self assert: expectedTreeReport equals: portfolioTreeReport portfolioTreeReport.
 	! !
 
-!Test06PortfolioTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/18/2022 16:11:13'!
+!Test06PortfolioTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/24/2022 01:27:55'!
 test02PortfolioTreeReportWithAnAccount
 	
-	| familiyPortfolio myAccount portfolioTreeReport expectedTreeReport |
+	| familiyPortfolio portfolioTreeReport expectedTreeReport |
 	
-	myAccount := ReceptiveAccount named: 'Cuenta mia'.
 	familiyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount.
 	
 	portfolioTreeReport := PortfolioTreePrinter of: familiyPortfolio.
@@ -689,12 +697,11 @@ test02PortfolioTreeReportWithAnAccount
 	self assert: expectedTreeReport equals: portfolioTreeReport portfolioTreeReport.
 ! !
 
-!Test06PortfolioTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/18/2022 16:11:13'!
+!Test06PortfolioTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/24/2022 01:27:55'!
 test03PortfolioTreeReportWithAnAccountAndAnEmptyPortfolio
 	
-	| familyPortfolio myAccount portfolioTreeReport expectedTree childrensPortfolio |
+	| familyPortfolio portfolioTreeReport expectedTree childrensPortfolio |
 	
-	myAccount := ReceptiveAccount named: 'Cuenta mia'.
 	childrensPortfolio := Portfolio named: 'Portfolio de hijos'.
 	familyPortfolio := Portfolio named: 'Portfolio de la familia'  with: myAccount with: childrensPortfolio.
 	
@@ -706,16 +713,12 @@ test03PortfolioTreeReportWithAnAccountAndAnEmptyPortfolio
 	self assert: expectedTree equals: portfolioTreeReport portfolioTreeReport.
 	! !
 
-!Test06PortfolioTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/18/2022 16:11:13'!
+!Test06PortfolioTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/24/2022 01:27:55'!
 test04PortfolioTreeReportWithAnAccountAndAPortfolioWithAccounts
 	
-	| familyPortfolio myAccount portfolioTreeReport expectedTree childrensPortfolio angiesAccount johnsAccount |
+	| familyPortfolio portfolioTreeReport expectedTree childrensPortfolio |
 	
-	myAccount := ReceptiveAccount named: 'Cuenta mia'.
-	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'.
-	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'.
-	
-	childrensPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount.
+	childrensPortfolio := Portfolio named: 'Portfolio de hijos' with: jonhsAccount with: angiesAccount.
 	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrensPortfolio .
 	
 	portfolioTreeReport := PortfolioTreePrinter of: familyPortfolio.
@@ -730,12 +733,12 @@ test04PortfolioTreeReportWithAnAccountAndAPortfolioWithAccounts
 
 !classDefinition: #Test07PortfolioDetailedTreeStructureReport category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #Test07PortfolioDetailedTreeStructureReport
-	instanceVariableNames: ''
+	instanceVariableNames: 'jonhsAccount angiesAccount myAccount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/18/2022 14:38:07'!
+!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/24/2022 00:31:49'!
 test01EmptyPortfolioDetailedReport
 	
 	| portfolio portfolioTreeDetailedReport tree |
@@ -751,50 +754,44 @@ test01EmptyPortfolioDetailedReport
 	
 	! !
 
-!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'AGH 11/18/2022 17:27:19'!
+!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/24/2022 01:24:51'!
 test02PortfolioDetailedReportWithAnAccountWithoutTransactions
 	
-	| portfolio portfolioTreeDetailedReport tree myAccount summaryReport |
+	| portfolio portfolioTreeDetailedReport expectedTree |
 	
 	portfolio := Portfolio named: 'Portfolio de la familia'.
-	myAccount := ReceptiveAccount named: 'Cuenta mia'.
 	portfolio add: myAccount.
 	
 	portfolioTreeDetailedReport := PortfolioDetailedTreeReport of: portfolio.
 	portfolioTreeDetailedReport createReport.
-	
-	summaryReport := SummaryReport of: myAccount.
-	summaryReport createReport .
 	 
-	tree := OrderedCollection with: 'Portfolio de la familia' with: 'Cuenta mia' with: 	summaryReport summaryReport with: 'Balance = 0 * pesos'.
+	expectedTree := OrderedCollection with: 'Portfolio de la familia' with: ' Cuenta mia' with: 	(OrderedCollection  with: '  Balance = 0 * pesos') with: 'Balance = 0 * pesos'.
 	
-	self assert: tree equals: portfolioTreeDetailedReport portfolioTreeDetailedReport.
+	self assert: expectedTree equals: portfolioTreeDetailedReport portfolioTreeDetailedReport.
 	
 	! !
 
-!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'AGH 11/18/2022 17:27:44'!
+!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/24/2022 01:24:51'!
 test03PortfolioDetailedReportWithAnAccountWithTransactions
 	
-	| portfolio portfolioTreeDetailedReport tree myAccount summaryReport |
+	| portfolio portfolioTreeDetailedReport tree expectedSummary|
 	
 	portfolio := Portfolio named: 'Portfolio de la familia'.
-	myAccount := ReceptiveAccount named: 'Cuenta mia'.
 	Deposit register: (100*peso) on: myAccount.
 	portfolio add: myAccount.
 	
 	portfolioTreeDetailedReport := PortfolioDetailedTreeReport of: portfolio.
 	portfolioTreeDetailedReport createReport.
 	
-	summaryReport := SummaryReport of: myAccount.
-	summaryReport createReport .
-	 
-	tree := OrderedCollection with: 'Portfolio de la familia' with: 'Cuenta mia' with: summaryReport summaryReport with: 'Balance = 100 * pesos'.
+	expectedSummary :=  OrderedCollection  with:'  Depósito por 100 * pesos' with: '  Balance = 100 * pesos'.		 
+	
+	tree := OrderedCollection with: 'Portfolio de la familia' with: ' Cuenta mia' with: expectedSummary  with: 'Balance = 100 * pesos'.
 	
 	self assert: tree equals: portfolioTreeDetailedReport portfolioTreeDetailedReport.
 	
 	! !
 
-!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'AGH 11/18/2022 17:32:02'!
+!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/24/2022 01:10:56'!
 test04PortfolioDetailedReportWithAnEmptyPortfolio
 	
 	| portfolio portfolioTreeDetailedReport tree innerPortfolio |
@@ -806,18 +803,17 @@ test04PortfolioDetailedReportWithAnEmptyPortfolio
 	portfolioTreeDetailedReport := PortfolioDetailedTreeReport of: portfolio.
 	portfolioTreeDetailedReport createReport.
 
-	tree := OrderedCollection with: 'Portfolio de la familia' with: (OrderedCollection with: 'Portfolio de hijos' with: 'Balance = 0 * pesos') with: 'Balance = 0 * pesos'.
+	tree := OrderedCollection with: 'Portfolio de la familia' with: (OrderedCollection with: ' Portfolio de hijos' with: ' Balance = 0 * pesos') with: 'Balance = 0 * pesos'.
 	
 	self assert: tree equals: portfolioTreeDetailedReport portfolioTreeDetailedReport.
 	
 	! !
 
-!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'AGH 11/18/2022 17:34:13'!
+!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/24/2022 01:24:51'!
 test05PortfolioDetailedReportWithAnAccountAndEmptyPortfolio
 	
-	| familyPortfolio portfolioTreeDetailedReport tree childrenPortfolio myAccount summaryReport |
+	| familyPortfolio portfolioTreeDetailedReport tree childrenPortfolio expectedSummaryReport |
 	
-	myAccount := ReceptiveAccount named: 'Cuenta mia'.
 	Withdraw register: (50*peso) on: myAccount.
 	
 	childrenPortfolio := Portfolio named: 'Portfolio de hijos'.	
@@ -826,51 +822,52 @@ test05PortfolioDetailedReportWithAnAccountAndEmptyPortfolio
 	portfolioTreeDetailedReport := PortfolioDetailedTreeReport of: familyPortfolio.
 	portfolioTreeDetailedReport createReport.
 	
-	summaryReport := SummaryReport of: myAccount.
-	summaryReport createReport .
+	expectedSummaryReport :=  OrderedCollection  with: '  Extracción por 50 * pesos' with: '  Balance = -50 * pesos'.
 	  
-	tree := OrderedCollection with: 'Portfolio de la familia' with: 'Cuenta mia' with: (summaryReport summaryReport) with: (OrderedCollection with: 'Portfolio de hijos' with: 'Balance = 0 * pesos') with: 'Balance = -50 * pesos'.
+	tree := OrderedCollection with: 'Portfolio de la familia' with: ' Cuenta mia' with: expectedSummaryReport  with: (OrderedCollection with: ' Portfolio de hijos' with: ' Balance = 0 * pesos') with: 'Balance = -50 * pesos'. 
 	
 	self assert: tree equals: portfolioTreeDetailedReport portfolioTreeDetailedReport.
 	
 	! !
 
-!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/18/2022 14:51:50'!
+!Test07PortfolioDetailedTreeStructureReport methodsFor: 'tests' stamp: 'lvg 11/24/2022 01:24:51'!
 test06PortfolioDetailedReportWithAnAccountAndAPortfolioWithAccounts
 	
-	| familyPortfolio portfolioTreeDetailedReport tree childrenPortfolio myAccount summaryReport johnsAccount angiesAccount angiesAccountSummaryReport johnsAccountSummaryReport |
-	
-	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
-	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
-	myAccount := ReceptiveAccount named: 'Cuenta mia'. 
+	| familyPortfolio portfolioTreeDetailedReport tree childrenPortfolio  summaryReport   childExpectedAccountSummaryReport |
 	
 	Deposit  register: (100*peso) on: myAccount. 
 	Withdraw register: (50*peso) on: myAccount.
 	
-	Deposit  register: (100*peso) on: johnsAccount. 
-	Withdraw register: (50*peso) on: johnsAccount.
+	Deposit  register: (100*peso) on: jonhsAccount. 
+	Withdraw register: (50*peso) on: jonhsAccount.
 	
 	Deposit  register: (100*peso) on: angiesAccount. 
 	Withdraw register: (50*peso) on: angiesAccount.
 
-	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: jonhsAccount with: angiesAccount. 
 	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
 
 	portfolioTreeDetailedReport := PortfolioDetailedTreeReport of: familyPortfolio.
 	portfolioTreeDetailedReport createReport.
 	
-	summaryReport := SummaryReport of: myAccount.
-	summaryReport createReport.
+	summaryReport :=  OrderedCollection with:'  Depósito por 100 * pesos'  with: '  Extracción por 50 * pesos' with: '  Balance = 50 * pesos'.
 	
-	johnsAccountSummaryReport := SummaryReport of: johnsAccount.
-	johnsAccountSummaryReport createReport.
+	childExpectedAccountSummaryReport := OrderedCollection with:'   Depósito por 100 * pesos'  with: '   Extracción por 50 * pesos' with: '   Balance = 50 * pesos'.
 
-	angiesAccountSummaryReport := SummaryReport of: angiesAccount.
-	angiesAccountSummaryReport createReport.
-	 
-	tree := OrderedCollection with: 'Portfolio de la familia' with:  'Cuenta mia' with: (summaryReport summaryReport ) with:  (OrderedCollection with: 'Portfolio de hijos' with: 'Cuenta de Juan' with: (johnsAccountSummaryReport summaryReport) with: 'Cuenta de Angeles' with: (angiesAccountSummaryReport summaryReport )  with:  'Balance = 100 * pesos') with: 'Balance = 150 * pesos'.
+
+	tree := OrderedCollection with: 'Portfolio de la familia' with:  ' Cuenta mia' with: summaryReport with:  (OrderedCollection with: ' Portfolio de hijos' with: '  Cuenta de Juan' with: childExpectedAccountSummaryReport with: '  Cuenta de Angeles' with:  childExpectedAccountSummaryReport  with:  ' Balance = 100 * pesos') with: 'Balance = 150 * pesos'.
 	
 	self assert: tree equals: portfolioTreeDetailedReport portfolioTreeDetailedReport.
+	
+	! !
+
+
+!Test07PortfolioDetailedTreeStructureReport methodsFor: 'setUp' stamp: 'lvg 11/24/2022 01:24:51'!
+setUp
+	
+	jonhsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
+	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
+	myAccount := ReceptiveAccount named: 'Cuenta mia'. 
 	
 	! !
 
@@ -1167,11 +1164,6 @@ addTransactionsTo: aCollectionOfTransactions
 	aCollectionOfTransactions addAll: transactions ! !
 
 
-!ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:03:32'!
-addedTo: aPortfolio 
-	
-	! !
-
 !ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 11:54:51'!
 isComposedBy: anAccount
 
@@ -1258,21 +1250,36 @@ AccountReport subclass: #PortfolioDetailedTreeReport
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!PortfolioDetailedTreeReport methodsFor: 'initialization' stamp: 'AGH 11/18/2022 17:22:13'!
+!PortfolioDetailedTreeReport methodsFor: 'initialization' stamp: 'lvg 11/23/2022 23:21:26'!
 initializeOf: aPortfolio 
 
 	portfolio := aPortfolio.
 	treeStructureDetailed := OrderedCollection new.
+	identation :=  0.
+
+! !
+
+!PortfolioDetailedTreeReport methodsFor: 'initialization' stamp: 'lvg 11/23/2022 23:09:30'!
+initializeOf: aPortfolio with: indentation
+
+	portfolio := aPortfolio.
+	treeStructureDetailed := OrderedCollection new.
+	identation := indentation.
 ! !
 
 
-!PortfolioDetailedTreeReport methodsFor: 'report' stamp: 'AGH 11/18/2022 17:22:04'!
+!PortfolioDetailedTreeReport methodsFor: 'report' stamp: 'lvg 11/24/2022 01:07:55'!
 createReport
 
-	treeStructureDetailed add: (portfolio portfolioName).
+	treeStructureDetailed add: (self indent, (portfolio portfolioName)).
+	identation := identation + 1.
 	portfolio visitPortfolio: self.
-	treeStructureDetailed add: ('Balance = ', (portfolio balance) asString).	
-! !
+	identation := identation - 1.
+	treeStructureDetailed add: (self indent, 'Balance = ', (portfolio balance) asString).	
+
+
+
+	! !
 
 !PortfolioDetailedTreeReport methodsFor: 'report' stamp: 'lvg 11/18/2022 13:29:19'!
 portfolioTreeDetailedReport
@@ -1280,29 +1287,39 @@ portfolioTreeDetailedReport
 	^treeStructureDetailed.! !
 
 
-!PortfolioDetailedTreeReport methodsFor: 'account - visitor' stamp: 'AGH 11/18/2022 17:22:24'!
+!PortfolioDetailedTreeReport methodsFor: 'account - visitor' stamp: 'lvg 11/23/2022 23:10:38'!
+indent
+	
+	| space |
+	
+	space := ''.
+	
+	1 to: identation do: [: a | space := (space , ' ')]. 
+	
+	^space.! !
+
+!PortfolioDetailedTreeReport methodsFor: 'account - visitor' stamp: 'lvg 11/24/2022 00:30:41'!
 portfolioVisited: aPortfolio 
 
-	
 	| innerReport |
-	innerReport := (PortfolioDetailedTreeReport of: aPortfolio) createReport.
+	innerReport := (PortfolioDetailedTreeReport of: aPortfolio with: identation) createReport.
 	treeStructureDetailed add: (innerReport portfolioTreeDetailedReport).
+	
 ! !
 
-!PortfolioDetailedTreeReport methodsFor: 'account - visitor' stamp: 'AGH 11/18/2022 17:22:51'!
+!PortfolioDetailedTreeReport methodsFor: 'account - visitor' stamp: 'lvg 11/23/2022 23:48:29'!
 receptiveAccountVisited: aReceptiveAccount 
 
 	| summaryReport |
 	
-	treeStructureDetailed add: (aReceptiveAccount accountName).
+	treeStructureDetailed add: (self indent, aReceptiveAccount accountName).
 	
 	summaryReport := SummaryReport of: aReceptiveAccount.
 	summaryReport createReport.
+	treeStructureDetailed  add: (	(summaryReport summaryReport: identation)).
 	
-	treeStructureDetailed  add: (	summaryReport summaryReport).
-	
+		
 	! !
-
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1430,6 +1447,25 @@ depositLegVisited: aDepositLeg
 depositVisited: aDeposit
 	
 	^ ('Depósito por ' , (aDeposit value) asString).! !
+
+!SummaryReport methodsFor: 'transactions - visitor' stamp: 'lvg 11/24/2022 00:24:31'!
+summaryReport: spacesQuantity 
+	
+	| summaryWithSpaces spaces |
+	
+	summaryWithSpaces := OrderedCollection new.
+	spaces := ''.
+	
+	1 to: (spacesQuantity + 1) do:[: a | spaces := (spaces , ' ')].
+	
+	
+	summary do: [:aTransaction |
+		
+		summaryWithSpaces addLast: (spaces, aTransaction).
+		
+		].
+	
+	^ summaryWithSpaces ! !
 
 !SummaryReport methodsFor: 'transactions - visitor' stamp: 'AGH 11/17/2022 14:46:36'!
 withdrawLegVisited: aWithdrawLeg
